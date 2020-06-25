@@ -1,0 +1,184 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>
+        EyeGAN: A dummy messes around with Image Generation
+    </title>
+    <link rel="stylesheet" href="./prism/prism.css" />
+    <link rel="stylesheet" href="./style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <script src="./prism/prism.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+
+    <div class="article">
+        <h1 style="background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8) ), url('images/eyegan/rgb color normal/bg.png') 100% 100% repeat;">
+            EyeGAN: A dummy messes around with Image Generation
+        </h1>
+        <p>
+            As a beginner in the field of Neural Networks and Deep Learning, I think generating images are the best invention since sliced bread
+            because of the sheer amount of cool stuff you can make with them. From faces, to handwritten numbers. What more could you ever ask for?
+
+            <br><br>
+            Code is on my GitHub here:
+            <!--put github thing-->
+        </p>
+
+        <h2>What even is this thing?</h2>
+        <p>
+            Well, its a GAN.
+            <br />
+            A GAN (or General Adversarial Network) is a way of generating an output based off of 2 neural networks:
+            <br />
+            <br />&emsp;<b>  - The Generator</b> which spits out random noise and slowly learns to replicate a structure based on feedback.
+            <br />&emsp;<b>  - The Discriminator</b> which is given a mix of real and fake inputs and tries to pick out which is real.
+            <br />
+            <br />
+            More specifically, its a DCGAN, which uses <u>D</u>eep <u>C</u>onvolutional layers to find and filter specific features in images, making it ideal for creating them too.
+            <br />
+            <br />
+            During training, the generator progressively becomes better at creating images that look real, while the discriminator becomes better at telling them apart. As the GAN converges,
+            the 2 neural networks (should) reach an equilibrium when the discriminator can no longer distinguish real images from fake, generated images.
+            <br />
+            <br />
+        </p>
+
+        <h2>Data</h2>
+        <p>
+            I originally made the GAN able to create handwritten images based off of the MNIST dataset, which is a huge collection of handwritten digits from 0 to 9.
+            However, after rummaging though the MNIST dataset for a while, I noticed it was just a big 2 dimentional array with values 0 to 255 which represent the pixels of the image.
+            <br />
+            <br />
+            So, to replicate the MNIST data, I resized a bunch of images of eyes, converted them to grayscale,
+            and stored that into an array.
+            <br />
+            <br />
+            After fiddling around the the neural networks to get them to produce 64 by 64 sized images, this is the result!
+        </p>
+        <pre><code class="language-python">im=Image.open(filename)
+print(f"Loading {filename}")
+try:
+    # Uses Pillow to resize and convert images to grayscale
+    resize_image = im.resize((image_size, image_size), Image.ANTIALIAS)
+    gray_image = resize_image.convert("LA")
+    image_list.append(np.array(gray_image))
+except:
+    print(f"Could not load {filename}")</code></pre>
+        <table id="image-display">
+            <tr>
+                <td><img src="./images/eyegan/failed attempts/try1.png" alt="" style="width: 100%;"></td>
+                <td><img src="./images/eyegan/failed attempts/try2.png" alt="" style="width: 100%;"></td>
+                <td><img src="./images/eyegan/failed attempts/try3.png" alt="" style="width: 100%;"></td>
+            </tr>
+        </table>
+        <p id="caption">. . .</p>
+        <p>
+            <b>Wait a second. Those don't look like eyes.</b><br /><br />
+        </p>
+
+        <h2>Tuning and adjustments</h2>
+
+        <p>
+            After consulting with people way smarter than I am, there were 2 main problems with my data.
+            <br />
+            <br />&emsp;-I only used 87 images (compared to around 60000 from MNIST)
+            <br />&emsp;-The model ran for 50 epochs
+            <br />
+            <br />
+            By increasing the training time to 250 epochs and tripling the dataset to 300 images, I got some way better results
+        </p>
+        <table id="image-display">
+            <tr>
+                <td><img src="./images/eyegan/gray/eyes0.gif" alt="" style="width:100%; max-width:400px"></td>
+                <td><img src="./images/eyegan/gray/eyes1.gif" alt="" style="width:100%; max-width:400px"></td>
+                <td><img src="./images/eyegan/gray/eyes2.gif" alt="" style="width:100%; max-width:400px"></td>
+                <td><img src="./images/eyegan/gray/eyes3.gif" alt="" style="width:100%; max-width:400px"></td>
+            </tr>
+        </table>
+        <p id="caption">Working grayscale generation</p>
+        <p>
+            Looking back at it, 300 images is nowhere near the amount of images I should've had, but the extra 200 epochs really helped.
+            <br />
+            <br />
+            This is cool and all but I'm getting board of looking at a bunch of gray squares.
+            <br />
+            <br />
+            Lets add some color:
+            <br />
+            Color is usually represented in RGB for displays, which is made of 3 brightness values, representing how much red, blue or green there is in a pixel.
+            Converting the data into RGB was pretty easy, because all I had to do was to tell the data loader to not grayscale it.
+            <br />
+            <br />
+            To force the neural networks to use color, I swapped the input of shapes from (n, 64, 64, 1) to (n, 64, 64, 3).
+            N being the number of images in the dataset, 64 being the width and height of the input, and the last number being the amount of channels:
+            <br><br>
+            To make an image from the numbers, I just multiplied the decimal color values by 255. All good, right?
+            <br>
+            <br>
+            <pre><code class="language-python"># Paste generated images into a grid and save
+i = 0
+for y in range(0, 4):
+for x in range(0, 4):
+img_np = (predictions[i].numpy());
+img = Image.fromarray((img_np * 255).astype(np.uint8))
+result.paste(img, (y * 64, x * 64))
+i += 1
+
+result.save('image_at_epoch_{:04d}.png'.format(epoch))</code></pre>
+        </p>
+        <table id="image-display">
+            <tr>
+                <td><img src="./images/eyegan/rgb color boosted/eyes_rgb1.gif" alt="" style="width: 100%; max-width: 400px;"></td>
+                <td><img src="./images/eyegan/rgb color boosted/eyes_rgb3.gif" alt="" style="width:100%; max-width:400px;"></td>
+                <td><img src="./images/eyegan/rgb color boosted/eyes_rgb2.gif" alt="" style="width:100%; max-width:400px;"></td>
+            </tr>
+        </table>
+        <p id="caption">This is definitely not 'right'</p>
+        <p>
+            I spent 2 entire days messing around in the code and noticed that multiplying the colors by 255 boosted the saturation and brightness way too much.
+            Apparently, the values I was getting from the generator was from -1 to 1 instead of 0 to 1. With some basic math, I sorted it out.
+            <br />
+            <br />
+            aaannd. . .
+        </p>
+
+        <table id="image-display">
+            <tr>
+                <td><img src="./images/eyegan/rgb color normal/eyes_rgb4.gif" alt="" style="width: 100%; max-width: 400px"></td>
+                <td><img src="./images/eyegan/rgb color normal/eyes_rgb5.gif" alt="" style="width: 100%; max-width: 400px"></td>
+                <td><img src="./images/eyegan/rgb color normal/eye_rgb6.gif" alt="" style="width: 100%; max-width: 400px"></td>
+            </tr>
+        </table>
+        <p id="caption">Its ALIVE!</p>
+
+        <p>
+            Boom. Full color eyes.
+            <br>
+            Sure, it could use a little bit of work, say a bit more training time, but you can really start to see the eye part of it.
+            <br><br>
+        </p>
+
+        <table id="image-display" style="width:20%;">
+            <tr>
+                <td><img src="./images/eyegan/rgb color normal/result.png" alt="" style="width: 100%; max-width: 400px"></td>
+            </tr>
+        </table>
+        <p id="caption">Result Image</p>
+        <h2>Conclusion</h2>
+        <p>
+            A lot of cool stuff can be generated with GANs. This is nowhere near the state-of-the art tech that
+            researchers are working on, but certainly is interesting to see what a basic set of neural networks can do. More complex
+            models like NVIDIA's StyleGAN2, BigGan, and StyleALAE can generate very high fidelity images that are almost indistinguishable from reality, 
+            which is pretty cool considering this was invented in 2014.
+        </p>
+
+    </div>
+
+</body>
+</html>
