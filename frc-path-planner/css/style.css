@@ -1,0 +1,511 @@
+body
+{
+    background-color: #1A1A1B;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+    color: white;
+}
+.canvas 
+{
+    height: 74%;
+    width: 75%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    overflow: hidden;
+    padding-top: 20px;
+    left: 0;
+}
+
+.sidebar 
+{
+    height: 100%;
+    width: 20%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    overflow: hidden;
+    padding-top: 20px;
+    padding: 25px;
+    right: 0;
+    background-color: rgb(30, 31, 32);
+}
+
+.centered 
+{
+    position: relative;
+    top: 3%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    text-align: center;
+    padding: 5px;
+}
+
+.left 
+{
+    position: relative;
+    top: 3%;
+    left: 50%;
+    transform: translate(-97%, 0%);
+    text-align: left;
+    padding-left: 60px;
+    background-color: rgb(42, 53, 66);
+    border-radius: 10px;
+    width: 50%;
+}
+
+.paths .centered
+{
+    font-weight: 100;
+}
+
+.settings .centered
+{
+    font-weight: 100;
+}
+
+.settings
+{
+    width: 100%;
+}
+
+.code .left
+{
+    font-weight: 100;
+}
+.header .centered
+{
+    font-size: 30px;
+    white-space: nowrap;
+}
+
+
+.title
+{
+    font-weight: 900;
+}
+
+.subtext
+{
+    font-weight: 500;
+    color: #c5c6c7;
+}
+::-webkit-scrollbar 
+{
+    background-color: #00000033;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb
+{
+    background-color: #646472;
+    border-radius: 10px;
+}
+.addbutton
+{
+    right: 3%;
+    bottom: 37%;
+    background-color: #2bfc63;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    height: 2em;
+    width: 2em;
+    border-radius: 20%;
+    box-shadow: 0px 5px #2e3033;
+    position: fixed;
+        transition:0.05s;
+
+}
+
+.addbutton:hover
+{
+    background-color: #19ca48;
+}
+
+.remove
+{
+    transform: translate(1100%, -440%);
+    position: relative;
+    background-color: #f54433;
+    border: none;
+    color: white;
+    text-align: right;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 10px;
+    height: 2em;
+    width: 2em;
+    border-radius: 20%;
+    box-shadow: 0px 5px #2e3033;
+    transition:0.05s;
+}
+.remove:hover
+{
+    background-color: #c92d1f;
+}
+.remove i
+{
+    position: fixed;
+    left: 27%;
+    bottom: 25%;
+    top: 25%;
+}
+
+.resetfield
+{
+    position: absolute;
+    background-color: #2e3033;
+    right:2%;
+    bottom: 18%;
+    border: none;
+    color: white;
+    text-align: right;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    height: 1.4em;
+    width: 1.4em;
+    border-radius: 20%;
+    z-index: -10;
+}
+
+.resetfield i
+{
+    position: absolute;
+    right: 27%;
+    top: 16%;
+    text-align: center;
+}
+
+.fileinput
+{
+    background-color: #1a1a1b;
+    width: 100%;
+    height: 2em;
+    border-radius: 10px;
+}
+
+.fileinput #file
+{
+    position: absolute;
+}
+button:focus {outline:0;}
+
+#file + label 
+{
+    position: absolute;
+    left: 2%;
+    top: -12%;
+    margin-top: 10px;
+    padding: 5px;
+    width: 95%;
+    right:1000%;
+    text-align: left;
+    font-size: 1.25em;
+    font-weight: 100;
+    font-style: normal;
+    color: white;
+    display: inline-block;
+    transition: 0.3s;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#file:focus + label,
+#file + label:hover {
+    font-weight: 300;
+    font-style: italic;
+}
+
+.fieldSelect {
+  overflow: hidden;
+  height: 2.5em;
+  padding: 0;
+  margin: 0;
+  margin-bottom: 10px;
+  margin-top: -20px;
+}
+
+.fieldSelect li {
+  float: left;
+  width: 33.33%;
+  height: 2em;
+}
+
+.fieldSelect li button
+{   
+  text-align: center;
+  text-decoration: none;
+  font-size: 17px;
+  background-color: #2e3033;
+  border-radius: 10px;
+  transition: 0.1s;
+  color: white;
+  border: none;
+  margin-left: 11.111%;
+  padding: 10px;
+}
+
+/* Change the color of links on hover */
+.fieldSelect button:hover {
+  background-color: rgb(52, 54, 75);
+  color: white;
+}
+
+li p 
+{
+    position: inline-block;
+    text-align: left;
+    left:150px;
+    background-color: #2e303333;
+    border-radius: 4px;
+    margin-left: -1em;
+    margin-right: 2em;
+    width: 15.7em;
+}
+
+li
+{
+    list-style-type:none;
+}
+
+.pathlist
+{
+    border-radius: 10px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 100;
+    padding: 5px;
+    height: 25.5em;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.pathitem
+{
+    margin-bottom: -80px;
+    padding-left: -1em;
+}
+
+.input
+{
+    position: relative;
+    font-family: 'Roboto', sans-serif;
+    width: 15ch;
+    background-color: #ffffff;
+    border: none;
+    color: black;
+    text-align: left;
+    text-decoration: none;
+    font-size: 20px;
+    border-radius: 10px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 100;
+}
+
+#speedbox
+{
+    position: relative;
+    font-family: 'Roboto', sans-serif;
+    width: 5ch;
+    background-color: #ffffff;
+    border: none;
+    color: black;
+    text-align: left;
+    text-decoration: none;
+    font-size: 20px;
+    border-radius: 10px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 100;
+}
+#widthbox
+{
+    position: relative;
+    font-family: 'Roboto', sans-serif;
+    width: 5ch;
+    background-color: #ffffff;
+    border: none;
+    color: black;
+    text-align: left;
+    text-decoration: none;
+    font-size: 20px;
+    border-radius: 10px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 100;
+}
+
+
+p
+{
+    font-size: 20px;
+}
+
+.settings .left
+{
+    position: relative;
+    top: 3%;
+    left: 100%;
+    transform: translate(-97%, 0%);
+    text-align: left;
+    padding-left: 60px;
+    background-color: rgb(42, 53, 66, 0);
+    border-radius: 10px;
+    font-weight: 100;
+    width: 100%;
+}
+
+.pathspeed
+{
+    font-weight: 100;
+    position: relative;
+    padding: 0;
+    margin: 0;
+    top:-2.3em;
+    left:15ch;
+}
+.pathtitle
+{
+    background-color: rgba(30, 31, 32, 0);
+    padding-bottom: 0.5em;
+    margin-top: -0.5em;
+    font-weight: 100;
+}
+.pathtitle .pathspeed
+{
+    font-weight: 100;
+    background-color: rgba(30, 31, 32, 0);
+}
+.pathtitle .pathname
+{
+    font-weight: 100;
+    background-color: rgba(30, 31, 32, 0);
+}
+.code
+{
+    z-index: 100;
+    background-color: #1E1F20;
+    text-align: left;
+    height: 30em;
+}
+
+.codebox
+{
+    font-family: 'Source Code Pro', monospace;
+    border-radius: 10px;
+    padding-left: 4em;
+    font-size: 10px;
+    font-weight: 200;
+    line-height: 1;
+    width: 74.5%;
+    background-color: #1a1a1b;
+    height: 13.5em;
+    overflow-y: scroll;
+}
+.code .addbutton
+{
+    position: absolute;
+    right: -46%;
+    bottom: 5%;
+}
+.codebox h3
+{
+    height: 1em;
+}
+
+.codebox .method
+{
+    color: #cde38b;
+}
+.codebox .comment
+{
+    color:#6a993e;
+}
+
+.codebox .new
+{
+    color: #c586c0;
+}
+
+.codebox .number
+{
+    color: #b6daa4;
+}
+
+.codebox .boolean
+{
+    color: #569cd6;
+}
+
+.codebox .curve
+{
+    color: #c2d1cf;
+}
+
+.codebox .variable
+{
+    color: #99dfff;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  left: 50%;
+  height: 28.3px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #2bfc63;
+  -webkit-transition: .2s;
+  transition: .2s;
+  box-shadow: 0 5px #2e3033;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 21.6px;
+  width: 21.6px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .2s;
+  transition: .2s;
+}
+
+input:checked + .slider {
+  background-color: #2bfc63;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(21.6px);
+  -ms-transform: translateX(21.6px);
+  transform: translateX(21.6px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
