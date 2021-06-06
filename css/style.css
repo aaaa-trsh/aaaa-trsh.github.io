@@ -85,7 +85,10 @@ mark {
     margin: 0px;
 }
 
-
+#about-container {
+    width:60vw;
+    margin: 0 auto;
+}
 
 @media (max-aspect-ratio: 870/710) {
     #header {
@@ -146,16 +149,27 @@ mark {
     }
 }
 
+h1 {
+    font-weight: 500;
+    margin: 1em auto 1em auto;
+    text-align: left;
+}
+
+p {
+    text-align: left;
+    font-size: 1.4em;
+    margin: 1em auto 1em auto;
+}
 #project-header {
     font-weight: 500;
-    width: 80vw;
+    width: 60vw;
     margin: 1em auto 1em auto;
     text-align: left;
 }
 
 #project-header-mini {
     font-weight: 500;
-    width: 80vw;
+    width: 60vw;
     margin: 1em auto 1em auto;
     height: 0.2em;
     text-align: center;
@@ -233,23 +247,22 @@ mark {
 }
 
 #project-grid {
-    display: inline-grid;
+    display: grid;
     margin: 0 auto;
     padding-top: 1em;
-    width: 90vw;
+    width: 60vw;
     justify-content: center;
     flex-wrap: wrap;
-    grid-template-columns: repeat(auto-fill, 40em);
+    grid-template-columns: repeat(auto-fit, minmax(32em, 1fr));
 }
 
 .project-card {
-    display: inline-grid;
+    display: block;
     text-align: center;
     align-self: center;
-    margin-bottom: 1em;
+    margin: .1em;
     transition: ease-in-out 0.1s;
     opacity: 0.9;
-    margin: 0 1em 1em 1em;
     background-color: rgba(0, 0, 0, 0.3);
 }
 
