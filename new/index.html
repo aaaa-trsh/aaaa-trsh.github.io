@@ -20,7 +20,7 @@
                 update();
             };
             
-            const cellSize = 16;//B3/S123
+            var cellSize = -1;//B3/S123
             const survive = [1, 2, 3, 4, 5, 8];
             const birth = [3];
 
@@ -34,6 +34,7 @@
             function resizeCanvas() {
                 canvas.width  = window.innerWidth;
                 canvas.height = window.innerHeight;
+                cellSize = Math.min(30000/Math.max(window.innerWidth, window.innerHeight), 20);
                 scaleMap(Math.ceil(canvas.width/cellSize), Math.ceil(canvas.height/cellSize));
             }
             function rgbToHex(r, g, b) {
@@ -96,7 +97,7 @@
                         
                         //map[y][x] = map[y][x] > 0 ? map[y][x]-0.05 : (map[y][x] > 1 ? map[y][x]-0.3 : map[y][x])
 
-                        if (Math.random() > 0.9999){ map[y][x] = 0.1; }
+                        if (Math.random() > 0.9999){ map[y][x] = 2; }
 
                         
                         //ctx.fillStyle = map[y][x] == 0 ? "black" : (map[y][x] > 1 ? "white" : "#212121");
@@ -133,7 +134,6 @@
 
             function scaleMap(newSizeX, newSizeY) {
                 map = Array.from(Array(newSizeY), () => new Array(newSizeX))
-
                 randomize(true)
                 //map = Array.from(Array(newSizeY), () => new Array(newSizeX))
                 //randomize();
