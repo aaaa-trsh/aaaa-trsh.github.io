@@ -11,28 +11,22 @@
         <canvas id="canvas"></canvas>
         <script>
             const canvas = document.getElementById("canvas")
-            const ctx = canvas.getContext('2d', { alpha: false });
+            const ctx = canvas.getContext('2d');
+            
 
-            var scale = new Image();
-            scale.src = "./scale-inferno.png";
-            scale.setAttribute('crossOrigin', '');
-
-            const scaleCtx = document.createElement("CANVAS").getContext('2d')
-            scale.onload = function() {
+            window.onload = function() {
                 window.addEventListener('resize', resizeCanvas);
                 resizeCanvas();
-                scaleCtx.drawImage(scale, 0, 0);
-
                 update();
             };
             
-            const cellSize = 8;//B3/S123
-            const survive = [1, 2, 3, 4];
+            const cellSize = 16;//B3/S123
+            const survive = [1, 2, 3, 4, 5, 8];
             const birth = [3];
 
-            var darkTone = "#1E0B46"//"#00000000"
-            var midTone = "#ffffff"//"#6F186D" //"#073d1c"
-            var lightTone = "#FBB118" //"#06a142"
+            var darkTone = "#25294d"//"#00000000"
+            var midTone = "#239989"//"#6F186D" //"#073d1c"
+            var lightTone = "#FDE725" //"#06a142"
                                 
             var map = Array.from(Array(2), () => new Array(4));
             var prevMap;
@@ -42,7 +36,11 @@
                 canvas.height = window.innerHeight;
                 scaleMap(Math.ceil(canvas.width/cellSize), Math.ceil(canvas.height/cellSize));
             }
-            
+            function rgbToHex(r, g, b) {
+                if (r > 255 || g > 255 || b > 255)
+                    throw "Invalid color component";
+                return ((r << 16) | (g << 8) | b).toString(16);
+            }
             function lerpColor(a, b, amount) { 
                 var ah = parseInt(a.replace(/#/g, ''), 16),
                     ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
@@ -55,20 +53,9 @@
                 return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
             }
             
-            function componentToHex(c) {
-                var hex = c.toString(16);
-                return hex.length == 1 ? "0" + hex : hex;
-            }
-
-            function rgbToHex(r, g, b) {
-                return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
-            }
-
-            function sampleScale(x) {
-                x = Math.round(Math.min(Math.max(x, 0.01), 0.99) * 100)
-                var imData = scaleCtx.getImageData(x, 0, 1, 1).data;
-                //var str = rgbToHex(imData[0], imData[1], imData[2])
-                return [imData[0], imData[1], imData[2]]
+            function percentageToColor(percentage) {
+                if (percentage > 0.5) { return lerpColor(midTone, lightTone, (percentage-0.5)*2); }
+                else { return lerpColor(darkTone, midTone, percentage*2); }
             }
 
             function randomColor() {
@@ -81,6 +68,7 @@
             function cellularAutomata() {
                 //var newMap = map
                 //var prevMap = JSON.parse(JSON.stringify(map));
+                
                 var prevMap = map.map(function(arr) {
                     return arr.slice();
                 });
@@ -88,7 +76,7 @@
                 {
                     for (var x = 0; x < map[y].length; x++)
                     {
-                        var score = getScore(x-1, y+1)+getScore(x, y+1)+getScore(x+1, y+1)+getScore(x-1, y)+getScore(x+1, y)+getScore(x-1, y-1)+getScore(x, y-1)+getScore(x+1, y-1);
+                        score = getScore(x-1, y+1)+getScore(x, y+1)+getScore(x+1, y+1)+getScore(x-1, y)+getScore(x+1, y)+getScore(x-1, y-1)+getScore(x, y-1)+getScore(x+1, y-1);
                         //score = score.toString()
                         if (birth.includes(score)) {
                             map[y][x] = 1;
@@ -101,8 +89,8 @@
                         if (prevMap[y][x] == 0 && map[y][x] > 0 ) {
                             map[y][x] = 2;
                         }
-                        //if (map[y][x] > 0.2 && map[y][x] < 1 && prevMap[y][x] > 0 && prevMap[y][x] < 1) {
-                        //    map[y][x] -= 0.1;
+                        //if (map[y][x] > 0 && map[y][x] < 1 && prevMap[y][x] > 0 && prevMap[y][x] < 1) {
+                        //    map[y][x] -= 0.01;
                         //}
 
                         
@@ -113,30 +101,42 @@
                         
                         //ctx.fillStyle = map[y][x] == 0 ? "black" : (map[y][x] > 1 ? "white" : "#212121");
                         //ctx.fillStyle = map[y][x] == 0 ? "black" : (map[y][x] > 1 ? lerpColor(midTone, lightTone, (map[y][x]-1)): lerpColor(darkTone,midTone, map[y][x]));
-                        var celCol = sampleScale(map[y][x]/2)
-                        ctx.fillStyle = `rgba(${celCol[0]}, ${celCol[1]}, ${celCol[2]})`
-                        ctx.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
+                        if (map[y][x] != 0) {
+                            ctx.fillStyle = percentageToColor(map[y][x]/2)
+                            ctx.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
+                        }else { 
+                            ctx.fillStyle = "black"
+                            ctx.globalAlpha = 0.1;
+                            ctx.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
+                            ctx.globalAlpha = 1.0;
+                            //ctx.filter = 'blur(4px)';
+                            //ctx.fillStyle =  percentageToColor(map[y][x]/2)
+                            //ctx.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
+                        }
                     }
                 }
                 return map
             }
 
-            function randomize() {
+            function randomize(on=false) {
                 noise.seed(Math.random())
                 for (var y = 0; y < map.length; y++)
                 {
                     for (var x = 0; x < map[0].length; x++)
                     {
-                        if ((noise.simplex2(x/50, y/50)+1)/2 > 0.1) {
-                            map[y][x] = 0;
-                        }
+                        if ((noise.simplex2(x/20, y/20)+1)/2 < 0.1) {
+                            map[y][x] = 1;
+                        }else{ map[y][x] = 0; }
                     }
                 }
             }
 
             function scaleMap(newSizeX, newSizeY) {
-                map = Array.from(Array(newSizeY), () => new Array(newSizeX).fill(1))
-                randomize();
+                map = Array.from(Array(newSizeY), () => new Array(newSizeX))
+
+                randomize(true)
+                //map = Array.from(Array(newSizeY), () => new Array(newSizeX))
+                //randomize();
             }
 
             var i = 0;
@@ -151,9 +151,9 @@
                     randomize()
                     i = 0;
                 }
-                setInterval(()=>{
+                //setInterval(()=>{
                     window.requestAnimationFrame(update);
-                }, 1000/20);
+                //}, 1000/20);
             }
         </script>
     </body>
