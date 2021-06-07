@@ -2,183 +2,43 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Cool cell stuff</title>
+    <title>keith b's funhouse</title>
     <link rel="stylesheet" href="./style.css">
     <script src="perlin.js"></script>
+
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@200;300;400;500;700&display=swap" rel="stylesheet">
 </head>
     <body>
         <canvas id="canvas"></canvas>
         <div id="midbit">
-            <h1>keith bartlett</h1>
-            <h2>projects &nbsp; about me &nbsp; home &nbsp; contact me</h2>
+            <h4 id="bg-info"></h4>
+            <h1 id="hero-title">keith bartlett</h1>
+            <h2 id="navbar">projects &nbsp; about me &nbsp; contact</h2>
         </div>
+
+        <script src="./backgrounds/bg-faces.js"></script>
         <script>
-            const canvas = document.getElementById("canvas")
-            const ctx = canvas.getContext('2d');
-            
-            window.onload = function() {
-                for (var i = 0; i < colorSchemes.length; i++) {
-                    var gradient = []
-                    for (var k = 0; k < 100; k++){ gradient.push(percentageToColor(k/100)); }
-                    preloadedColorSchemes.push(gradient)
-                    curScheme+=1
-                }
-                window.addEventListener('resize', resizeCanvas);
-                resizeCanvas();
-                update();
-                ctx.fillStyle = "black"
-                ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
-            };
-            
-            //window.onclick = function() {
-            //    //randomize()
-            //    i = (resetTime-blurTime)
-            //}
-            var cellSize = -1;
-            const survive = [1, 2, 3, 4, 5, 6, 7, 8];
-            const birth = [3, 7, 8];
-            const resetTime = 50;
-            const blurTime = 7;
-            const fadeTime = 5;
-
-            const colorSchemes = [["#0c0d1a", "#239989", "#FDE725"], // viridis
-                                ["#0A0F0D", "#2A1E5C", "#EE4266"], // pink
-                                ["#000022", "#40612d", "#61FF7E"], // greener
-                                ["#000022", "#001242", "#0094C6"]]; // ocean]
-            
-            var preloadedColorSchemes = [];
-
-            var curScheme = 0
-            var map = Array.from(Array(2), () => new Array(4));
-            var prevMap;
-
-            function resizeCanvas() {
-                canvas.width  = window.innerWidth;
-                canvas.height = window.innerHeight;
-                cellSize = Math.max(window.innerWidth, window.innerHeight)/200;
-                scaleMap(Math.ceil(canvas.width/cellSize), Math.ceil(canvas.height/cellSize));
-            }
-
-            function lerpColor(a, b, amount) { 
-                var ah = parseInt(a.replace(/#/g, ''), 16),
-                    ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
-                    bh = parseInt(b.replace(/#/g, ''), 16),
-                    br = bh >> 16, bg = bh >> 8 & 0xff, bb = bh & 0xff,
-                    rr = ar + amount * (br - ar),
-                    rg = ag + amount * (bg - ag),
-                    rb = ab + amount * (bb - ab);
-
-                return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
-            }
-
-            function percentageToColor(percentage) {
-                percentage %= 1
-                if (percentage > 0.5) { return lerpColor(colorSchemes[curScheme][1], colorSchemes[curScheme][2], (percentage-0.5)*2); }
-                else { return lerpColor(colorSchemes[curScheme][0], colorSchemes[curScheme][1], percentage*2); }
-            }
-
-            function percentageToPreloadedColorScheme(percentage) {
-                percentage = Math.round((percentage % 1)*100)
-                return preloadedColorSchemes[curScheme][percentage]
-            }
-
-            function getScore(x, y) {
-                return x < map[0].length && x > -1 && y < map.length && y > -1 ? Math.sign(map[y][x]) : 0
-            }
-
-            function drawRow(y, prevMap, prefade) {
-                for (var x = 0; x < map[y].length; x++)
-                {
-                    score = getScore(x-1, y+1)+getScore(x, y+1)+getScore(x+1, y+1)+getScore(x-1, y)+getScore(x+1, y)+getScore(x-1, y-1)+getScore(x, y-1)+getScore(x+1, y-1);
-                    if (birth.includes(score)) {
-                        map[y][x] += 0.05;
-                    }else if (!survive.includes(score)) {
-                        map[y][x] = 0;
-                    }
-                    if (map[y][x] > 0.3) {
-                        map[y][x] -= 0.15
-                    }
-                    if (prevMap[y][x] == 0 && map[y][x] > 0) {
-                        map[y][x] = 2;
-                    }
-                    map[y][x] = map[y][x] > 0 ? map[y][x]-0.01 : (map[y][x] > 1 ? map[y][x]-0.1 : map[y][x])
-
-                    if (Math.random() > 0.9999){ map[y][x] = 2; }
-                    
-                    if (map[y][x] != 0) {
-                        if (prefade > 0) {
-                            ctx.globalAlpha = 0.3;
-                            ctx.fillStyle = percentageToPreloadedColorScheme(map[y][x]/2)
-                            ctx.fillRect(x*cellSize - prefade, y*cellSize - prefade, cellSize + prefade*2, cellSize + prefade*2);
-                            ctx.globalAlpha = 1.0;
-                        } else {
-                            ctx.fillStyle = percentageToPreloadedColorScheme(map[y][x]/2)
-                            ctx.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
-                        }
-                    }
-                }
-            }
-            function cellularAutomata(fade=false, prefade) {
-                //var newMap = map
-                //var prevMap = JSON.parse(JSON.stringify(map));
-                prefade *= 2
-                if (fade) {
-                    ctx.globalAlpha = 0.1;
-                    ctx.fillStyle = "black"
-                    ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
-                    ctx.globalAlpha = 1.0;
-                }
-                var prevMap = map.map(function(arr) {
-                    return arr.slice();
+            window.addEventListener("load", init, true)
+            function init() {
+                document.getElementById("hero-title");
+                document.addEventListener('mousemove', e => {
+                    console.log(e)
                 });
-                for (var y = 0; y < map.length; y++)
-                {
-                    drawRow(y, prevMap, prefade);
-                }
-                return map
-            }
-
-            function randomize() {
-                noise.seed(Math.random())
-                for (var y = 0; y < map.length; y++)
-                {
-                    for (var x = 0; x < map[0].length; x++)
-                    {
-                        if ((noise.simplex2(x/20, y/20)+1)/2 < 0.1) {
-                            map[y][x] = 1;
-                        }else{ map[y][x] = 0; }
-                    }
-                }
-                curScheme++
-                curScheme = curScheme%colorSchemes.length
-            }
-
-            function scaleMap(newSizeX, newSizeY) {
-                map = Array.from(Array(newSizeY), () => new Array(newSizeX))
-                ctx.fillStyle = "black"
-                ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
-                randomize()
-            }
-
-            var i = 0;
-            function update() {
-                //var t0 = performance.now()
-                //map = cellularAutomata(i < fadeTime, i - (resetTime-blurTime));
-                map = cellularAutomata(i < (blurTime), i - (resetTime-blurTime));
-                i++;
-                //var t1 = performance.now()
-                //console.log("Call to cellularAutomata took " + (t1 - t0) + " milliseconds.")
-                
-                if (i == resetTime) {
-                    randomize()
-                    i = 0;
-                }
-                //setInterval(()=>{
-                window.requestAnimationFrame(update);
-                //}, 1000);
             }
         </script>
+        <!--
+            bg ideas:
+              face noiser
+            ✓ cellular automata
+              marching cubes war
+              pixel war
+              boids
+              pointcloud vis
+              2d fluid sim
+              lidar/raytracing + mapgen
+              wfc platformer env (build platformer, waits, fades into space bg, makes another)
+              crawler
+        -->
     </body>
 </html>

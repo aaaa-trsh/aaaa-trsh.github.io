@@ -24,10 +24,16 @@ html, body {
     text-shadow: 5px 5px #FDE725, 10px 10px #EE4266, 0 0 40px #fff;
     font-size: 100px;
     margin: 0;
+    line-height: 0.8em;
 }
 #midbit h2 {
     text-shadow: -1px -1px 0 #EE4266, 1px -1px 0 #EE4266, -1px 1px 0 #EE4266, 1px 1px 0 #EE4266, 0 0 20px #fff;
     font-style: italic;
+    color: #fff;
+}
+#midbit h4 {
+    margin: 0;
+    font-weight: 500;
     color: #fff;
 }
 ::selection { background: rgba(255, 255, 255, 0.2); }
