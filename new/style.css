@@ -2,9 +2,32 @@ html, body {
     margin: 0 !important;
     padding: 0 !important;
     overflow: hidden;
+    color: white;
+    font-family: 'IBM Plex Mono', monospace;
 }
 
 #canvas {
     width: 100%;
     margin: 0;
+    position: relative;
 }
+
+#midbit {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+#midbit h1 {
+    text-shadow: 5px 5px #FDE725, 10px 10px #EE4266, 0 0 40px #fff;
+    font-size: 100px;
+    margin: 0;
+}
+#midbit h2 {
+    text-shadow: -1px -1px 0 #EE4266, 1px -1px 0 #EE4266, -1px 1px 0 #EE4266, 1px 1px 0 #EE4266, 0 0 20px #fff;
+    font-style: italic;
+    color: #fff;
+}
+::selection { background: rgba(255, 255, 255, 0.2); }
