@@ -1,6 +1,9 @@
+const infoText = document.getElementById("bg-info");
+document.getElementById("bg-name").innerHTML = "bg: cellular_automata";
+
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext('2d');
-const resetTime = 70;
+const resetTime = 50;
 const blurTime = 7;
 const fadeTime = 5;
 const bgColor = "#0a0a0a";
@@ -8,7 +11,6 @@ const colorSchemes = [[["#0c0d1a", "#239989", "#FDE725"], "yello-green"],
                         [["#0A0F0D", "#2A1E5C", "#EE4266"], "pink razzmatazz"],
                         [["#000022", "#40612d", "#61FF7E"], "gameboy"],
                         [["#000022", "#001242", "#0094C6"], "ocean"]];
-const infoText = document.getElementById("bg-info");
 
 var cellSize = -1;
 var rules = [[[3, 4, 7, 8], [1, 2, 3, 4, 5, 6, 7, 8], "diamonds"], 
@@ -21,7 +23,6 @@ var curRule = 0;
 var map = Array.from(Array(2), () => new Array(4));
 var prevMap;
 
-window.addEventListener("load", init, true)
 function init() {
     for (var i = 0; i < colorSchemes.length; i++) {
         var gradient = []
@@ -36,6 +37,7 @@ function init() {
     ctx.fillStyle = bgColor
     ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
 };
+init();
 
 function resizeCanvas() {
     canvas.width  = window.innerWidth;
@@ -150,7 +152,7 @@ function randomize() {
     }
     curScheme = curScheme%colorSchemes.length
     curRule = curRule%rules.length
-    infoText.textContent = `cellular_automata: '${rules[curRule][2]}' | ${preloadedColorSchemes[curScheme][1]}`
+    infoText.innerHTML = `rule: ${rules[curRule][2]} (b${rules[curRule][0].join("")}/s${rules[curRule][1].join("")}) - color: ${preloadedColorSchemes[curScheme][1]}`
 }
 
 function scaleMap(newSizeX, newSizeY) {

@@ -18,6 +18,7 @@ html, body {
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
+    width: 40%;
 }
 
 #midbit h1 {
@@ -25,15 +26,58 @@ html, body {
     font-size: 100px;
     margin: 0;
     line-height: 0.8em;
+    width: 100%;
+    text-align: right;
+    height: 160px;
 }
-#midbit h2 {
-    text-shadow: -1px -1px 0 #EE4266, 1px -1px 0 #EE4266, -1px 1px 0 #EE4266, 1px 1px 0 #EE4266, 0 0 20px #fff;
-    font-style: italic;
-    color: #fff;
-}
-#midbit h4 {
+
+#navbar {
+    position: absolute;
     margin: 0;
-    font-weight: 500;
-    color: #fff;
+    padding: 0;
+    list-style-type: none;
+    height: 100%;
+    display:flex;
+    flex-flow: column;
+    height: 160px;
+    justify-content: space-between;
 }
+
+#navbar li {
+    text-shadow: -1px -1px 0 #EE4266, 1px -1px 0 #EE4266, -1px 1px 0 #EE4266, 1px 1px 0 #EE4266, 0 0 20px #fff;
+    color: #fff;
+    float: left;
+    text-align: left;
+    list-style-type: none;
+}
+
+#navbar li h2{
+    vertical-align: center;
+    white-space: nowrap;
+    height:100%;
+    margin: 0;
+}
+
+#midbit h4 {
+    font-weight: 100;
+    color: rgba(255, 255, 255, 0.5);
+    width: 100%;
+    height: 1.6em;
+    background-color: #00000086;
+    margin: 0;
+    margin-top: 1em;
+    padding-top: 0.2em;
+    font-style: italic;
+}
+
+#midbit #bg-name {
+    float : left;
+    margin-left: .3em;
+    font-weight: 500;
+}
+#midbit #bg-info {
+    float : right;
+    margin-right: .3em;
+}
+
 ::selection { background: rgba(255, 255, 255, 0.2); }

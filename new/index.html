@@ -12,29 +12,42 @@
     <body>
         <canvas id="canvas"></canvas>
         <div id="midbit">
-            <h4 id="bg-info"></h4>
-            <h1 id="hero-title">keith bartlett</h1>
-            <h2 id="navbar">projects &nbsp; about me &nbsp; contact</h2>
+            <ul id="navbar">
+                <li><h2>projects</h2></li> 
+                <li><h2>about</h2></li> 
+                <li><h2>contact</h2></li>
+            </ul>
+
+            <h1 id="hero-title">keith<br/>bartlett</h1>
+            <h4><span id="bg-name">name</span> </span><span id="bg-info">info</span></h4>
+
         </div>
 
-        <script src="./backgrounds/bg-faces.js"></script>
         <script>
-            window.addEventListener("load", init, true)
-            function init() {
-                document.getElementById("hero-title");
+            window.onload = () => {
+                var script = document.createElement('script');
+                document.body.append(script)
+
+                var bgScripts = [/*"faces", "boids", "war", "pointcloud",*/ "cellular-automata"]
+                script.src = "./backgrounds/bg-"+bgScripts[Math.floor(Math.random()*bgScripts.length)]+".js";
+                var heroTitle = document.getElementById("hero-title");
+                function clamp(v, min, max) {return Math.max(min, Math.min(max, v)); }
+                noise.seed(Math.random())
                 document.addEventListener('mousemove', e => {
-                    console.log(e)
+                    var x = (-e.clientX + window.innerWidth/2)/40
+                    var y = (-e.clientY + window.innerHeight/2)/40
+                    heroTitle.style.textShadow = `${x/2}px ${y/2}px #FDE725, ${x}px ${y}px #EE4266, 0 0 40px #fff`
                 });
             }
         </script>
         <!--
             bg ideas:
-              face noiser
+            *  face noiser
             ✓ cellular automata
-              marching cubes war
+            * marching cubes war
               pixel war
-              boids
-              pointcloud vis
+            * boids
+            * pointcloud vis
               2d fluid sim
               lidar/raytracing + mapgen
               wfc platformer env (build platformer, waits, fades into space bg, makes another)
