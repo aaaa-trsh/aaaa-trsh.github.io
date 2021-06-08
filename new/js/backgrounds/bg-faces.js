@@ -22,8 +22,6 @@ function init() {
 };
 
 async function loadModel() {
-    tf.ENV.set('WEBGL_CPU_FORWARD', false);
-
     decoder = await tf.loadLayersModel('./models/faces/decoder/model.json');
     console.log("Model Loaded");
     init();
@@ -60,7 +58,7 @@ function drawFromRGB_imdata(arr, px, py, fadeAlpha) {
     bigCtx.putImageData(imgData, px, py);
 
     ctx.drawImage(bigCanvas, 0, 0)
-    ctx.filter = `blur(4px) brightness(${Math.round(fadeAlpha*100)}%)`;
+    ctx.filter = `blur(4px) brightness(100%)`//(${Math.round(fadeAlpha*100)}%)`;
 
     delete imgData;
 }
@@ -112,8 +110,8 @@ async function decode(dense, x, y, fadeAlpha) {
 }
 
 function update(fadeAlpha, time, curCellX) {
-    //var t0 = performance.now()
-    time += 0.002
+    var t0 = performance.now()
+    time += 0.001
     curCellX = drawRow(time, curCellX, fadeAlpha);
     
     if (decoder != null) { 
@@ -121,7 +119,8 @@ function update(fadeAlpha, time, curCellX) {
             fadeAlpha += 0.01
         }
     }
-    //var t1 = performance.now()
+    var t1 = performance.now()
     //console.log(t1-t0)
-    setTimeout(()=>{update(fadeAlpha, time, curCellX)})
+    if (t1 - t0 < 300)
+        setTimeout(()=>{update(fadeAlpha, time, curCellX)})
 }

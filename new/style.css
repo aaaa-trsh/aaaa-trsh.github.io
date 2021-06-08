@@ -3,7 +3,23 @@ html, body {
     padding: 0 !important;
     overflow: hidden;
     color: white;
+    background-color: black;
     font-family: 'IBM Plex Mono', monospace;
+}
+
+#bgVideo {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    filter: brightness(30%);
+    animation: 0.5s vidFade;
+}
+
+@keyframes vidFade {
+    0% { filter: brightness(0%); }
+    100% { filter: brightness(30%); }
 }
 
 #canvas {
