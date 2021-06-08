@@ -3,8 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <title>keith b's funhouse</title>
-    <link rel="stylesheet" href="./style.css">
-    <script src="perlin.js"></script>
+    <link rel="stylesheet" href="./style.css?e=2">
+    <script src="./js/perlin.js"></script>
+    <script src="./js/tf.js"></script>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@200;300;400;500;700&display=swap" rel="stylesheet">
@@ -28,8 +29,8 @@
                 var script = document.createElement('script');
                 document.body.append(script)
 
-                var bgScripts = [/*"faces", "boids", "war", "pointcloud",*/ "cellular-automata"]
-                script.src = "./backgrounds/bg-"+bgScripts[Math.floor(Math.random()*bgScripts.length)]+".js";
+                var bgScripts = ["faces", "cellular-automata"/*, "boids", "war", "pointcloud",*/]
+                script.src = "./js/backgrounds/bg-"+bgScripts[Math.floor(Math.random()*bgScripts.length)]+".js";
                 var heroTitle = document.getElementById("hero-title");
                 function clamp(v, min, max) {return Math.max(min, Math.min(max, v)); }
                 noise.seed(Math.random())

@@ -10,11 +10,12 @@ html, body {
     width: 100%;
     margin: 0;
     position: relative;
+    image-rendering: pixelated;
 }
 
 #midbit {
     position: absolute;
-    top: 40%;
+    top: 20%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
@@ -49,10 +50,22 @@ html, body {
     float: left;
     text-align: left;
     list-style-type: none;
+    transition: 0.1s ease;
+}
+
+#navbar li:hover{
+    padding-left: 20px;
+    transform: rotate(2deg);
+    animation: 0.2s blink;
+}
+
+@keyframes blink {
+    0% {opacity: 0.3;}
+    50% {opacity: 1;}
+    100% {opacity: 0.3;}
 }
 
 #navbar li h2{
-    vertical-align: center;
     white-space: nowrap;
     height:100%;
     margin: 0;
