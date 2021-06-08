@@ -42,7 +42,7 @@ init();
 function resizeCanvas() {
     canvas.width  = window.innerWidth;
     canvas.height = window.innerHeight;
-    cellSize = 20000/(window.innerWidth);
+    cellSize = 30000/(window.innerWidth);
     scaleMap(Math.ceil(canvas.width/cellSize), Math.ceil(canvas.height/cellSize));
 }
 
