@@ -28,7 +28,7 @@
             window.onload = () => {
                 var script = document.createElement('script');
                 document.body.append(script)
-                var bgScripts = ["faces2", "cellular-automata"/*, "boids", "war", "pointcloud",*/]
+                var bgScripts = ["flow", "faces-baked", "cellular-automata"]
                 script.src = "./js/backgrounds/bg-"+bgScripts[Math.floor(Math.random()*bgScripts.length)]+".js";
                 var heroTitle = document.getElementById("hero-title");
                 function clamp(v, min, max) {return Math.max(min, Math.min(max, v)); }
@@ -42,7 +42,7 @@
         </script>
         <!--
             bg ideas:
-            *  face noiser
+            ✓ face noiser
             ✓ cellular automata
             * marching cubes war
               pixel war

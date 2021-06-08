@@ -1,5 +1,5 @@
 const infoText = document.getElementById("bg-info");
-document.getElementById("bg-name").innerHTML = "bg: cellular_automata";
+document.getElementById("bg-name").innerHTML = "cellular_automata";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext('2d');
@@ -42,7 +42,7 @@ init();
 function resizeCanvas() {
     canvas.width  = window.innerWidth;
     canvas.height = window.innerHeight;
-    cellSize = 30000/(window.innerWidth);
+    cellSize = 20000/(window.innerWidth);
     scaleMap(Math.ceil(canvas.width/cellSize), Math.ceil(canvas.height/cellSize));
 }
 
@@ -152,7 +152,7 @@ function randomize() {
     }
     curScheme = curScheme%colorSchemes.length
     curRule = curRule%rules.length
-    infoText.innerHTML = `rule: ${rules[curRule][2]} (b${rules[curRule][0].join("")}/s${rules[curRule][1].join("")}) - color: ${preloadedColorSchemes[curScheme][1]}`
+    infoText.innerHTML = `rule: ${rules[curRule][2]} - color: ${preloadedColorSchemes[curScheme][1]}`
 }
 
 function scaleMap(newSizeX, newSizeY) {

@@ -1,7 +1,7 @@
 const infoText = document.getElementById("bg-info");
-document.getElementById("bg-name").innerHTML = "bg: faces-vae";
+document.getElementById("bg-name").innerHTML = "faces";
 
-infoText.innerHTML = "a variational autoencoder i trained on my freshman yearbook controlled by 3d noise";
+infoText.innerHTML = "a neural net trained on my freshman yearbook + noise PCA";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext('2d');
