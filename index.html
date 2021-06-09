@@ -1,116 +1,57 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Keith's Portfolio</title>
-    <link rel="icon" href="./images/icon.png">
-    <link rel="stylesheet" href="css/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>keith b's funhouse</title>
+    <link rel="stylesheet" href="./style.css?e=2">
+    <script src="./js/perlin.js"></script>
+    <script src="./js/tf.js"></script>
+
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@200;300;400;500;700&display=swap" rel="stylesheet">
-
 </head>
     <body>
-        <div id="header">
-            
-            <div id="header__title-container"><h1 id="header__title">keith bartlett</h1></div>
-            <div id="header__subtitle-container"><h3 id="header__subtitle"><i>i make games, control systems, and software experiments</i></h3></div>
-            <!--<div style="font-weight:100; width:80vw; margin:0 auto; text-align:left; padding-top:1em;">
-                <button>[home]</button>
-                <button>[about me]</button>
-                <button>[projects]</button>
-                <button>[contact]</button>
-            </div>-->
-        </div>
-        <div id="app" style="text-align: center;position: relative; width:100vw; margin:0; padding:0px;">
-            <div id="about-container">
-                <h1><span class="underline">about me:&nbsp;</span></h1>
-                <p>
-                I have a background in game development, 
-                but am branching out into different subsections of programming, such as web development, competitive programming, machine learning, and robot software.
-                </p>
-            </div>
+        <video autoplay muted loop id="bgVideo" style="display: none;"><source src="" type="video/mp4"></video>
+        <canvas id="canvas"></canvas>
+        <div id="midbit">
+            <ul id="navbar">
+                <li><h2>projects</h2></li> 
+                <li><h2>about</h2></li> 
+                <li><h2>contact</h2></li>
+            </ul>
 
-            <div id="projects-container" style="margin:0 auto; padding:0; width:100vw;">
-                <div id="project-header-container">
-                    <h1 id="project-header">
-                        <span class="underline">projects:&nbsp;</span>
-                        <a class="project-header__button" v-on:click="filter='other'" v-bind:id="filter=='other'?'selected':''">other <span class="accent"></span></a>
-                        <a class="project-header__button" v-on:click="filter='ml'" v-bind:id="filter=='ml'?'selected':''">ml <span class="accent">/&nbsp;</span></a>
-                        <a class="project-header__button" v-on:click="filter='robotics'" v-bind:id="filter=='robotics'?'selected':''">robotics <span class="accent">/&nbsp;</span></a>
-                        <a class="project-header__button" v-on:click="filter='game'" v-bind:id="filter=='game'?'selected':''">games <span class="accent">/&nbsp;</span></a>
-                        <a class="project-header__button" v-on:click="filter='all'" v-bind:id="filter=='all'?'selected':''">all <span class="accent">/&nbsp;</span></a>
-                    </h1>
-                </div>
-                <div id="project-header-mini-container">
-                    <h1 id="project-header-mini" class="underline">projects:</h1>
-                    <div>
-                        <a class="project-header__button-mini" v-on:click="filter='all'" v-bind:id="filter=='all'?'selected':''">all</a>
-                        <a class="project-header__button-mini" v-on:click="filter='game'" v-bind:id="filter=='game'?'selected':''">games</a>
-                        <a class="project-header__button-mini" v-on:click="filter='robotics'" v-bind:id="filter=='robotics'?'selected':''">robotics</a>
-                        <a class="project-header__button-mini" v-on:click="filter='ml'" v-bind:id="filter=='ml'?'selected':''">ml</a>
-                    </div>
-                </div>
-                <div id="project-grid">
-                    <div class="project-card"><a href=""><img src="images/projects/wfc_labs.png" title="" draggable="false" class="project-card__image"></a> <div class="project-card__text"><h3 class="project-card__title">Wave Function Collapse Labs</h3> <h4 class="project-card__description">Generating a cell based enviornment with Wave Function Collapse and Marching Cubes.</h4></div></div><div class="project-card"><a href="https://noof125.itch.io/rl-snakes"><img src="images/projects/rl_snakes.PNG" title="Auto Snakes on itch.io" draggable="false" class="project-card__image"></a> <div class="project-card__text"><h3 class="project-card__title">Q-Learning Snakes</h3> <h4 class="project-card__description">Using Q-Learning play snake or act as nuisances.</h4></div></div><div class="project-card"><a href="https://jovlett.itch.io/mons"><img src="images/projects/mons.png" title="MONS on itch.io" draggable="false" class="project-card__image"></a> <div class="project-card__text"><h3 class="project-card__title">MONS</h3> <h4 class="project-card__description">A short walk on a 2D mountain with the help of 3 dimensions. [Brackeys Jam 2020.2]</h4></div></div><div class="project-card"><a href=""><img src="images/projects/advanced_frc2020.PNG" title="FRC2021 GitHub" draggable="false" class="project-card__image"></a> <div class="project-card__text"><h3 class="project-card__title">FRC Advanced Drive + Odometry</h3> <h4 class="project-card__description">Robot code with odometry and trajectory planning, based on off-season drivebase.</h4></div></div><div class="project-card"><a href="https://github.com/aaaa-trsh/6644-Offseason-Code"><img src="images/projects/code_frc2021.PNG" title="6644's 2020 Offseason Robot Code" draggable="false" class="project-card__image"></a> <div class="project-card__text"><h3 class="project-card__title">FRC Mockup Robot Design and Code</h3> <h4 class="project-card__description">Offseason robot design for 2020, with accomodating prototype code.</h4></div></div><div class="project-card"><a href="https://github.com/aaaa-trsh/_FRC2020"><img src="images/projects/code_frc2020.PNG" title="6644's 2020 Robot Code" draggable="false" class="project-card__image"></a> <div class="project-card__text"><h3 class="project-card__title">Infinite Recharge Robot Design and Code</h3> <h4 class="project-card__description">Robot design for 2020, with the code we used during the season.</h4></div></div><div class="project-card"><a href="http://www.joathrent.com/frc-path-planner/index.html"><img src="images/projects/path_planner2020.jpg" title="FRC Path Planner" draggable="false" class="project-card__image"></a> <div class="project-card__text"><h3 class="project-card__title">FRC Path Planning and Generation</h3> <h4 class="project-card__description">A path planning app in JavaScript that generates commands for autonomous drive.</h4></div></div><div class="project-card"><a href=""><img src="images/projects/music_rnn.jpg" title="" draggable="false" class="project-card__image"></a> <div class="project-card__text"><h3 class="project-card__title">Generating Bach and Mozart with RNNs</h3> <h4 class="project-card__description">An RNN that generates music in the style baroque/classical music.</h4></div></div><div class="project-card"><a href="./article?id=8"><img src="images/projects/faceapp.jpg" title="VAE Article and Face Tool" draggable="false" class="project-card__image"></a> <div class="project-card__text"><h3 class="project-card__title">VAE Yearbook</h3> <h4 class="project-card__description">An autoencoder that can blend facial features, based on people from my school.</h4></div></div><div class="project-card"><a href="./article?id=9"><img src="images/projects/eyegan.jpg" title="GAN Article" draggable="false" class="project-card__image"></a> <div class="project-card__text"><h3 class="project-card__title">Eye Generation with GANs</h3> <h4 class="project-card__description">A GAN that can generate pictures of eyes.</h4></div></div><div class="project-card"><a href=""><img src="images/projects/tictactoe.jpg" title="" draggable="false" class="project-card__image"></a> <div class="project-card__text"><h3 class="project-card__title">Q-Learning Tic Tac Toe</h3> <h4 class="project-card__description">Using Q Learning to play tic tac toe.</h4></div></div><div class="project-card"><a href="https://noof125.itch.io/wormholes-n-chill"><img src="images/projects/wormholesnchill.PNG" title="Wormholes n' Chill on itch.io" draggable="false" class="project-card__image"></a> <div class="project-card__text"><h3 class="project-card__title">WORMHOLES n' Chill</h3> <h4 class="project-card__description">Ever want to chill n' drop some wormholes? [Brackeys Jam 2020.1]</h4></div></div><div class="project-card"><a href="https://play.google.com/store/apps/details?id=com.JoathrentStudios.DustAndDiamonds"><img src="images/projects/dustanddiamonds.jpg" title="Dust and Diamonds on Google Play" draggable="false" class="project-card__image"></a> <div class="project-card__text"><h3 class="project-card__title">Dust and Diamonds</h3> <h4 class="project-card__description">A match 3 idle game about mining rocks and matching gems!</h4></div></div><div class="project-card"><a href="https://noof125.itch.io/groupthink"><img src="images/projects/groupthink.PNG" title="groupThink on itch.io" draggable="false" class="project-card__image"></a> <div class="project-card__text"><h3 class="project-card__title">groupThink</h3> <h4 class="project-card__description">Escape a dangerous mob with the power of true sight. [Global Game Jam Next 2019]</h4></div></div><div class="project-card"><a href="https://globalgamejam.org/2019/games/how-our-mission-ended"><img src="images/projects/howourmissionended.PNG" title="How Our Mission Ended on GlobalGameJam.org" draggable="false" class="project-card__image"></a> <div class="project-card__text"><h3 class="project-card__title">How Our Mission Ended</h3> <h4 class="project-card__description">A tricky game about interplanetary interactions [Global Game Jam 2019]</h4></div></div><div class="project-card"><a href="https://play.google.com/store/apps/details?id=com.JoathrentStudios.GridGunner"><img src="images/projects/gridgunner.PNG" title="Grid Gunner on Google Play" draggable="false" class="project-card__image"></a> <div class="project-card__text"><h3 class="project-card__title">Grid Gunner</h3> <h4 class="project-card__description">A frantic, turn-based bullet hell where you infiltrate an enemy compound.</h4></div></div>
-
-                </div>
-            </div>
+            <h1 id="hero-title">keith<br/>bartlett</h1>
+            <h4><span id="bg-name">name</span> </span><span id="bg-info">info</span></h4>
         </div>
+
         <script>
-            // Load projects from JSON
-            var projects = (function () {
-                var json = null;
-                $.ajax({
-                    'async': false,
-                    'global': false,
-                    'url': "./projects.json",
-                    'dataType': "json",
-                    'success': function (data) {
-                        json = data;
-                    }
+            window.onload = () => {
+                var script = document.createElement('script');
+                document.body.append(script)
+                var bgScripts = ["flow", "faces-baked", "cellular-automata"]
+                script.src = "./js/backgrounds/bg-"+bgScripts[Math.floor(Math.random()*bgScripts.length)]+".js";
+                var heroTitle = document.getElementById("hero-title");
+                function clamp(v, min, max) {return Math.max(min, Math.min(max, v)); }
+                noise.seed(Math.random())
+                document.addEventListener('mousemove', e => {
+                    var x = (-e.clientX + window.innerWidth/2)/40
+                    var y = (-e.clientY + window.innerHeight/2)/40
+                    heroTitle.style.textShadow = `${x/2}px ${y/2}px #FDE725, ${x}px ${y}px #EE4266, 0 0 40px #fff`
                 });
-                return json;
-            })();
-            Vue.component('project-card', {
-                props: ['project', 'id'],
-                template:
-                        `
-                        <div class="project-card">
-                            <a v-bind:href="project.link"><img v-bind:src="project.image" v-bind:title="project.title" class="project-card__image" draggable="false"></a>
-                            <div class="project-card__text">  
-                                <h3 class="project-card__title">{{id}}</h3>
-                                <h4 class="project-card__description">{{project.description}}</h4>
-                            </div>
-                        </div>
-                        `
-            })
-            var app = new Vue({
-                el: '#app',
-                data: {
-                    projects: projects,
-                    filter: "all",
-                },
-                computed: {
-                    filteredProjects: function () {
-                        if (this.filter == "all") { return projects; }
-                        else {
-                            result = {}
-                            Object.keys(this.projects).forEach(key => {
-                                const project = this.projects[key];
-                                if (project.tag == this.filter) {
-                                    result[key] = project
-                                }
-                            });
-
-                            return result
-                        }
-                    }
-                },
-                methods: {
-                }
-            })
+            }
         </script>
+        <!--
+            bg ideas:
+            ✓ face noiser
+            ✓ cellular automata
+            * marching cubes war
+              pixel war
+            * boids
+            * pointcloud vis
+              2d fluid sim
+              lidar/raytracing + mapgen
+              wfc platformer env (build platformer, waits, fades into space bg, makes another)
+              crawler
+        -->
     </body>
 </html>
