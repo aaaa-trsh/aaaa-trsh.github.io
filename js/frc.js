@@ -69,7 +69,7 @@ window.addEventListener('mousedown', e => {
         curMode.point = points[nearest[0]];
 
         if (nearest[1] < 200) {
-            if (e.button == 1)
+            if (e.button == 2)
                 curMode.fillet = true;
             else if (e.button == 0)
                 curMode.transform = true;
