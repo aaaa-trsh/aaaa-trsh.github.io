@@ -131,9 +131,10 @@ function midpoint(x1, y1, x2, y2) { return [(x1 + x2)/2, (y1 + y2)/2] }
 
 function intersectLineSegments(x1, y1, x2, y2, x3, y3, x4, y4) {
     var t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4))
-    var u = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4))
+    //var u = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4))
     return [x1 + (t * (x2 - x1)), y1 + (t * (y2 - y1))]
 }
+
 function isBetween(x1, x2, x2, y2, tx, ty) {
     var cross = (ty - y1) * (x2 - x1) - (tx - x1) * (y2 - y1);
     if (Math.abs(cross) > 0.1) { return false; }
