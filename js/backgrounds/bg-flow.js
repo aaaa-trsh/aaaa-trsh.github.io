@@ -1,6 +1,6 @@
 const infoText = document.getElementById("bg-info");
 document.getElementById("bg-name").innerHTML = "flow";
-infoText.innerHTML = "a colored noise field";
+infoText.innerHTML = "a colored noise field - and your cursor is a particle repulsor!";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext('2d');
@@ -11,9 +11,9 @@ var mx = 0;
 var my = 0;
 var ma = 0;
 var particles = [];
-var cellSpeed = 16;
-var cellWidth = 3;
-var noiseSize = 2;
+var cellSpeed = 5;
+var cellWidth = 4;
+var noiseSize = 200;
 
 window.mobileCheck = function() {
     let check = false;
@@ -23,17 +23,17 @@ window.mobileCheck = function() {
 
 function init() {
     window.addEventListener('resize', resizeCanvas);
-    window.addEventListener('mousemove', (e) => { mx = -e.clientX + window.innerWidth/2; my = -e.clientY + window.innerHeight/2; });
+    window.addEventListener('mousemove', (e) => { mx = -e.clientX + canvas.width/2; my = -e.clientY + canvas.height/2; });
     resizeCanvas();
 
     noise.seed(Math.random());
     var count = 2000;
     if (window.mobileCheck()) {
         count = 500;
-        cellSpeed = 12;
+        cellSpeed = 4;
         cellWidth = 6;
     }
-    for (var i = 0; i < count; i++) { particles.push([Math.round(Math.random() * window.innerWidth), Math.round(Math.random() * window.innerHeight)]); }
+    for (var i = 0; i < count; i++) { particles.push([Math.round(Math.random() * canvas.width), Math.round(Math.random() * canvas.height)]); }
 
     update();
 };
@@ -48,22 +48,20 @@ function clamp(number, min, max) {
 }
 
 function resizeCanvas() {
-    canvas.width  = window.innerWidth;
+    canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    cellSize = 200000/(window.innerWidth);
 }
 
-function drawPoint(x, y, a, s) { 
+function drawPoint(x, y, a, w, s) { 
     ctx.translate(x, y);
     ctx.rotate(a);
-    ctx.fillRect(-(s/2), -(s/2), cellSpeed, s)
+    ctx.fillRect(-(s/2), -(s/2), w, s)
     
     ctx.globalAlpha = .005
     var bloomSize = Math.log(Math.random()) * 20
     ctx.fillRect(-(bloomSize/2), -(bloomSize/2), bloomSize, bloomSize)
     ctx.globalAlpha = 1
     ctx.resetTransform();
-
 }
 
 function mouseToDirection(n) {  
@@ -76,11 +74,11 @@ function drawParticle(x, y, i) {
     ctx.fillStyle = `hsl(${(noiseValue*30) + (Math.sin(time)-1)*20}, 100%, 60%, .4)`;
 
     var noiseAngle =  xyComponents(mouseToDirection(noiseValue))
-    var attractor = xyComponents(Math.atan2(((-my+ window.innerHeight/2)-y), ((-mx+ window.innerWidth/2)-x)), true)
-    var mix = clamp(Math.sqrt(((-mx+ window.innerWidth/2)-x)**2 + ((-my+ window.innerHeight/2)-y)**2)/(Math.max(window.innerHeight, window.innerWidth)/3), 0, 2)
-    var addX = lerp(attractor[0], noiseAngle[0], clamp(mix, 0, 1))*cellSpeed*noiseValue//*(clamp(mix, .3, 2))
-    var addY = lerp(attractor[1], noiseAngle[1], clamp(mix, 0, 1))*cellSpeed*noiseValue//*(clamp(mix, .3, 2))
-    drawPoint(x, y, Math.atan2(particles[i][1]-(particles[i][1]+addY), particles[i][0]-(particles[i][0]+addX)), cellWidth);
+    var attractor = xyComponents(Math.atan2(((-my + canvas.height/2)-y), ((-mx + canvas.width/2)-x)), true)
+    var mix = clamp(Math.sqrt(((-mx+ canvas.width/2)-x)**2 + ((-my+ canvas.height/2)-y)**2)/(Math.max(canvas.height, canvas.width)/7), 0, 2)
+    var addX = lerp(attractor[0], noiseAngle[0], clamp(mix, .3, 2))*cellSpeed //*noiseValue//*(clamp(mix, .3, 2))
+    var addY = lerp(attractor[1], noiseAngle[1], clamp(mix, .3, 2))*cellSpeed //*noiseValue//*(clamp(mix, .3, 2))
+    drawPoint(x, y, Math.atan2(particles[i][1]-(particles[i][1]+addY), particles[i][0]-(particles[i][0]+addX)), Math.hypot(addX, addY), cellWidth);
     particles[i] = [x + addX, y + addY]
 }
 function update() {
@@ -88,17 +86,17 @@ function update() {
     ctx.globalCompositeOperation = "source-over";
     ctx.globalAlpha = .05
     ctx.fillStyle = "black"
-    ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.globalAlpha = 1
     
     ctx.globalCompositeOperation = "lighter";
     for (var i = 0; i < particles.length; i++) {
         drawParticle(particles[i][0], particles[i][1], i);
-        if (particles[i][0] > window.innerWidth || particles[i][0] < 0 || 
-            particles[i][1] > window.innerHeight || particles[i][1] < 0) 
+        if ((particles[i][0] > canvas.width || particles[i][0] < 0 || 
+            particles[i][1] > canvas.height || particles[i][1] < 0) || Math.random() > 0.999) 
         {
-            //particles[i] = [(-mx + window.innerWidth/2)+((Math.random()-0.5)*(Math.max(window.innerHeight, window.innerWidth)/4)), (-my + window.innerHeight/2)+((Math.random()-0.5)*(Math.max(window.innerHeight, window.innerWidth)/4))]//[Math.round(Math.random() * window.innerWidth), Math.round(Math.random() * window.innerHeight)];
-            particles[i] = [Math.round(Math.random() * window.innerWidth), Math.round(Math.random() * window.innerHeight)];
+            //particles[i] = [(-mx + canvas.width/2)+((Math.random()-0.5)*(Math.max(canvas.height, canvas.width)/4)), (-my + canvas.height/2)+((Math.random()-0.5)*(Math.max(canvas.height, canvas.width)/4))]//[Math.round(Math.random() * canvas.width), Math.round(Math.random() * canvas.height)];
+            particles[i] = [Math.round(Math.random() * canvas.width), Math.round(Math.random() * canvas.height)];
         }
     }
     setTimeout(update)

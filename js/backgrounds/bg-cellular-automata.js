@@ -6,17 +6,31 @@ const ctx = canvas.getContext('2d');
 const resetTime = 50;
 const blurTime = 7;
 const fadeTime = 5;
-const bgColor = "#0a0a0a";
 const colorSchemes = [[["#0c0d1a", "#239989", "#FDE725"], "yello-green"],
-                        [["#0A0F0D", "#2A1E5C", "#EE4266"], "pink razzmatazz"],
-                        [["#000022", "#40612d", "#61FF7E"], "gameboy"],
-                        [["#000022", "#001242", "#0094C6"], "ocean"]];
+                      [["#0A0F0D", "#2A1E5C", "#EE4266"], "pink razzmatazz"],
+                      [["#000022", "#40612d", "#61FF7E"], "gameboy"],
+                      [["#000022", "#001242", "#0094C6"], "ocean"]];
 
 var cellSize = -1;
-var rules = [[[3, 4, 7, 8], [1, 2, 3, 4, 5, 6, 7, 8], "diamonds"], 
-                [[3, 5, 7, 8], [1, 2, 3, 4, 5, 6, 7, 8], "mold w/o death"],
-                [[3, 7, 8], [1, 2, 3, 4, 5, 6, 7, 8], "plow world"],
-                [[2, 5, 6, 7, 8], [5, 6, 7, 8], "iceball"]];
+var rules = [
+    [[3, 4, 7, 8], [1, 2, 3, 4, 5, 6, 7, 8], "diamonds"], 
+    [[3, 5, 7, 8], [1, 2, 3, 4, 5, 6, 7, 8], "mold w/o death"],
+    [[3, 7, 8], [1, 2, 3, 4, 5, 6, 7, 8], "plow world"],
+    [[2, 5, 6, 7, 8], [5, 6, 7, 8], "iceball"]
+];
+function checkRules(score) {
+    switch(curRule) {
+        case 0: // diamonds
+            return [(score == 3 || score == 4 || score == 7 || score == 8), score != 0];
+        case 1:
+            return [(score == 3 || score == 5 || score == 7 || score == 8), score != 0]
+        case 2:
+            return [(score == 3 || score == 7 || score == 8), score != 0]
+        case 3:
+            return [(score == 2 || score == 5 || score == 6 || score == 7 || score == 8), score != 0 && score > 4]
+    }
+
+}
 var preloadedColorSchemes = [];
 var curScheme = 0;
 var curRule = 0;
@@ -32,17 +46,19 @@ function init() {
     }
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
-    randomize()
+    randomize();
+    curScheme = Math.floor(Math.random()*4)
+    curRule = Math.floor(Math.random()*4)
     update();
-    ctx.fillStyle = bgColor
-    ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+    ctx.fillStyle = "#0a0a0a"
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 };
 init();
 
 function resizeCanvas() {
-    canvas.width  = window.innerWidth;
+    canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    cellSize = 30000/(window.innerWidth);
+    cellSize = 40000/(canvas.width);
     scaleMap(Math.ceil(canvas.width/cellSize), Math.ceil(canvas.height/cellSize));
 }
 
@@ -77,9 +93,10 @@ function drawRow(y, prevMap, prefade) {
     for (var x = 0; x < map[y].length; x++)
     {
         score = getScore(x-1, y+1)+getScore(x, y+1)+getScore(x+1, y+1)+getScore(x-1, y)+getScore(x+1, y)+getScore(x-1, y-1)+getScore(x, y-1)+getScore(x+1, y-1);
-        if (rules[curRule][0].includes(score)) {
+        birthOrSurvive = checkRules(score) 
+        if (birthOrSurvive[0]) {
             map[y][x] += 0.05;
-        }else if (!rules[curRule][1].includes(score)) {
+        }else if (!birthOrSurvive[1]) {
             map[y][x] = 0;
         }
         if (map[y][x] > 0.3) {
@@ -93,10 +110,8 @@ function drawRow(y, prevMap, prefade) {
         
         if (map[y][x] != 0) {
             if (prefade > 0) {
-                ctx.globalAlpha = 0.3;
-                ctx.fillStyle = percentageToPreloadedColorScheme(map[y][x]/2)
+                ctx.fillStyle = percentageToPreloadedColorScheme(map[y][x]/2)+"4C"
                 ctx.fillRect(x*cellSize - prefade, y*cellSize - prefade, cellSize + prefade*2, cellSize + prefade*2);
-                ctx.globalAlpha = 1.0;
             } else {
                 ctx.fillStyle = percentageToPreloadedColorScheme(map[y][x]/2)
                 ctx.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
@@ -110,7 +125,7 @@ function cellularAutomata(fade=false, prefade) {
     prefade *= 2
     if (fade) {
         ctx.globalAlpha = 0.1;
-        ctx.fillStyle = bgColor
+        ctx.fillStyle = "#0a0a0a"
         ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
         ctx.globalAlpha = 1.0;
     }
@@ -142,14 +157,14 @@ function randomize() {
             }else{ map[y][x] = 0; }
         }
     }
-    curScheme++
-    curRule++
-    if (curScheme == colorSchemes.length) {
-        preloadedColorSchemes = shuffle(preloadedColorSchemes)
-    }
-    if (curRule == rules.length) {
-        rules = shuffle(rules)
-    }
+    curScheme = Math.floor(Math.random()*4)
+    curRule = Math.floor(Math.random()*4)
+    //if (curScheme == colorSchemes.length) {
+    //    preloadedColorSchemes = shuffle(preloadedColorSchemes)
+    //}
+    //if (curRule == rules.length) {
+    //    rules = shuffle(rules)
+    //}
     curScheme = curScheme%colorSchemes.length
     curRule = curRule%rules.length
     infoText.innerHTML = `rule: ${rules[curRule][2]} - color: ${preloadedColorSchemes[curScheme][1]}`
@@ -157,8 +172,8 @@ function randomize() {
 
 function scaleMap(newSizeX, newSizeY) {
     map = Array.from(Array(newSizeY), () => new Array(newSizeX))
-    ctx.fillStyle = bgColor
-    ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+    ctx.fillStyle = "#0a0a0a"
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     randomize()
 }
 

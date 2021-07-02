@@ -23,10 +23,11 @@ html, body {
 }
 
 #canvas {
-    width: 100%;
-    margin: 0;
-    position: relative;
     image-rendering: pixelated;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    position: absolute;
 }
 
 #midbit {
@@ -56,27 +57,34 @@ html, body {
     margin: 0;
     padding: 0;
     list-style-type: none;
-    height: 100%;
+    height: 160px;
     display:flex;
     flex-flow: column;
-    height: 160px;
     justify-content: space-between;
 }
 
-#navbar li {
+li {
     text-shadow: -1px -1px 0 #EE4266, 1px -1px 0 #EE4266, -1px 1px 0 #EE4266, 1px 1px 0 #EE4266, 0 0 20px #fff;
     color: #fff;
     float: left;
     text-align: left;
     list-style-type: none;
-    transition: 0.1s ease;
+    transition: 0.3s ease, opacity .5s ease;
+    position: relative;
 }
 
-#navbar li:hover{
+li:hover{
     padding-left: 20px;
     transform: rotate(2deg);
     animation: 0.2s blink;
 }
+
+.section-title {
+    position: relative;
+    top: 0;
+    left: 50%;
+}
+
 
 @keyframes blink {
     0% {opacity: 0.3;}
@@ -84,7 +92,7 @@ html, body {
     100% {opacity: 0.3;}
 }
 
-#navbar li h2{
+li h2{
     white-space: nowrap;
     height:100%;
     margin: 0;

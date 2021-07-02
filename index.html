@@ -10,14 +10,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@200;300;400;500;700&display=swap" rel="stylesheet">
 </head>
-    <body>
+    <body id="body">
         <video autoplay muted loop id="bgVideo" style="display: none;"><source src="" type="video/mp4"></video>
         <canvas id="canvas"></canvas>
         <div id="midbit">
             <ul id="navbar">
-                <li><h2>projects</h2></li> 
-                <li><h2>about</h2></li> 
-                <li><h2>contact</h2></li>
+                <li onclick="clickMidButton(this)" id="projects"><h2>projects</h2></li> 
+                <li onclick="clickMidButton(this)" id="about"><h2>about</h2></li> 
+                <li onclick="clickMidButton(this)" id="contact"><h2>contact</h2></li>
             </ul>
 
             <h1 id="hero-title">keith<br/>bartlett</h1>
@@ -25,21 +25,44 @@
         </div>
 
         <script>
+            var midButtonElements = null;
             window.onload = () => {
                 var script = document.createElement('script');
-                document.body.append(script)
-                var bgScripts = ["flow", "faces-baked", "cellular-automata"]
+                document.body.append(script);
+                var bgScripts = ["flow", "faces-baked", "cellular-automata", "cellular-automata2"];
                 script.src = "./js/backgrounds/bg-"+bgScripts[Math.floor(Math.random()*bgScripts.length)]+".js";
                 var heroTitle = document.getElementById("hero-title");
                 function clamp(v, min, max) {return Math.max(min, Math.min(max, v)); }
-                noise.seed(Math.random())
+                noise.seed(Math.random());
                 document.addEventListener('mousemove', e => {
-                    var x = (-e.clientX + window.innerWidth/2)/40
-                    var y = (-e.clientY + window.innerHeight/2)/40
-                    heroTitle.style.textShadow = `${x/2}px ${y/2}px #FDE725, ${x}px ${y}px #EE4266, 0 0 40px #fff`
+                    var x = (-e.clientX + window.innerWidth/2)/40;
+                    var y = (-e.clientY + window.innerHeight/2)/40;
+                    heroTitle.style.textShadow = `${x/2}px ${y/2}px #FDE725, ${x}px ${y}px #EE4266, 0 0 40px #fff`;
                 });
+                midButtonElements = ["projects", "about", "contact"].map(x => document.getElementById(x));
+            }
+            function clickMidButton(clickedElement) {
+                if (midButtonElements != null) {
+                    for (var element of midButtonElements) {
+                        if (element == clickedElement) {
+                            element.classList.add("section-title");
+                            document.getElementById("midbit").appendChild(element); 
+                        }
+                        else { element.style.opacity = "0"; }
+                    }
+                }
             }
         </script>
+        <!--
+            TO INSTALL PYTHON LSDSLAM:
+            install vm with ubuntu
+            apt get install all the deps
+            build pangolin + g2o
+            git clone my fork of the repo
+            copy /usr/include/opencv4/opencv2 to /usr/include/opencv2
+            
+
+        -->
         <!--
             bg ideas:
             ✓ face noiser

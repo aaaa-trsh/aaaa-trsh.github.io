@@ -1,6 +1,0 @@
-RewriteEngine On
-
-ErrorDocument 404 /errors/404.html
-
-RewriteCond %{REQUEST_FILENAME}\.html -f
-RewriteRule ^(.+?)/?$ $1.html [L]

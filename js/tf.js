@@ -4214,7 +4214,7 @@
       function t(t) {
         if (this.gpgpu = t, this.pendingRead = new WeakMap(), this.pendingDisposal = new WeakSet(), this.dataRefCount = new WeakMap(), this.numBytesInGPU = 0, this.uploadWaitMs = 0, this.downloadWaitMs = 0, this.warnedAboutMemory = !1, this.disposed = !1, !exports.ENV.getBool("HAS_WEBGL")) throw new Error("WebGL is not supported on this device");if (null == t) {
           var e = Ft(exports.ENV.getNumber("WEBGL_VERSION"));this.binaryCache = (n = exports.ENV.getNumber("WEBGL_VERSION")) in ts ? ts[n] : (ts[n] = {}, ts[n]), this.gpgpu = new ei(e), this.canvas = e.canvas, this.gpgpuCreatedLocally = !0;
-        } else this.binaryCache = {}, this.gpgpuCreatedLocally = !1, this.canvas = t.gl.canvas;var n;this.textureManager = new Di(this.gpgpu), this.numMBBeforeWarning = null == exports.ENV.global.screen ? 1024 : exports.ENV.global.screen.height * exports.ENV.global.screen.width * window.devicePixelRatio * es / 1024 / 1024, this.texData = new Gr(this, At);
+        } else this.binaryCache = {}, this.gpgpuCreatedLocally = !1, this.canvas = t.gl.canvas;var n;this.textureManager = new Di(this.gpgpu), this.numMBBeforeWarning = null == exports.ENV.global.screen ? 1024 : exports.ENV.global.screen.height * exports.ENV.global.innerHeight * window.devicePixelRatio * es / 1024 / 1024, this.texData = new Gr(this, At);
       }return t.prototype.register = function (t, e, n) {
         if (this.texData.has(t)) throw new Error("Data buffer is already registered");this.texData.set(t, { shape: e, dtype: n });
       }, t.prototype.fromPixels = function (t, e) {

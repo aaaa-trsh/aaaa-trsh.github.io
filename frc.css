@@ -3,6 +3,75 @@ body {
     padding: 0 !important;
     overflow: hidden;
     font-family: 'IBM Plex Mono', monospace;
+    background-color: #161b1e;
+}
+
+.showHide{
+    width: 20px;
+    margin: 5px 5px -1px;
+}
+
+.left {
+    float: left;
+    text-align: left;
+}
+
+.right {
+    float: right;
+    text-align: right;
+}
+.numinput {
+    width: 3em;
+    background-color: #0000;
+    color: white;
+    border: 1px solid white;
+    border-radius: 3px;
+    font-family: 'IBM Plex Mono', monospace;
+    text-align: right;
+    font-size: 16px;
+}
+
+.numinput::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.fileinput {
+    font-size:20px; 
+    font-family: 'IBM Plex Mono', monospace; 
+    color: white; 
+    border-style: none;
+    display: inline-block;
+    height: 1.3em;
+    width: 1.3em;
+    padding: 0;
+    margin: 0;
+    line-height: 1.1;
+    background-color: #2a4552;
+}
+#settings {
+    position:absolute;
+    bottom: 20px;
+    left: 20px;
+    background-color: #00000055;
+    color: white;
+    padding: 20px;
+}
+
+button {
+    margin-bottom: 10px;
+    width:80%; 
+    height:2em; 
+    font-size:20px; 
+    font-family: 'IBM Plex Mono', monospace; 
+    background-color: #90d537; 
+    color: white; 
+    border-style: none;
+}
+button:disabled,
+button[disabled]{
+  background-color: #666666;
+  opacity: .7;
 }
 
 canvas {
@@ -19,36 +88,26 @@ canvas {
 table {
     border-collapse: collapse;
     background-color: #0004;
-    padding: 3px 7px;
+    padding: 8px 15px;
 }
 
-tr {
-    border-spacing: 0px;
-    color: #fff;
-    text-align: right;
-    opacity: 0.8;
-    transition: opacity 0.1s;
-}
+    tr {
+        border-spacing: 0px;
+        color: #fff;
+        text-align: right;
+        opacity: 1;
+    }
 
-tr:hover{ opacity: 1; }
+    td {
+        padding: 8px 18px;
+        font-size: 16px;
+        font-weight: 100;
+    }
 
-tr:nth-child(even) {background-color: #0003;}
-
-td {
-    padding: 3px 7px;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-th {
-    padding: 4px 20px;
-    font-weight:400;
-    color: #ffe10c;
-    background-color: #192225;
-}
-
-
-.showHide{
-    width: 20px;
-    margin: 5px 5px -1px;
-}
+    th {
+        padding: 4px 20px;
+        font-weight:800;
+        text-align: center;
+        background-color: #0004;
+        padding-top: 15px;
+    }

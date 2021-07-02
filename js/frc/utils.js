@@ -1,3 +1,8 @@
+const startTime = performance.now();
+function elapsedTime() {
+    return (performance.now() - startTime)/1000;
+}
+
 function drawTri(cx, cy, width, height, angle) {
     ctx.translate(cx, cy);
     ctx.rotate(angle);
@@ -71,20 +76,32 @@ function offsetLine(x1, y1, x2, y2, offsetStart=0, offsetEnd=0, theta=null) {
     return [x1, y1, x2, y2]
 }
 
-function drawLine(x1, y1, x2, y2, offsetStart=0, offsetEnd=0, theta=null, draw=true) {
+function drawLine(x1, y1, x2, y2, offsetStart=0, offsetEnd=0, theta=null, draw=true, inPathCallback=null) {
     points = offsetLine(x1, y1, x2, y2, offsetStart, offsetEnd, theta)
     if (draw) {
         ctx.beginPath();
         ctx.moveTo(points[0], points[1]);
         ctx.lineTo(points[2], points[3]);
         ctx.stroke();
+        if (inPathCallback != null)
+            inPathCallback();
         ctx.closePath();
     }
     return points
 }
 
-function drawLineFromPoints(p1, p2, offsetStart=0, offsetEnd=0, theta=null, draw=true) {
-    return drawLine(p1.x, p1.y, p2.x, p2.y, offsetStart, offsetEnd, theta, draw)
+function drawCircle(x, y, r, a1, a2, inPathCallback=null) {
+    ctx.beginPath();
+    ctx.arc(x, y, r, a1, a2);
+    ctx.stroke();
+    if (inPathCallback != null)
+        inPathCallback();
+    ctx.closePath();
+    return (2 * Math.PI * r) * Math.abs(a1%(2*pi) - a2%(2*pi))/(2*pi)
+}
+
+function drawLineFromPoints(p1, p2, offsetStart=0, offsetEnd=0, theta=null, draw=true, inPathCallback=null) {
+    return drawLine(p1.x, p1.y, p2.x, p2.y, offsetStart, offsetEnd, theta, draw, inPathCallback)
 }
 
 function ray(x, y, angle, length, draw=true) {
@@ -94,17 +111,34 @@ function ray(x, y, angle, length, draw=true) {
         ctx.moveTo(x, y);
         ctx.lineTo(point.x, point.y);
         ctx.stroke();
+        if (inPathCallback != null)
+            inPathCallback()
         ctx.closePath();
     }
     return point
 }
 
+function closestPointOnLine( p, a, b ) {
+    var atob = { x: b.x - a.x, y: b.y - a.y };
+    var atop = { x: p.x - a.x, y: p.y - a.y };
+    var len = atob.x * atob.x + atob.y * atob.y;
+    var dot = atop.x * atob.x + atop.y * atob.y;
+    var t = Math.min( .99, Math.max( 0.01, dot / len ) );
 
-function vadd(p1, p2) {
+    dot = ( b.x - a.x ) * ( p.y - a.y ) - ( b.y - a.y ) * ( p.x - a.x );
+
+    return {
+        x: a.x + atob.x * t,
+        y: a.y + atob.y * t,
+        t: t
+    };
+}
+
+function vAdd(p1, p2) {
     return {x: p1.x + p2.x, y: p1.y + p2.y}
 }
 
-function vmult(p, f) {
+function vMult(p, f) {
     // var retval = {x: p.x, y: p.y}
     // for (var i = 1; i < arguments.length; i++) {
     //     retval.x *= arguments[i]
@@ -113,11 +147,15 @@ function vmult(p, f) {
     return {x: p.x * f, y: p.y * f}
 }
 
+function vDiv(p, f) {
+    return {x: p.x / f, y: p.y / f}
+}
+
 function vAngle(angle) {
     return {x: Math.cos(angle), y: Math.sin(angle)}
 }
 
-function vector(x, y) {
+function v(x, y) {
     if (arguments.length == 1) {
         return {x: x[0], y: x[1]}
     }else if (arguments.length == 2)  {
@@ -126,3 +164,29 @@ function vector(x, y) {
 }
 function vToList(v) { return [v.x, v.y]; }
 function rad2deg(rad) { return rad * 180 / Math.PI; }
+
+function arrayEquals(a, b) {
+    return Array.isArray(a) &&
+        Array.isArray(b) &&
+        a.length === b.length &&
+        a.every((val, index) => val === b[index]);
+}
+
+function easeOutBounce(x) {
+    const n1 = 7.5625;
+    const d1 = 2.75;
+    
+    if (x < 1 / d1) {
+        return n1 * x * x;
+    } else if (x < 2 / d1) {
+        return n1 * (x -= 1.5 / d1) * x + 0.75;
+    } else if (x < 2.5 / d1) {
+        return n1 * (x -= 2.25 / d1) * x + 0.9375;
+    } else {
+        return n1 * (x -= 2.625 / d1) * x + 0.984375;
+    }
+}
+
+function easeInBounce(x) {
+    return 1 - easeOutBounce(1 - x);
+}
