@@ -1,7 +1,15 @@
 window.addEventListener("load", () => {
+    t.mapFromSource(canvas.width/2, t.pixelsPerUnit, 629.5/12, 323.25/12, 0.036649659863945576, "./assets/2021.png", true);
     update();
 });
 
+/*
+FIELD SIZE: 
+629.5in long distance
+323.25in short distacne
+OHHHOBHHHOHH YEAHHH
+
+*/
 const pi = Math.PI
 var time = 0;
 var frame = 0;
@@ -109,8 +117,7 @@ const t = {
         }
     },
     maps: [],
-    snap: false,
-    pixelsPerUnit: 50,
+    pixelsPerUnit: 40,
     units: "ft",
     robotWidth: 2, // in units
     currentMode: null,
@@ -151,6 +158,21 @@ const t = {
             h: h,
             img: img,
         });
+    },
+    mapFromSource: (x, y, w, h, ppunit, src, cx=false, cy=false) => {
+        var img = document.createElement("IMG");
+        img.src = src
+        img.onload = () => {
+            var width = t.pixelsPerUnit * (img.width/(1/(w/img.width)));
+            var height = t.pixelsPerUnit * (img.height/(1/((h/img.height))));
+            t.maps.push({
+                x: cx ? x - width/2 : x,
+                y: cy ? y - height/2 : y,
+                w: width,
+                h: height,
+                img: img,
+            });
+        };
     },
     closestPointToCoords: (x, y, path=null) => {
         if (path == null) { path = t.path; }
@@ -288,8 +310,8 @@ window.addEventListener("mouseup", e => {
 window.addEventListener("mousemove", e => {
     if (t.inputEnabled) {
         if (t.keysDown.Control) {
-            t.mx = Math.round(e.clientX / t.pixelsPerUnit) * t.pixelsPerUnit;
-            t.my = Math.round(e.clientY / t.pixelsPerUnit) * t.pixelsPerUnit;
+            t.mx = Math.round(e.clientX / (t.pixelsPerUnit/8)) * (t.pixelsPerUnit/8);
+            t.my = Math.round(e.clientY / (t.pixelsPerUnit/8)) * (t.pixelsPerUnit/8);
         } else {
             t.mx = e.clientX;
             t.my = e.clientY;

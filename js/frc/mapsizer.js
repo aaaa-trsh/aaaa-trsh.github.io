@@ -109,7 +109,7 @@ function closeMapsizer() {
 }
 
 function confirmMap() {
-    t.createMap(2*t.pixelsPerUnit, 2*t.pixelsPerUnit, (s.width/(1/s.pixelsPerUnit)) * t.pixelsPerUnit, (s.height/(1/s.pixelsPerUnit)) * t.pixelsPerUnit, s.img);
+    t.createMap(2*t.pixelsPerUnit, 2*t.pixelsPerUnit, ((s.height * (s.img.width/s.img.height))/(1/s.pixelsPerUnit)) * t.pixelsPerUnit, (s.height/(1/s.pixelsPerUnit)) * t.pixelsPerUnit, s.img);
     closeMapsizer();
 }
 

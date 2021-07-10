@@ -5,15 +5,15 @@ infoText.innerHTML = "a colored noise field - and your cursor is a particle repu
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext('2d');
 
-var cellSize = -1;
+var cellSize = 1;
 var time = 0;
 var mx = 0;
 var my = 0;
 var ma = 0;
 var particles = [];
-var cellSpeed = 5;
+var cellSpeed = 1;
 var cellWidth = 4;
-var noiseSize = 200;
+var noiseSize = 300;
 
 window.mobileCheck = function() {
     let check = false;
@@ -27,11 +27,11 @@ function init() {
     resizeCanvas();
 
     noise.seed(Math.random());
-    var count = 2000;
+    var count = Math.min(window.innerHeight, window.innerWidth) / .8;
     if (window.mobileCheck()) {
         count = 500;
-        cellSpeed = 4;
-        cellWidth = 6;
+        cellSpeed = 1;
+        cellWidth = 4;
     }
     for (var i = 0; i < count; i++) { particles.push([Math.round(Math.random() * canvas.width), Math.round(Math.random() * canvas.height)]); }
 
@@ -56,8 +56,10 @@ function drawPoint(x, y, a, w, s) {
     ctx.translate(x, y);
     ctx.rotate(a);
     ctx.fillRect(-(s/2), -(s/2), w, s)
-    
-    ctx.globalAlpha = .005
+
+    ctx.globalAlpha = .03
+    ctx.fillRect(-(s/2)-3, -(s/2)-3, w+6, s+6)
+    ctx.globalAlpha = .01
     var bloomSize = Math.log(Math.random()) * 20
     ctx.fillRect(-(bloomSize/2), -(bloomSize/2), bloomSize, bloomSize)
     ctx.globalAlpha = 1
@@ -70,19 +72,19 @@ function mouseToDirection(n) {
 
 function xyComponents(angle, flip=false) { return !flip ? [Math.cos(angle), Math.sin(angle)] : [-Math.cos(angle), -Math.sin(angle)] }
 function drawParticle(x, y, i) {
-    var noiseValue = (((noise.perlin3((x/cellSize)/noiseSize, (y/cellSize)/noiseSize, time)+1))/2)
-    ctx.fillStyle = `hsl(${(noiseValue*30) + (Math.sin(time)-1)*20}, 100%, 60%, .4)`;
+    var noiseValue = (((noise.perlin3((x/cellSize)/noiseSize, (y/cellSize)/noiseSize, time/7)+1))/2)
+    ctx.fillStyle = `hsl(${(noiseValue*30) + ((Math.sin(time))*10)-4}, 100%, 60%, .4)`;
 
     var noiseAngle =  xyComponents(mouseToDirection(noiseValue))
     var attractor = xyComponents(Math.atan2(((-my + canvas.height/2)-y), ((-mx + canvas.width/2)-x)), true)
     var mix = clamp(Math.sqrt(((-mx+ canvas.width/2)-x)**2 + ((-my+ canvas.height/2)-y)**2)/(Math.max(canvas.height, canvas.width)/7), 0, 2)
-    var addX = lerp(attractor[0], noiseAngle[0], clamp(mix, .3, 2))*cellSpeed //*noiseValue//*(clamp(mix, .3, 2))
-    var addY = lerp(attractor[1], noiseAngle[1], clamp(mix, .3, 2))*cellSpeed //*noiseValue//*(clamp(mix, .3, 2))
+    var addX = lerp(attractor[0]*-2, noiseAngle[0], clamp(mix, 0, 1))*cellSpeed //*noiseValue//*(clamp(mix, .3, 2))
+    var addY = lerp(attractor[1]*-2, noiseAngle[1], clamp(mix, 0, 1))*cellSpeed //*noiseValue//*(clamp(mix, .3, 2))
     drawPoint(x, y, Math.atan2(particles[i][1]-(particles[i][1]+addY), particles[i][0]-(particles[i][0]+addX)), Math.hypot(addX, addY), cellWidth);
     particles[i] = [x + addX, y + addY]
 }
 function update() {
-    time += 0.004
+    time += 0.005
     ctx.globalCompositeOperation = "source-over";
     ctx.globalAlpha = .05
     ctx.fillStyle = "black"
@@ -93,7 +95,9 @@ function update() {
     for (var i = 0; i < particles.length; i++) {
         drawParticle(particles[i][0], particles[i][1], i);
         if ((particles[i][0] > canvas.width || particles[i][0] < 0 || 
-            particles[i][1] > canvas.height || particles[i][1] < 0) || Math.random() > 0.999) 
+            particles[i][1] > canvas.height || particles[i][1] < 0) || 
+            Math.random() > 0.9999 ||
+            Math.hypot(((-my + canvas.height/2)-particles[i][1]), ((-mx + canvas.width/2)-particles[i][0])) < 1) 
         {
             //particles[i] = [(-mx + canvas.width/2)+((Math.random()-0.5)*(Math.max(canvas.height, canvas.width)/4)), (-my + canvas.height/2)+((Math.random()-0.5)*(Math.max(canvas.height, canvas.width)/4))]//[Math.round(Math.random() * canvas.width), Math.round(Math.random() * canvas.height)];
             particles[i] = [Math.round(Math.random() * canvas.width), Math.round(Math.random() * canvas.height)];

@@ -82,7 +82,6 @@ function draw(draw=false) {
                     m[y][x] = 0
                 }
                 //if (draw)
-                //    ctx.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
             }
         }
     }
