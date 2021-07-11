@@ -25,7 +25,7 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 50);
-    camera.position.z = 2;
+    camera.position.z = 1.6;
 
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
@@ -76,6 +76,7 @@ function setupPost() {
             cameraNear: { value: camera.near },
             cameraFar: { value: camera.far },
             cameraFov: { value: camera.fov },
+            cameraPos: { value: camera.position },
             cameraDistance: { value: camera.position.distanceTo(new THREE.Vector3()) },
             cameraAspect: { value: camera.aspect },
             cameraDirection: { value: camDir },
@@ -115,31 +116,9 @@ function setupScene() {
             tDiffuse: { value: null }
         }
     });//new THREE.MeshStandardMaterial({ color: 'white' });
-    sphereGeometry = new THREE.SphereGeometry(.6, 32, 32);
+    sphereGeometry = new THREE.SphereGeometry(.6, 64, 64);
     sphere = new THREE.Mesh(sphereGeometry, planetMaterial);
     scene.add(sphere);
-
-    var oceanMaterial = new THREE.MeshBasicMaterial(
-        { 
-            color: new THREE.Color(0x5e6db5),
-            side: THREE.DoubleSide,
-            opacity: 0,//.14,
-            transparent: true,
-            specular: 'white',
-            shininess: 1000
-        }
-    );
-    oceanGeometry = new THREE.SphereGeometry(.71, 64, 64);
-    ocean = new THREE.Mesh(oceanGeometry, oceanMaterial);
-    scene.add(ocean);
-
-    oceanGeometry = new THREE.SphereGeometry(.725, 64, 64);
-    ocean = new THREE.Mesh(oceanGeometry, oceanMaterial);
-    scene.add(ocean);
-    
-    oceanGeometry = new THREE.SphereGeometry(.74, 64, 64);
-    ocean = new THREE.Mesh(oceanGeometry, oceanMaterial);
-    scene.add(ocean);
 }
 
 function onWindowResize() {
@@ -169,6 +148,7 @@ function update() {
     lowerRight = new THREE.Vector3().copy(camDir).applyEuler(new THREE.Euler(-deg2rad(camera.fov/2), -deg2rad((camera.fov * camera.aspect)/2), 0, "XYZ"));
     //console.log(camDir);
     postMaterial.uniforms.cameraDirection.value = camDir;
+    postMaterial.uniforms.cameraPos.value = camera.position;
     postMaterial.uniforms.cameraDistance.value = camera.position.distanceTo(new THREE.Vector3());
     postMaterial.uniforms.tDiffuse.value = target.texture;
     planetMaterial.uniforms.tDiffuse.value = target.texture;

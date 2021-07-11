@@ -72,6 +72,7 @@ void main() {
     gl_FragColor.rgb = vec3(depth);
     gl_FragColor.a = 1.0;
 }
+
 vec2 rsi(vec3 r0, vec3 rd, float sr) {
     float a = dot(rd, rd);
     float b = 2.0 * dot(rd, r0);

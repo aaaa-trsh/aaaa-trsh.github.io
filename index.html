@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -73,7 +73,7 @@
             //
             // Many thanks to Ian McEwan of Ashima Arts for the
             // ideas for permutation and gradient selection.
-            //
+            //  
             // Copyright (c) 2011 Stefan Gustavson. All rights reserved.
             // Distributed under the MIT license. See LICENSE file.
             // https://github.com/ashima/webgl-noise
@@ -263,11 +263,11 @@
                 vUv = uv;
                 
                 noise = 10.0 *  .10 * turbulence( .5 * normal );
-                float b = 2.5 * pnoise( 0.05 * position, vec3( 100.0 ) );
+                float b = 2.5 * pnoise(0.05 * position, vec3(100.0));
                 float displacement = -5. * noise + b;
             
                 vec3 newPosition = position + normal * displacement/10.;
-                gl_Position = projectionMatrix * modelViewMatrix * vec4( newPosition, 1.0 );
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
             }
                 
     
@@ -282,12 +282,21 @@ void main() {
     //vec4 color2 = vec4(0./255., 204./255., 64./255., 1.);
     //gl_FragColor = mix(color2, color1, (noise*1.7)+1.2);
 
-    vec4 firstColor = vec4(1.0,1.0,1.0,1.0); //red
-    vec4 middleColor = vec4(0.0,1.0,0.0,1.0); // green
-    vec4 endColor = vec4(0.0,0.0,1.0,1.0); // blue
-    float h = 0.5;
+    vec3 firstColor = vec3(1.0, 1.0, 1.0); // snow
+    vec3 middleColor = vec3(0.2, .5, 0.2); // grass
+    vec3 endColor = vec3(0.3, 0.1, 0.1); // ground
+    float h = 0.2;
     float m = (noise*2.)+1.2;
-    gl_FragColor = mix(mix(firstColor, middleColor, m/h), mix(middleColor, endColor, (m - h)/(1.0 - h)), step(h, m));
+    vec3 c = vec3(0);
+    
+    if (h/m > 0.45) {
+        c = firstColor;
+    }else if (h/m > 0.27) {
+        c = middleColor;
+    } else {
+        c = endColor;
+    }
+    gl_FragColor = vec4(c, 1.);
 
 }
     
@@ -311,31 +320,45 @@ void main() {
             uniform float cameraNear;
             uniform float cameraFar;
             uniform float cameraDistance;
+            uniform float cameraDirection;
             uniform float cameraAspect;
+            uniform vec3 cameraPos;
             
-            float readDepth(sampler2D depthSampler, vec2 coord) {
+            vec2 readDepth(sampler2D depthSampler, vec2 coord) {
                 float fragCoordZ = texture2D(depthSampler, coord).x;
-                float viewZ = perspectiveDepthToViewZ(fragCoordZ, cameraNear, cameraFar);
-                return viewZToOrthographicDepth(viewZ, cameraNear, pow(cameraFar, 0.6));
+                float viewZ = perspectiveDepthToViewZ(fragCoordZ, cameraNear, cameraFar * 3.);
+                return vec2(viewZToOrthographicDepth(viewZ, cameraNear, cameraFar / 40.), viewZ);
             }
             
+            vec2 rsi(vec3 r0, vec3 rd, vec3 s0, float sr) {
+                float a = dot(rd, rd);
+                vec3 s0_r0 = r0 - s0;
+                float b = 2.0 * dot(rd, s0_r0);
+                float c = dot(s0_r0, s0_r0) - (sr * sr);
+                float disc = b * b - 4.0 * a* c;
+                if (disc < 0.0) {
+                    return vec2(-1.0, -1.0);
+                }else{
+                    return vec2(-b - sqrt(disc), -b + sqrt(disc)) / (2.0 * a);
+                }
+            }
+
             void main() {
                 vec3 diffuse = texture2D(tDiffuse, vUv).rgb;
-                float depth = readDepth(tDepth, vUv);
-            
-                //vec3 viewVector = vec3((vUv * 2.) - 1., -0.5);
-                //viewVector = applyMatrix4(applyMatrix4(viewVector, projectionMatrixInverse), matrixWorld);
-                //vec2 rsi = rsi(cameraPosition, viewVector, rad);
-            
-                float rad = cameraDistance;
-                float adder = 0.5 - (0.5 / rad);
-                vec2 modulatedUV = (vUv*rad) - rad*adder;
-                float d = 1. - sqrt(
-                    abs((0.5 - modulatedUV.x) * cameraAspect) * abs((0.5 - modulatedUV.x) * cameraAspect) + 
-                    abs(0.5 - modulatedUV.y) * abs(0.5 - modulatedUV.y)
-                );
-                gl_FragColor.rgb = diffuse;//((vec3(0, .4, .6) * vec3(max(d, .1))) + diffuse); //vec3(pow(length(frag_position) / rad, 3.0) + (1.-depth));
-            
+                vec2 depth = readDepth(tDepth, vUv);
+
+                float atmosphereRad = 1./cameraDistance * 120.; 
+                float oceanRad = 1./cameraDistance * 60.; 
+
+                vec2 uv = (-1.0 + 2.0*vUv) * vec2(cameraAspect, 1.0);
+                vec3 ro = cameraPos;
+                vec3 rd = normalize(vec3(uv, 1.0));
+
+                vec2 atmosphereIntersection = rsi(ro, rd, vec3(0, 0, -100), atmosphereRad);
+                float dstToAtmosphere = atmosphereIntersection.y;
+                float dstThroughAtmosphere = min(atmosphereIntersection.y - atmosphereIntersection.x, depth.x - dstToAtmosphere);
+
+                gl_FragColor.rgb = vec3(dstThroughAtmosphere)/atmosphereRad * vec3(ro-rd * 0.5 + 0.5);
                 gl_FragColor.a = 1.0;
             }
         </script>
