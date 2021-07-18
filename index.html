@@ -14,7 +14,7 @@
     <script src="https://d3js.org/d3.v4.min.js"></script> 
     <script src="https://d3js.org/d3-color.v1.min.js"></script>
     <script src="https://d3js.org/d3-interpolate.v1.min.js"></script> 
-    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script> 
+    <script src="https://d3js.org/d3-scale-chromatic.v3.min.js"></script> 
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@200;300;400;500;700&display=swap" rel="stylesheet">
@@ -22,7 +22,7 @@
     <body id="body">
         <video autoplay muted loop id="bgVideo" style="display: none;"><source src="" type="video/mp4"></video>
         <canvas id="canvas"></canvas>
-        <div id="midbit" style="display: none">
+        <div id="midbit">
             <ul id="navbar">
                 <li onclick="clickMidButton(this)" id="projects"><h2>projects</h2></li> 
                 <li onclick="clickMidButton(this)" id="about"><h2>about</h2></li> 
@@ -38,7 +38,7 @@
             window.onload = () => {
                 var script = document.createElement('script');
                 document.body.append(script);
-                var bgScripts = ["planet"]//"flow"], "faces-baked", "cellular-automata", "cellular-automata2"];
+                var bgScripts = ["cellular-automata", "planet", "flow", "faces-baked", "cellular-automata", "cellular-automata2"];
                 script.src = "./js/backgrounds/bg-"+bgScripts[Math.floor(Math.random()*bgScripts.length)]+".js";
                 var heroTitle = document.getElementById("hero-title");
                 function clamp(v, min, max) {return Math.max(min, Math.min(max, v)); }

@@ -1,7 +1,7 @@
 const infoText = document.getElementById("bg-info");
 document.getElementById("bg-name").innerHTML = "faces";
 
-infoText.innerHTML = "a neural net trained on my freshman yearbook + noise PCA";
+infoText.innerHTML = "autoencoder trained on my yearbook w/ noise eigenvalue control";
 
 const canvas = document.getElementById("canvas");
 canvas.style.display = "none";

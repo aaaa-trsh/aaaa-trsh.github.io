@@ -1,6 +1,6 @@
 const infoText = document.getElementById("bg-info");
 document.getElementById("bg-name").innerHTML = "flow";
-infoText.innerHTML = "a colored noise field - and your cursor is a particle repulsor!";
+infoText.innerHTML = "a colored noise field - and your cursor is a particle attractor!";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext('2d');
@@ -53,6 +53,7 @@ function resizeCanvas() {
 }
 
 function drawPoint(x, y, a, w, s) { 
+    ctx.globalAlpha = .5
     ctx.translate(x, y);
     ctx.rotate(a);
     ctx.fillRect(-(s/2), -(s/2), w, s)
@@ -78,8 +79,8 @@ function drawParticle(x, y, i) {
     var noiseAngle =  xyComponents(mouseToDirection(noiseValue))
     var attractor = xyComponents(Math.atan2(((-my + canvas.height/2)-y), ((-mx + canvas.width/2)-x)), true)
     var mix = clamp(Math.sqrt(((-mx+ canvas.width/2)-x)**2 + ((-my+ canvas.height/2)-y)**2)/(Math.max(canvas.height, canvas.width)/7), 0, 2)
-    var addX = lerp(attractor[0]*-2, noiseAngle[0], clamp(mix, 0, 1))*cellSpeed //*noiseValue//*(clamp(mix, .3, 2))
-    var addY = lerp(attractor[1]*-2, noiseAngle[1], clamp(mix, 0, 1))*cellSpeed //*noiseValue//*(clamp(mix, .3, 2))
+    var addX = lerp(attractor[0]*-2, noiseAngle[0], clamp(mix, 0, 1))*cellSpeed * noiseValue * 3;//*(clamp(mix, .3, 2))
+    var addY = lerp(attractor[1]*-2, noiseAngle[1], clamp(mix, 0, 1))*cellSpeed * noiseValue * 3;//*(clamp(mix, .3, 2))
     drawPoint(x, y, Math.atan2(particles[i][1]-(particles[i][1]+addY), particles[i][0]-(particles[i][0]+addX)), Math.hypot(addX, addY), cellWidth);
     particles[i] = [x + addX, y + addY]
 }

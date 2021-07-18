@@ -1,3 +1,8 @@
+const infoText = document.getElementById("bg-info");
+document.getElementById("bg-name").innerHTML = "planet";
+
+infoText.innerHTML = "a planet, atmosphere, and stars all drawn from custom glsl shaders";
+
 let camera, scene, renderer, controls, stats;
 let postRenderTarget, imageRenderTarget;
 let postScene, postCamera, postMaterial, planetMaterial, oceanMaterial;
@@ -25,10 +30,10 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 50);
-    camera.position.z = 1.6;
+    camera.position.z = 2;
 
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
+    //controls = new THREE.OrbitControls(camera, renderer.domElement);
+    //controls.enableDamping = true;
 
     setupRenderTarget();
     setupScene();
@@ -154,6 +159,11 @@ function update() {
     //renderer.setRenderTarget(imageRenderTarget);
     //renderer.render(scene, camera);
     //oceanMaterial.uniforms.tDiffuse.value = imageRenderTarget.texture;
+    oceanSphere.rotation.y = step/300;
+    planet.rotation.y = step/300;
+
+    oceanSphere.rotation.z = Math.sin(step/500)/2;
+    planet.rotation.z = Math.sin(step/500)/2;
 
     renderer.setRenderTarget(postRenderTarget);
     renderer.render(scene, camera);
@@ -174,10 +184,11 @@ function update() {
     postMaterial.uniforms.upperRight.value = upperRight;    
     postMaterial.uniforms.lowerLeft.value = lowerLeft;    
     postMaterial.uniforms.lowerRight.value = lowerRight;
+    postMaterial.uniforms.cameraAspect.value = camera.aspect;
 
     renderer.setRenderTarget(null);
     renderer.render(postScene, postCamera);
 
-    controls.update();
+    //controls.update();
     step += 1;
 }
