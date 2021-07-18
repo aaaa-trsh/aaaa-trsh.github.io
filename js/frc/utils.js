@@ -1,4 +1,5 @@
 const startTime = performance.now();
+const pi = Math.PI;
 function elapsedTime() {
     return (performance.now() - startTime)/1000;
 }
@@ -89,8 +90,16 @@ function drawLine(x1, y1, x2, y2, offsetStart=0, offsetEnd=0, theta=null, draw=t
     }
     return points
 }
+function drawLine(a, b) {
+    points = offsetLine(a.x, a.y, b.x, b.y)
+    ctx.beginPath();
+    ctx.moveTo(points[0], points[1]);
+    ctx.lineTo(points[2], points[3]);
+    ctx.stroke();
+    ctx.closePath();
+}
 
-function drawCircle(x, y, r, a1, a2, inPathCallback=null) {
+function drawCircle(x, y, r, a1=0, a2=2*pi, inPathCallback=null) {
     ctx.beginPath();
     ctx.arc(x, y, r, a1, a2);
     ctx.stroke();
@@ -189,4 +198,37 @@ function easeOutBounce(x) {
 
 function easeInBounce(x) {
     return 1 - easeOutBounce(1 - x);
+}
+
+class PIDController {
+    constructor (p, i, d, timestep=0.02) {
+        this.p = p;
+        this.i = i;
+        this.d = d;
+        this.timestep = timestep;
+        this.setpoint = 0;
+
+        this.sumError = 0;
+        this.lastError = 0;
+    }
+
+    setSetpoint(setpoint) {
+        this.setpoint = setpoint;
+    }
+
+    calculate(value) {
+        var error = this.setpoint - value;
+        this.sumError += error * this.timestep;
+
+        var p = this.p * error;
+        var i = this.i * this.sumError;
+        var d = this.d * ((error - this.lastError) / this.timestep);
+        this.lastError = error;
+        return p + i + d;
+    }
+
+    reset() {
+        this.sumError = 0;
+        this.lastError = 0;
+    }
 }
