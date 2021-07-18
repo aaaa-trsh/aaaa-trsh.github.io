@@ -139,10 +139,9 @@ function colorRamp() {
     ctx.putImageData(imageData, 0, 0);
 }
 function update() {
-    
-    //if (owhfipe == undefined || owhfipe < 6){
-        colorRamp()
-        draw(true)
-        window.requestAnimationFrame(update)
-    //}
+    console.time("update");
+    colorRamp()
+    draw(true)
+    window.requestAnimationFrame(update)
+    console.timeEnd("update");
 }

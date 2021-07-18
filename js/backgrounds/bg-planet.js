@@ -123,11 +123,11 @@ function setupScene() {
         vertexShader: document.getElementById('sphereVertShader').textContent.trim(),
         fragmentShader: document.getElementById('sphereFragShader').textContent.trim(),
     });
-    planetGeometry = new THREE.IcosahedronGeometry(.6, 15);
+    planetGeometry = new THREE.IcosahedronBufferGeometry(.6, 15);
     planet = new THREE.Mesh(planetGeometry, planetMaterial);
     scene.add(planet);
     
-    oceanGeometry = new THREE.IcosahedronGeometry(.72, 4);
+    oceanGeometry = new THREE.IcosahedronBufferGeometry(.72, 4);
     oceanMaterial = new THREE.ShaderMaterial({
         vertexShader: document.getElementById('oceanVertShader').textContent.trim(),
         fragmentShader: document.getElementById('oceanFragShader').textContent.trim(),
@@ -152,6 +152,7 @@ function onWindowResize() {
 
 var step = 0;
 function update() {
+    console.time("update");
     if (!supportsExtension) return;
 
     requestAnimationFrame(update);
@@ -191,4 +192,5 @@ function update() {
 
     //controls.update();
     step += 1;
+    console.timeEnd("update");
 }

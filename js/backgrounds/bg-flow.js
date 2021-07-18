@@ -85,6 +85,7 @@ function drawParticle(x, y, i) {
     particles[i] = [x + addX, y + addY]
 }
 function update() {
+    console.time("update");
     time += 0.005
     ctx.globalCompositeOperation = "source-over";
     ctx.globalAlpha = .05
@@ -105,4 +106,5 @@ function update() {
         }
     }
     setTimeout(update)
+    console.timeEnd("update");
 }

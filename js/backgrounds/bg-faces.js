@@ -110,7 +110,7 @@ async function decode(dense, x, y, fadeAlpha) {
 }
 
 function update(fadeAlpha, time, curCellX) {
-    var t0 = performance.now()
+    console.time("update");
     time += 0.001
     curCellX = drawRow(time, curCellX, fadeAlpha);
     
@@ -119,8 +119,7 @@ function update(fadeAlpha, time, curCellX) {
             fadeAlpha += 0.01
         }
     }
-    var t1 = performance.now()
-    //console.log(t1-t0)
     if (t1 - t0 < 300)
         setTimeout(()=>{update(fadeAlpha, time, curCellX)})
+    console.timeEnd("update");
 }
