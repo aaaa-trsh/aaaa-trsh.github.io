@@ -13,7 +13,7 @@ const COLOR_PALETTE = [
     (value) => [hexToRgb(d3.interpolateViridis(value/255)), "LIME"],
 ][Math.floor(Math.random() * 3)];
 
-infoText.innerHTML = `a decaying variant on 'iceballs' (B25678/S5678), pallet '${COLOR_PALLETE(0)[1]}'`;
+infoText.innerHTML = `a decaying variant on 'iceballs' (B25678/S5678), pallet '${COLOR_PALETTE(0)[1]}'`;
 
 var map = Array.from(Array(2), () => new Array(4));
 
@@ -67,6 +67,7 @@ function cellularAutomata(i) {
             }
 
             if (Math.random() > 0.99996) map[y][x] = 1; 
+            //if (Math.random() > Math.hypot(Math.abs((x/map[0].length) - 0.5), Math.abs((y/map.length) - 0.5)) * 30) map[y][x] = 1; 
             
             if (map[y][x] == 1) {
                 value = map[y][x] * 256;
@@ -85,7 +86,9 @@ function randomize() {
     {
         for (var x = 0; x < map[0].length; x++)
         {
+            //if ((noise.simplex2(x / 400, y / 400) + 1) / 2 < 0.4) map[y][x] = 0.5;
             if (Math.random() > (noise.simplex2(x / 50, y / 50))) map[y][x] = 0.5; 
+            //else map[y][x] = 0; 
         }
     }
 }
