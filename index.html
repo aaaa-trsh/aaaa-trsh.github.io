@@ -38,7 +38,7 @@
             window.onload = () => {
                 var script = document.createElement('script');
                 document.body.append(script);
-                var bgScripts = ["cellular-automata", "planet", "flow", "faces-baked", "cellular-automata", "cellular-automata2"];
+                var bgScripts = ["cellular-automata"]//, "planet", "flow", "faces-baked", "cellular-automata", "cellular-automata2"];
                 script.src = "./js/backgrounds/bg-"+bgScripts[Math.floor(Math.random()*bgScripts.length)]+".js";
                 var heroTitle = document.getElementById("hero-title");
                 function clamp(v, min, max) {return Math.max(min, Math.min(max, v)); }

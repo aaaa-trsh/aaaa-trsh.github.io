@@ -119,7 +119,7 @@ const t = {
     maps: [],
     pixelsPerUnit: 40,
     units: "ft",
-    robotWidth: 2, // in units
+    robotWidth: 2.0989512532279404, // in units
     currentMode: null,
     selected: null,
     path: [],
