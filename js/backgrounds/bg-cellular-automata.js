@@ -28,7 +28,7 @@ function init() {
 init();
 
 function resizeCanvas() {
-    var cellSize = Math.min(window.innerWidth, window.innerHeight) / 100;
+    var cellSize = Math.min(window.innerWidth, window.innerHeight) / 50;
     canvas.width = Math.ceil(window.innerWidth/cellSize);
     canvas.height = Math.ceil(window.innerHeight/cellSize);
     gcanvas.width = canvas.width;

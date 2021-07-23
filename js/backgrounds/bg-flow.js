@@ -22,6 +22,8 @@ window.mobileCheck = function() {
 };
 
 function init() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
     window.addEventListener('resize', resizeCanvas);
     window.addEventListener('mousemove', (e) => { mx = -e.clientX + canvas.width/2; my = -e.clientY + canvas.height/2; });
     resizeCanvas();
@@ -48,8 +50,11 @@ function clamp(number, min, max) {
 }
 
 function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    // canvas.width = window.innerWidth;
+    // canvas.height = window.innerHeight;
+    // for (var i = 0; i < particles.length; i++) {
+    //     particles[i] = [Math.round(Math.random() * canvas.width), Math.round(Math.random() * canvas.height)];
+    // }
 }
 
 function drawPoint(x, y, a, w, s) { 
@@ -74,7 +79,8 @@ function mouseToDirection(n) {
 function xyComponents(angle, flip=false) { return !flip ? [Math.cos(angle), Math.sin(angle)] : [-Math.cos(angle), -Math.sin(angle)] }
 function drawParticle(x, y, i) {
     var noiseValue = (((noise.perlin3((x/cellSize)/noiseSize, (y/cellSize)/noiseSize, time/7)+1))/2)
-    ctx.fillStyle = `hsl(${(noiseValue*30) + ((Math.sin(time))*10)-4}, 100%, 60%, .4)`;
+    ctx.fillStyle = `hsl(${(noiseValue*20) + ((Math.sin(time))*10)-200}, 100%, 60%, 0.4)`;
+    //ctx.fillStyle = `hsl(${(noiseValue*30) + ((Math.sin(time))*10)-4}, 100%, 60%, .4)`;
 
     var noiseAngle =  xyComponents(mouseToDirection(noiseValue))
     var attractor = xyComponents(Math.atan2(((-my + canvas.height/2)-y), ((-mx + canvas.width/2)-x)), true)
@@ -85,7 +91,6 @@ function drawParticle(x, y, i) {
     particles[i] = [x + addX, y + addY]
 }
 function update() {
-    console.time("update");
     time += 0.005
     ctx.globalCompositeOperation = "source-over";
     ctx.globalAlpha = .05
@@ -106,5 +111,4 @@ function update() {
         }
     }
     setTimeout(update)
-    console.timeEnd("update");
 }

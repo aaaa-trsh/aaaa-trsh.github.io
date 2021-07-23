@@ -4,33 +4,60 @@
         <meta charset="utf-8" />
         <title>keith b's portfolio</title>
         <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@200;300;400;500;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@200;300;400;500;700&display=swap" rel="stylesheet">
+        
+        <script src="./js/perlin.js"></script>
+        <script src="https://d3js.org/d3.v4.min.js"></script> 
+        <script src="https://d3js.org/d3-color.v1.min.js"></script>
+        <script src="https://d3js.org/d3-interpolate.v1.min.js"></script> 
+        <script src="https://d3js.org/d3-scale-chromatic.v3.min.js"></script> 
+
         <style>
             html, body {
-                margin: 0 !important;
-                padding: 30px !important;
+                margin: 30px;
                 overflow: hidden;
                 color: white;
-                background-color: black;
+                background-color: #000;
                 font-family: 'IBM Plex Mono', monospace;
             }
 
+            #terminal {
+                background-color: #161b1e;
+                padding: 20px;
+                border-radius: 10px;
+                position: relative;
+                opacity: 1;
+            }
+
+            #canvas {
+                margin: 0;
+                padding: 0;
+                image-rendering: pixelated;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                position: absolute;
+                z-index: -1;
+            }
+
             p {
-                font-size: 20px;
-                font-weight: 200;
+                font-size: 14px;
+                font-weight: 400;
                 margin: 0;
             }
 
             li {
-                font-size: 20px;
-                font-weight: 200;
+                font-size: 14px;
+                font-weight: 400;
                 list-style: none;
             }
 
             ul { margin: 0; }
 
             a {
-                color: white;
+                text-underline-offset: 2px;
+                font-style: italic;
             }
 
             #fake-cursor {
@@ -39,67 +66,121 @@
                 background-color: white;
             }
 
+            .yellow {
+                color: #fff145;
+            }
+
+            .blue {
+                color: #7cd5f1;
+            }
+
+            .bold {
+                font-weight: 700;
+            }
+
+            .gray {
+                color: #c5cbce;
+            }
+
+            .white {
+                color: #fff;
+            }
+
             @keyframes blink {
                 0% {opacity: 0.3;}
                 50% {opacity: 1;}
                 100% {opacity: 0.3;}
             }
+
+            table { border: none; margin: 0 0 0 40px; }
+            td { margin: 30px; }
+
+            ::selection { background: rgba(255, 255, 255, 0.2); }
         </style>
     </head>
     <body id="body">
-        <p>
-            KEITH B (aka aaa-trash, AAAAAAAA) <span style="float: right">(279)-333-9755 - keith.ty.bartlett@gmail.com </span> <br />
-            I make software! <br/>
-            <br/>
-            EXPERIENCE <br/>
-            Chatter.dev CNC / FTR - 1.5 YEARS <i>(present)</i><br/>
-        </p>
-        <ul>
-            <li>> Working on systems that understand machine behavior through minimal information, quantifying delays, and separatating unexpected downtime from scheduled maintenance.</li>
-            <li>> Also worked on showing these statistics based on that behaviour to the end user.</li>
-        </ul>
-        <br/>
-        <br/>
-        <p>
-            Joathrent Studios - 4 YEARS<br/>
-        </p>
-        <ul>
-            <li>> <a target="_blank" href="https://play.google.com/store/apps/details?id=com.JoathrentStudios.DustAndDiamonds&hl=en">DUST AND DIAMONDS</a>: A match 3 mobile idle game. Developed core gameplay systems such as progression, levelling, upgrades, etc.</li>
-            <li>> <a target="_blank" href="https://play.google.com/store/apps/details?id=com.JoathrentStudios.FlameyBoiFull&hl=en">FLAMEY BOI</a>: Created main movement and floor detection system. Also worked on the item shop and dynamic enemy navigation.</li>
-            <li>> <a target="_blank" href="https://play.google.com/store/apps/details?id=com.JoathrentStudios.GridGunner&hl=en_US">GRID GUNNER</a>: Developed movement and object management system for keeping track of bullets and enemies. Also worked on audio integration.</li>
-            <li>> HAUNTED QUEST: Worked on tracking player save data, animation management, and UI events. This project was released, but taken down due to expenses.</li>
-        </ul>
-        <br/>
-        <p>
-            PERSONAL PROJECTS <br/>
-        </p>
-        <ul>
-            <li>> SPLmatic: An antweight combat robot with a horizontal spinner. </li>
-            <li>> <a target="_blank" href="https://aaa-trsh.itch.io/rl-snakes">Auto Snakes</a>: A game of snake that uses Q-learning to control snake behavior. Also includes an AI snake bossfight for the fun of it. </li>
-            <li>> Yearbook VAE: An autoencoder that reconstructs faces from my highschool yearbook. </li>
-            <li>> WFC Labs: A procedurally generated martian lab that uses marching cubes and wave function collapse to generate the environment. </li>
-            <li>> <a target="_blank" href="./planet.html">GLSL Planet</a>: [WARNING: SLOW] A stylized planet that is entirely made with GLSL shaders.  </li>
-            <li>> Various Game Jam Submissions:  
+        <canvas id="canvas"></canvas>
+        <h4 style="display: none"><span id="bg-name">name</span> </span><span id="bg-info">info</span></h4>
+
+        <script>
+            var midButtonElements = null;
+            window.onload = () => {
+                var script = document.createElement('script');
+                document.body.append(script);
+                var bgScripts = ["flow"]//, "planet", "flow", "faces-baked", "cellular-automata", "cellular-automata2"];
+                script.src = "./js/backgrounds/bg-"+bgScripts[Math.floor(Math.random()*bgScripts.length)]+".js";
+                noise.seed(Math.random());
+            }
+        </script>
+        <div id="terminal">
+            <p>
+                <span class="yellow bold">keithb@pc</span>:<span class="blue">~</span>$ info <br/>
+                <br/>
+                KEITH B (aka aaa-trash, AAAAAAAA) <span style="float: right">(279)-333-9755 - keith.ty.bartlett@gmail.com </span> <br/>
+                I make software! <br/>
+                <br/>
+                <br/>
+                <span class="bold">EXPERIENCE</span><br/>
                 <ul>
-                    <li>&emsp;<a target="_blank" href="https://aaa-trsh.itch.io/wormholes-n-chill">Brackeys 2020.1</a></li>
-                    <li>&emsp;<a target="_blank" href="https://aaa-trsh.itch.io/please-stand-by">GMTK 2020</a></li>
-                    <li>&emsp;<a target="_blank" href="https://globalgamejam.org/2020/games/repair-game-4">GGJ 2020</a></li>
-                    <li>&emsp;<a target="_blank" href="https://aaa-trsh.itch.io/tactical-bodybuilding">Ludum Dare 45 (2019)</a></li>
-                    <li>&emsp;<a target="_blank" href="https://aaa-trsh.itch.io/groupthink">GGJ Next 2019</a></li>
-                    <li>&emsp;<a target="_blank" href="https://globalgamejam.org/2019/games/how-our-mission-ended">GGJ 2019</a></li>
-                    <li>&emsp;<a target="_blank" href="https://aaa-trsh.itch.io/the-globenhausser-legacy">Butterscotch ShenaniJam 2019</a></li>
-                    <li>&emsp;<a target="_blank" href="https://joathrentstudios.itch.io/flamey-boi-shenanijam-2018">Butterscotch ShenaniJam 2018</a></li>
-                    <li>&emsp;<a target="_blank" href="https://joathrentstudios.itch.io/grid-gunner">Ludum Dare 41 (2018)</a></li>
-                    <li>&emsp;<a target="_blank" href="https://globalgamejam.org/2018/games/target-discharge">GGJ 2018</a></li>
-                    <li>&emsp;<a target="_blank" href="https://joathrentstudios.itch.io/batteries-sold-separately">Ludum Dare 39 (2017)</a></li>
+                    <li>
+                        Chatter.dev CNC / FTR - 1.5 YEARS <i>(present)</i>
+                        <ul>
+                            <li><span class="blue">></span> Working on systems that understand machine behavior through minimal information, quantifying delays, and separatating unexpected downtime from scheduled maintenance.</li>
+                            <li><span class="blue">></span> Also worked on showing these statistics based on that behaviour to the end user.</li>
+                        </ul>
+                    </li>
+                    <li>&nbsp;</li>
+                    <li>
+                        Joathrent Studios - 4 YEARS<br/>
+                        <ul>
+                            <li><span class="blue">></span> <a class="gray" target="_blank" href="https://play.google.com/store/apps/details?id=com.JoathrentStudios.DustAndDiamonds&hl=en">DUST AND DIAMONDS</a>: A match 3 mobile idle game. Developed core gameplay systems such as progression, levelling, upgrades, etc.</li>
+                            <li><span class="blue">></span> <a class="gray" target="_blank" href="https://play.google.com/store/apps/details?id=com.JoathrentStudios.FlameyBoiFull&hl=en">FLAMEY BOI</a>: Created main movement and floor detection system. Also worked on the item shop and dynamic enemy navigation.</li>
+                            <li><span class="blue">></span> <a class="gray" target="_blank" href="https://play.google.com/store/apps/details?id=com.JoathrentStudios.GridGunner&hl=en_US">GRID GUNNER</a>: Developed movement and object management system for keeping track of bullets and enemies. Also worked on audio integration.</li>
+                            <li><span class="blue">></span> <span class="gray">HAUNTED QUEST</span>: Worked on tracking player save data, animation management, and UI events. This project was released, but taken down due to expenses.</li>
+                        </ul>
+                    </li>
                 </ul>
-            </li>
-        </ul>
-        <p>
+            </p>
             <br/>
             <br/>
-            <br/>
-            keithb:~$ <span id="fake-cursor">y</span>
-        </p>
+            <p class="bold">
+                PERSONAL PROJECTS <br/>
+            </p>
+            <ul>
+                <li><span class="blue">></span> <span class="gray">SPLmatic</span>: An antweight combat robot with a horizontal spinner. </li>
+                <li><span class="blue">></span> <a class="gray" target="_blank" href="https://aaa-trsh.itch.io/rl-snakes">Auto Snakes</a>: A game of snake that uses Q-learning to control snake behavior. Also includes an AI snake bossfight for the fun of it. </li>
+                <li><span class="blue">></span> <span class="gray">Yearbook VAE</span>: An autoencoder that reconstructs faces from my highschool yearbook. </li>
+                <li><span class="blue">></span> <span class="gray">WFC Labs</span>: A procedurally generated martian lab that uses marching cubes and wave function collapse to generate the environment. </li>
+                <li><span class="blue">></span> <a class="gray" target="_blank" href="./planet.html">GLSL Planet</a>: [WARNING: SLOW] A stylized planet that is entirely made with GLSL shaders.  </li>
+                <li><span class="blue">></span> <span class="gray">Various Game Jam Submissions</span>:  
+                    <table>
+                        <tr>
+                            <td><a class="white" target="_blank" href="https://aaa-trsh.itch.io/wormholes-n-chill">Brackeys 2020.1</a>&emsp;</td>
+                            <td><a class="white" target="_blank" href="https://aaa-trsh.itch.io/please-stand-by">GMTK 2020</a>&emsp;</td>
+                            <td><a class="white" target="_blank" href="https://globalgamejam.org/2020/games/repair-game-4">GGJ 2020</a>&emsp;</td>
+                            <td><a class="white" target="_blank" href="https://aaa-trsh.itch.io/tactical-bodybuilding">Ludum Dare 45 (2019)</a>&emsp;</td>
+                            <td><a class="white" target="_blank" href="https://aaa-trsh.itch.io/groupthink">GGJ Next 2019</a></td>
+                            <td><a class="white" target="_blank" href="https://globalgamejam.org/2019/games/how-our-mission-ended">GGJ 2019</a>&emsp;</td>
+                        </tr>
+                        <tr>
+                            <td><a class="white" target="_blank" href="https://aaa-trsh.itch.io/the-globenhausser-legacy">ShenaniJam 2019</a>&emsp;</td>
+                            <td><a class="white" target="_blank" href="https://joathrentstudios.itch.io/flamey-boi-shenanijam-2018">ShenaniJam 2018</a>&emsp;</td>
+                            <td><a class="white" target="_blank" href="https://joathrentstudios.itch.io/grid-gunner">Ludum Dare 41 (2018)</a>&emsp;</td>
+                            <td><a class="white" target="_blank" href="https://globalgamejam.org/2018/games/target-discharge">GGJ 2018</a>&emsp;</td>
+                            <td><a class="white" target="_blank" href="https://joathrentstudios.itch.io/batteries-sold-separately">Ludum Dare 39 (2017)</a>&emsp;</td>
+                        </tr>
+                    </table>
+                </li>
+            </ul>
+            <p>
+                <br/>
+                <br/>
+                <br/>
+                <span class="yellow bold">keithb@pc</span>:<span class="blue">~</span>$ <span id="fake-cursor">&nbsp;</span> <br/>
+            </p>
+            <div style="position: absolute;top:12px; right:53px; border-bottom: 2px solid white; width: 10px; height: 6px;"></div>
+            <div style="position: absolute;top:12px; right:30px; border: 1px solid white; border-top-width: 3px; border-radius: 2px; width: 10px; height: 6px;"></div>
+            <p style="pointer-events: none; position: absolute;top:5px; right:10px; transform: rotateZ(45deg); font-size: 20px;">+</p>
+        </div>
     </body>
 </html>
