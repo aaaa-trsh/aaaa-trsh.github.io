@@ -1,0 +1,542 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>keith b's funhouse</title>
+    <link rel="stylesheet" href="./style.css?e=2">
+    <script src="./js/perlin.js"></script>
+    <script src="./js/tf.js"></script>
+    <script src="./js/plugins/three.min.js"></script>
+    <script src="./js/plugins/three-orbit.js"></script>
+    <script src="https://rawgit.com/josdirksen/learning-threejs/master/libs/perlin.js"></script>
+    <script src="./js/utils/colorUtils.js"></script>
+
+    <script src="https://d3js.org/d3.v4.min.js"></script> 
+    <script src="https://d3js.org/d3-color.v1.min.js"></script>
+    <script src="https://d3js.org/d3-interpolate.v1.min.js"></script> 
+    <script src="https://d3js.org/d3-scale-chromatic.v3.min.js"></script> 
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@200;300;400;500;700&display=swap" rel="stylesheet">
+</head>
+    <body id="body">
+        <video autoplay muted loop id="bgVideo" style="display: none;"><source src="" type="video/mp4"></video>
+        <canvas id="canvas"></canvas>
+        <div id="midbit">
+            <ul id="navbar">
+                <li onclick="clickMidButton(this)" id="projects"><h2>projects</h2></li> 
+                <li onclick="clickMidButton(this)" id="about"><h2>about</h2></li> 
+                <li onclick="clickMidButton(this)" id="contact"><h2>contact</h2></li>
+            </ul>
+
+            <h1 id="hero-title">keith<br/>bartlett</h1>
+            <h4><span id="bg-name">name</span> </span><span id="bg-info">info</span></h4>
+        </div>
+
+        <script>
+            var midButtonElements = null;
+            window.onload = () => {
+                var script = document.createElement('script');
+                document.body.append(script);
+                var bgScripts = ["cellular-automata"]//, "planet", "flow", "faces-baked", "cellular-automata", "cellular-automata2"];
+                script.src = "./js/backgrounds/bg-"+bgScripts[Math.floor(Math.random()*bgScripts.length)]+".js";
+                var heroTitle = document.getElementById("hero-title");
+                function clamp(v, min, max) {return Math.max(min, Math.min(max, v)); }
+                noise.seed(Math.random());
+                document.addEventListener('mousemove', e => {
+                    var x = (-e.clientX + window.innerWidth/2)/40;
+                    var y = (-e.clientY + window.innerHeight/2)/40;
+                    heroTitle.style.textShadow = `${x/2}px ${y/2}px #FDE725, ${x}px ${y}px #EE4266, 0 0 40px #fff`;
+                });
+                midButtonElements = ["projects", "about", "contact"].map(x => document.getElementById(x));
+            }
+            function clickMidButton(clickedElement) {
+                if (midButtonElements != null) {
+                    for (var element of midButtonElements) {
+                        if (element == clickedElement) {
+                            element.classList.add("section-title");
+                            document.getElementById("midbit").appendChild(element); 
+                        }
+                        else { element.style.opacity = "0"; }
+                    }
+                }
+            }
+        </script>
+        <script type="x-shader/x-vertex" id="oceanVertShader">
+varying vec2 vUv;
+varying vec3 ec_pos;
+
+void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    ec_pos = (modelViewMatrix * vec4(position, 1.0)).xyz;
+}
+        </script>
+        <script type="x-shader/x-vertex" id="oceanFragShader">
+varying vec2 vUv;
+//uniform sampler2D tDiffuse;
+varying float noise;
+varying float noise2;
+varying vec3 pos;
+varying vec3 ec_pos;
+
+void main() {
+    //vec3 diffuse = texture2D(tDiffuse, vUv).rgb;
+    vec3 ec_normal = normalize(cross(dFdx(ec_pos), dFdy(ec_pos)));
+    float normalBrightness = (clamp(ceil(dot(ec_normal, vec3(1, 1, 2)) - 0.3 *5.)/5. + 0.8, .7, 1.));
+
+    gl_FragColor = mix(vec4(vec3(.1, .7, .9) * normalBrightness, 0.4),  vec4(1), pow(dot(ec_normal, vec3(1))/1.7, 60.));
+}
+        </script>
+        <script type="x-shader/x-vertex" id="sphereVertShader">
+varying vec3 ec_pos;
+
+//
+// GLSL textureless classic 3D noise "cnoise",
+// with an RSL-style periodic variant "pnoise".
+// Author:  Stefan Gustavson (stefan.gustavson@liu.se)
+// Version: 2011-10-11
+//
+// Many thanks to Ian McEwan of Ashima Arts for the
+// ideas for permutation and gradient selection.
+//  
+// Copyright (c) 2011 Stefan Gustavson. All rights reserved.
+// Distributed under the MIT license. See LICENSE file.
+// https://github.com/ashima/webgl-noise
+//
+
+vec3 mod289(vec3 x)
+{
+    return x - floor(x * (1.0 / 289.0)) * 289.0;
+}
+
+vec4 mod289(vec4 x)
+{
+    return x - floor(x * (1.0 / 289.0)) * 289.0;
+}
+
+vec4 permute(vec4 x)
+{
+    return mod289(((x*34.0)+1.0)*x);
+}
+
+vec4 taylorInvSqrt(vec4 r)
+{
+    return 1.79284291400159 - 0.85373472095314 * r;
+}
+
+vec3 fade(vec3 t) {
+    return t*t*t*(t*(t*6.0-15.0)+10.0);
+}
+
+// Classic Perlin noise
+float cnoise(vec3 P)
+{
+    vec3 Pi0 = floor(P); // Integer part for indexing
+    vec3 Pi1 = Pi0 + vec3(1.0); // Integer part + 1
+    Pi0 = mod289(Pi0);
+    Pi1 = mod289(Pi1);
+    vec3 Pf0 = fract(P); // Fractional part for interpolation
+    vec3 Pf1 = Pf0 - vec3(1.0); // Fractional part - 1.0
+    vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
+    vec4 iy = vec4(Pi0.yy, Pi1.yy);
+    vec4 iz0 = Pi0.zzzz;
+    vec4 iz1 = Pi1.zzzz;
+
+    vec4 ixy = permute(permute(ix) + iy);
+    vec4 ixy0 = permute(ixy + iz0);
+    vec4 ixy1 = permute(ixy + iz1);
+
+    vec4 gx0 = ixy0 * (1.0 / 7.0);
+    vec4 gy0 = fract(floor(gx0) * (1.0 / 7.0)) - 0.5;
+    gx0 = fract(gx0);
+    vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);
+    vec4 sz0 = step(gz0, vec4(0.0));
+    gx0 -= sz0 * (step(0.0, gx0) - 0.5);
+    gy0 -= sz0 * (step(0.0, gy0) - 0.5);
+
+    vec4 gx1 = ixy1 * (1.0 / 7.0);
+    vec4 gy1 = fract(floor(gx1) * (1.0 / 7.0)) - 0.5;
+    gx1 = fract(gx1);
+    vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);
+    vec4 sz1 = step(gz1, vec4(0.0));
+    gx1 -= sz1 * (step(0.0, gx1) - 0.5);
+    gy1 -= sz1 * (step(0.0, gy1) - 0.5);
+
+    vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
+    vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
+    vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);
+    vec3 g110 = vec3(gx0.w,gy0.w,gz0.w);
+    vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
+    vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
+    vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
+    vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
+
+    vec4 norm0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));
+    g000 *= norm0.x;
+    g010 *= norm0.y;
+    g100 *= norm0.z;
+    g110 *= norm0.w;
+    vec4 norm1 = taylorInvSqrt(vec4(dot(g001, g001), dot(g011, g011), dot(g101, g101), dot(g111, g111)));
+    g001 *= norm1.x;
+    g011 *= norm1.y;
+    g101 *= norm1.z;
+    g111 *= norm1.w;
+
+    float n000 = dot(g000, Pf0);
+    float n100 = dot(g100, vec3(Pf1.x, Pf0.yz));
+    float n010 = dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z));
+    float n110 = dot(g110, vec3(Pf1.xy, Pf0.z));
+    float n001 = dot(g001, vec3(Pf0.xy, Pf1.z));
+    float n101 = dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z));
+    float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));
+    float n111 = dot(g111, Pf1);
+
+    vec3 fade_xyz = fade(Pf0);
+    vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
+    vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
+    float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x);
+    return 2.2 * n_xyz;
+}
+
+// Classic Perlin noise, periodic variant
+float pnoise(vec3 P, vec3 rep)
+{
+    vec3 Pi0 = mod(floor(P), rep); // Integer part, modulo period
+    vec3 Pi1 = mod(Pi0 + vec3(1.0), rep); // Integer part + 1, mod period
+    Pi0 = mod289(Pi0);
+    Pi1 = mod289(Pi1);
+    vec3 Pf0 = fract(P); // Fractional part for interpolation
+    vec3 Pf1 = Pf0 - vec3(1.0); // Fractional part - 1.0
+    vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
+    vec4 iy = vec4(Pi0.yy, Pi1.yy);
+    vec4 iz0 = Pi0.zzzz;
+    vec4 iz1 = Pi1.zzzz;
+
+    vec4 ixy = permute(permute(ix) + iy);
+    vec4 ixy0 = permute(ixy + iz0);
+    vec4 ixy1 = permute(ixy + iz1);
+
+    vec4 gx0 = ixy0 * (1.0 / 7.0);
+    vec4 gy0 = fract(floor(gx0) * (1.0 / 7.0)) - 0.5;
+    gx0 = fract(gx0);
+    vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);
+    vec4 sz0 = step(gz0, vec4(0.0));
+    gx0 -= sz0 * (step(0.0, gx0) - 0.5);
+    gy0 -= sz0 * (step(0.0, gy0) - 0.5);
+
+    vec4 gx1 = ixy1 * (1.0 / 7.0);
+    vec4 gy1 = fract(floor(gx1) * (1.0 / 7.0)) - 0.5;
+    gx1 = fract(gx1);
+    vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);
+    vec4 sz1 = step(gz1, vec4(0.0));
+    gx1 -= sz1 * (step(0.0, gx1) - 0.5);
+    gy1 -= sz1 * (step(0.0, gy1) - 0.5);
+
+    vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
+    vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
+    vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);
+    vec3 g110 = vec3(gx0.w,gy0.w,gz0.w);
+    vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
+    vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
+    vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
+    vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
+
+    vec4 norm0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));
+    g000 *= norm0.x;
+    g010 *= norm0.y;
+    g100 *= norm0.z;
+    g110 *= norm0.w;
+    vec4 norm1 = taylorInvSqrt(vec4(dot(g001, g001), dot(g011, g011), dot(g101, g101), dot(g111, g111)));
+    g001 *= norm1.x;
+    g011 *= norm1.y;
+    g101 *= norm1.z;
+    g111 *= norm1.w;
+
+    float n000 = dot(g000, Pf0);
+    float n100 = dot(g100, vec3(Pf1.x, Pf0.yz));
+    float n010 = dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z));
+    float n110 = dot(g110, vec3(Pf1.xy, Pf0.z));
+    float n001 = dot(g001, vec3(Pf0.xy, Pf1.z));
+    float n101 = dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z));
+    float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));
+    float n111 = dot(g111, Pf1);
+
+    vec3 fade_xyz = fade(Pf0);
+    vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
+    vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
+    float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x);
+    return 2.2 * n_xyz;
+}
+
+// Include the Ashima code here!
+
+varying vec2 vUv;
+varying float noise;
+varying float noise2;
+varying vec3 pos;
+
+float turbulence( vec3 p ) {
+    float w = 100.0;
+    float t = -.5;
+    for (float f = 1.0 ; f <= 10.0 ; f++ ){
+        float power = pow( 2.0, f );
+        t += abs( pnoise( vec3( power * p ), vec3( 10.0, 10.0, 10.0 ) ) / power );
+    }
+    return t;
+}
+
+void main() {
+
+    vUv = uv;
+    
+    float clampY = clamp(abs(position.y), 0., 1.);
+    noise = .9 * ((turbulence( 0.8 * normal )));
+    if (abs(position.y) > 0.5) {
+        noise = noise * .4;
+        noise -= 0.11;
+    }
+    noise2 = (((turbulence((10. - normal)) + 1.33)) + abs(normal.y)/5.) + noise+.2;
+
+    float displacement = (5. * noise + 2.3);
+    pos = position;
+
+    vec3 newPosition = position + 1.*(normal * (displacement/10.0));
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
+    ec_pos = (modelViewMatrix * vec4(newPosition, 1.0)).xyz;
+}
+                
+    
+        </script>
+        <script type="x-shader/x-vertex" id="sphereFragShader">
+            
+varying vec2 vUv;
+varying float noise;
+varying float noise2;
+varying vec3 pos;
+varying vec3 ec_pos;
+
+void main() {
+    float h = 0.2;
+    float m = (noise*2.)+1.2;
+
+    vec3 snow = vec3(1.0); // snow
+    vec3 grass = vec3(0.12, (clamp(noise2, 0., 1.)*0.1)+0.3, ((ceil(m*10.-3.)/10.)-.4)); // grass
+    vec3 sand = vec3(0.9, 0.9, 0.6); // snad
+    vec3 oceanFloor = vec3(0.5, 0.6, .6) * ceil((m + .6)*15.)/4.5-2.2;
+    
+    if (noise2-1. < 0.13) {
+        grass = vec3(ceil((m + .3)*10.)/10. -0.6, .5, 0.2);
+        snow = grass;
+    }
+    
+    if (abs(pos.y) > .5) {
+        grass = vec3(1);
+        sand = vec3(1);
+    }
+
+    vec3 c = vec3(0);
+    
+    //if (h/m < 0.55) {
+    //    c = snow;
+    //}
+    if (h/m < 0.18) {
+        c = snow;
+    }else {
+        if (h/m < 0.26) {
+            c = grass;
+        }else if (h/m < 0.28){
+            c = sand;
+        }else {
+            c = oceanFloor;
+        }
+    }
+    vec3 ec_normal = normalize(cross(dFdx(ec_pos), dFdy(ec_pos)));
+    float normalBrightness = (clamp(ceil(dot(ec_normal, vec3(1))*10.)/10., .7, 1.));
+    gl_FragColor = vec4(c*(normalBrightness) + vec3(0.1, 0.1, 0.2)*(1.-normalBrightness), 1.);
+}
+    
+        </script>
+        <script type="x-shader/x-vertex" id="atmosphereVertShader">
+varying vec2 vUv;
+varying vec2 frag_position;
+
+void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    frag_position = cameraPosition.xy;
+}
+        </script>
+        <script type="x-shader/x-vertex" id="atmosphereFragShader">
+#include <packing>
+
+varying vec2 vUv;
+
+uniform sampler2D tDiffuse;
+uniform sampler2D tDepth;
+uniform float cameraNear;
+uniform float cameraFar;
+uniform float cameraDistance;
+uniform float cameraAspect;
+uniform vec3 cameraPos;
+uniform float startTime;
+
+int numScatterPoints = 15;
+int numOpticalDepthPoints = 15;
+float atmosphereRad;
+float planetRad;//?? idk
+float densityFalloff = -0.5;
+vec3 dirToSun = vec3(1, 1, 0);
+
+vec2 readDepth(sampler2D depthSampler, vec2 coord) {
+    float fragCoordZ = texture2D(depthSampler, coord).x;
+    float viewZ = perspectiveDepthToViewZ(fragCoordZ, cameraNear, cameraFar * 3.);
+    float depth = viewZToOrthographicDepth(viewZ, cameraNear, (cameraFar / 1000.));
+    return vec2(depth, viewZ); 
+}
+
+vec2 rsi(vec3 r0, vec3 rd, vec3 s0, float sr) {
+    float a = dot(rd, rd);
+    vec3 s0_r0 = r0 - s0;
+    float b = 2.0 * dot(rd, s0_r0);
+    float c = dot(s0_r0, s0_r0) - (sr * sr);
+    float disc = b * b - 4.0 * a* c;
+    if (disc < 0.0) {
+        return vec2(-1.0, -1.0);
+    }else{
+        return vec2(-b - sqrt(disc), -b + sqrt(disc)) / (2.0 * a);
+    }
+}
+
+float length(vec3 p) {
+    vec3 power = p * p;
+    return sqrt(power.x + power.y + power.z);
+}
+
+float densityAtPoint(vec3 p) {
+    float heightAboveSurface = length(vec3(0, 0, 0)-p) - planetRad;
+    float clampedHeight = heightAboveSurface / (atmosphereRad - planetRad); 
+    return exp(-clampedHeight * densityFalloff) * (1.-clampedHeight);
+}
+
+float opticalDepth(vec3 r0, vec3 rd, float rl) {
+    vec3 densitySamplePoint = r0;
+    float step = rl / (float(numOpticalDepthPoints) - 1.);
+    float opticalDepth = 0.0;
+
+    for (int i = 0; i < numOpticalDepthPoints; i++) {
+        float localDensity = densityAtPoint(densitySamplePoint);
+        opticalDepth += localDensity * step;
+        densitySamplePoint += rd * step;
+    }
+    return opticalDepth;
+}
+
+float calcLight(vec3 r0, vec3 rd, float rl) {
+    vec3 scatterPoint = r0;
+    float step = rl / (float(numScatterPoints) - 1.);
+    float scatteredLight = 0.;
+    for (int i = 0; i < numScatterPoints; i++) {
+        vec2 sunRay = rsi(r0, rd, vec3(0, 0, 0), atmosphereRad);
+        float sunRayLength = sunRay.x;
+        float sunRayOpticalDepth = opticalDepth(scatterPoint, dirToSun, sunRayLength);
+        float viewRayOpticalDepth = opticalDepth(scatterPoint, -rd, step * float(i));
+        float transmittance = exp(-(sunRayOpticalDepth + viewRayOpticalDepth));
+        float localDensity = densityAtPoint(scatterPoint);
+
+        scatteredLight += localDensity * transmittance * step;
+        scatterPoint += rd * step;
+    }
+    return scatteredLight;
+}
+
+float random(vec2 ab) 
+{
+	float f = (cos(dot(ab ,vec2(21.9898,78.233))) * 43758.5453);
+	return fract(f);
+}
+
+float noise(in vec2 xy) 
+{
+	vec2 ij = floor(xy);
+	vec2 uv = xy-ij;
+	uv = uv*uv*(3.0-2.0*uv);
+	
+
+	float a = random(vec2(ij.x, ij.y ));
+	float b = random(vec2(ij.x+1., ij.y));
+	float c = random(vec2(ij.x, ij.y+1.));
+	float d = random(vec2(ij.x+1., ij.y+1.));
+	float k0 = a;
+	float k1 = b-a;
+	float k2 = c-a;
+	float k3 = a-b-c+d;
+	return (k0 + k1*uv.x + k2*uv.y + k3*uv.x*uv.y);
+}
+
+void main() {
+    vec3 diffuse = texture2D(tDiffuse, vUv).rgb;
+    vec2 depth = readDepth(tDepth, vUv);
+
+    planetRad = .6/cameraDistance * 186.; 
+    atmosphereRad = 120.; 
+
+    vec2 uv = (-1.0 + 2.0*vUv) * vec2(cameraAspect, 1.0);
+    vec3 r0 = cameraPos;
+    vec3 rd = normalize(vec3(uv, 1.0));
+
+    vec2 atmosphereIntersection = rsi(r0, rd, vec3(0, 0, -100. * cameraDistance), atmosphereRad);
+    float dstToAtmosphere = atmosphereIntersection.y;
+    float dstThroughAtmosphere = min(atmosphereIntersection.y - atmosphereIntersection.x, depth.x);
+
+    gl_FragColor.a = 1.0;
+    if (dstThroughAtmosphere > 0.) {
+        vec3 pointInAtmosphere = r0 + rd * dstToAtmosphere;
+        float light = calcLight(pointInAtmosphere, rd, dstThroughAtmosphere);
+        gl_FragColor.rgb = diffuse; //* (1.-light) + (light);
+    }
+    else
+    {
+        gl_FragColor.rgb = diffuse;// + clamp(vec3(dstThroughAtmosphere)/atmosphereRad, 0., 1.) * vec3(r0-rd * 0.5 + 0.6);
+    }
+
+    float light = clamp(dot(rd, dirToSun)+0.8, 0., 1.);
+
+	float color = pow(noise(vUv.xy * 100.), 400.0) * 20.0;
+	float r1 = noise(vUv.xy*100.*noise(vec2(sin(0.01))));
+	float r2 = noise(vUv.xy*222.*noise(vec2(cos(0.01), sin(0.01))));
+	float r3 = noise(vUv.xy*943.*noise(vec2(sin(0.05), cos(0.05))));
+		
+    
+    gl_FragColor.rgb = (diffuse * (light)) + ((clamp(vec3(dstThroughAtmosphere)/atmosphereRad, 0., 1.) * light)) * vec3(0, 0.3, .5);//vec3((r0-rd)*0.2 + 0.5);
+    if (dstThroughAtmosphere == 0.) {
+        gl_FragColor += vec4(vec3(r1, r2, r3) * color, 1.0);
+    }
+
+}
+        </script>
+        <!--
+            TO INSTALL PYTHON LSDSLAM:
+            install vm with ubuntu
+            apt get install all the deps
+            build pangolin + g2o
+            git clone my fork of the repo
+            copy /usr/include/opencv4/opencv2 to /usr/include/opencv2
+            
+
+        -->
+        <!--
+            bg ideas:
+            ✓ face noiser
+            ✓ cellular automata
+            * marching cubes war
+              pixel war
+            * boids
+            * pointcloud vis
+              2d fluid sim
+              lidar/raytracing + mapgen
+              wfc platformer env (build platformer, waits, fades into space bg, makes another)
+              crawler
+        -->
+    </body>
+</html>
