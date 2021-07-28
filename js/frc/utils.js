@@ -22,6 +22,24 @@ function midpoint(x1, y1, x2, y2)
     return [(x1 + x2)/2, (y1 + y2)/2]
 }
 
+function drawX(x, y, size) {
+    ctx.beginPath();
+    ctx.moveTo(x+size, y+size);
+    ctx.lineTo(x-size, y-size);
+    ctx.moveTo(x+size, y-size);
+    ctx.lineTo(x-size, y+size);
+    ctx.stroke();
+    ctx.closePath();
+}
+
+function CircleCenter2PointRad(p1, p2, rad) {
+    var radSqr = rad * rad;
+    var ptDist = Math.hypot(p2.sub(p1).x, p2.sub(p1).y);
+    var midpoint = p1.add(p2).mul(0.5);
+    //((p2.x - p1.x) / ptDist)
+    return midpoint.add(new Vector2(Math.sqrt(radSqr - Math.pow(ptDist / 2, 2))).scale(p2.sub(p1).mul(ptDist)));
+}
+
 function intersectLineSegments(x1, y1, x2, y2, x3, y3, x4, y4) {
     var t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4))
     var u = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4))

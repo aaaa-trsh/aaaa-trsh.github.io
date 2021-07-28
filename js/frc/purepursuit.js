@@ -31,6 +31,10 @@ class Vector2 {
         return new Vector2(this.x * other, this.y * other);
     }
 
+    scale(other) {
+        return new Vector2(this.x * other.x, this.y * other.y);
+    }
+
     sub(other) {
         return new Vector2(this.x - other.x, this.y - other.y);
     }
@@ -308,7 +312,24 @@ function update() {
             //drawPoint(2, robotPos);
             setBrush("white");
             drawLine(prevRobotPos, robotPos);
+            var relativeLookahead = look.sub(robotPos);
 
+            if (pointCount % 20 == 0) {
+                drawX(look.x, look.y, 5)
+                drawX(robotPos.x, robotPos.y, 5)
+
+                setBrush("yellow", 1, 0.2);
+
+                drawLine(robotPos, robotPos.add(Vector2.fromAngle(robotAngle + pi/2).mul(relativeLookahead)));
+                
+                var curvCenter = CircleCenter2PointRad(robotPos, look, Math.abs(relativeLookahead.x));
+                console.log(curvCenter);
+                drawCircle(
+                    curvCenter.x,
+                    curvCenter.y,
+                    Math.abs(relativeLookahead.x),
+                )
+            }
             //setBrush("darkcyan", trackWidth, 0.1);
             //drawLine(prevPrevRobotPos, robotPos);
 
