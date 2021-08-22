@@ -68,6 +68,14 @@ class Vector2 {
     angleTo(other) {
         return Math.atan2(this.y - other.y, this.x - other.x);
     }
+
+    det(other) {
+        let a = this.x;
+        let b = other.x;
+        let c = this.y;
+        let d = other.y;
+        return a*d - b*c;
+    }
 }
 
 let pixelsPerUnit = 30;
