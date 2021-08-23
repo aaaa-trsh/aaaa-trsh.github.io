@@ -115,11 +115,12 @@ class CurveTool extends Tool{
         let style = ctx.strokeStyle;
         
         if (drawDebug) {
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 3;
+            ctx.globalCompositeOperation = 'lighter';
             for (let i = 1; i < samples; i+= 2) {
-                ctx.globalAlpha = .1;
+                ctx.globalAlpha = .01;
 
-                ctx.strokeStyle = "#2a4552";
+                ctx.strokeStyle = "#7cd5f1";
                 let curvature = curve.getCurvature(i / samples);
                 drawCircle(
                     new Point(curvature.x, curvature.y),
@@ -129,6 +130,7 @@ class CurveTool extends Tool{
                 ctx.strokeStyle = style;
             }
             ctx.lineWidth = 1;
+            ctx.globalCompositeOperation = 'source-over';
         }
         ctx.lineWidth = 1;
         for (let i = 1; i < samples; i++) {
