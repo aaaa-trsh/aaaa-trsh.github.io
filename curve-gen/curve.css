@@ -1,8 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap');
 body {
     margin: 0;
     padding: 0; 
     overflow-y: hidden;
     background-color: #333;
+    color: white;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
 }
 
 #header {
@@ -55,12 +58,14 @@ body {
 
 #settings-container {
     position: absolute;
-    bottom: 10px;
+    top: 10px;
     left: 10px; 
-    background-color: #fff;
+    width: 100px;
+    background-color: #0009;
+    border: 1px solid #6668;
+    border-radius: 6px;
+    padding: 10px;
 }
 
 #curve-settings {
-    width: 100px;
-    height: 100px;
 }
