@@ -238,13 +238,15 @@ class PointGenTool extends Tool{
         ctx.fillStyle = "#90d537";
         ctx.lineWidth = 1;
 
-        drawCircle(CurveTool.curves[0].getPoint(0), 2);
-        ctx.fill();
-        for (let i = 0; i < CurveTool.curves.length; i++) {
-            ctx.strokeStyle = "#90d537";
-            CurveTool.drawCurve(CurveTool.curves[i], true, false); 
-            drawCircle(CurveTool.curves[i].getPoint(1), 2);
+        if (CurveTool.curves.length > 0) {
+            drawCircle(CurveTool.curves[0].getPoint(0), 2);
             ctx.fill();
+            for (let i = 0; i < CurveTool.curves.length; i++) {
+                ctx.strokeStyle = "#90d537";
+                CurveTool.drawCurve(CurveTool.curves[i], true, false); 
+                drawCircle(CurveTool.curves[i].getPoint(1), 2);
+                ctx.fill();
+            }
         }
     }
 }

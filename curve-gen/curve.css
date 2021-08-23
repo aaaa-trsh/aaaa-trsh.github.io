@@ -48,3 +48,19 @@ body {
     filter: sepia(100%) brightness(1) saturate(15) hue-rotate(-16deg) blur(.3px);
     transform: translateY(3px);
 }
+
+#canvas-container {
+    position: relative;
+}
+
+#settings-container {
+    position: absolute;
+    bottom: 10px;
+    left: 10px; 
+    background-color: #fff;
+}
+
+#curve-settings {
+    width: 100px;
+    height: 100px;
+}
