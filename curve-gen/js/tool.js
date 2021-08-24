@@ -111,7 +111,7 @@ class CurveTool extends Tool{
     }
 
     static drawCurve(curve, drawArrows=true, drawDebug=false) {
-        const samples = 100;
+        const samples = 10;
         let style = ctx.strokeStyle;
         
         if (drawDebug) {
@@ -133,12 +133,12 @@ class CurveTool extends Tool{
             ctx.globalCompositeOperation = 'source-over';
         }
         ctx.lineWidth = 1;
-        for (let i = 1; i < samples; i++) {
+        for (let i = 1; i <= samples; i++) {
             const p = curve.getPoint(i / samples);
             const prev = curve.getPoint((i - 1) / samples);
             drawLine(p, prev);
 
-            if (i % 20 == 0 && drawArrows) {
+            if (drawArrows && i < samples) {
                 let fwd = Point.mul(
                     Point.sub(p, prev).normalize(), 
                     4
@@ -171,7 +171,7 @@ class CurveTool extends Tool{
             )
             ctx.strokeStyle = "#2a4552";
             ctx.lineWidth = 2;
-            CurveTool.drawCurve(preVisCurve, true, false);
+            CurveTool.drawCurve(preVisCurve, true);
             
             ctx.lineWidth = 1;
             ctx.strokeStyle = "white";
@@ -181,7 +181,7 @@ class CurveTool extends Tool{
         ctx.lineWidth = 1;
         for (let i = 0; i < CurveTool.curves.length; i++) {
             ctx.strokeStyle = "#90d537";
-            CurveTool.drawCurve(CurveTool.curves[i], true, true); 
+            CurveTool.drawCurve(CurveTool.curves[i], true); 
         }
 
         // draw handles
@@ -225,6 +225,7 @@ class PointGenTool extends Tool{
     static curves = [];
     constructor(...args){
         super(...args);
+        this.i = 0;
     }
 
     move(e) {
@@ -233,12 +234,14 @@ class PointGenTool extends Tool{
     click(e) {
         
     }
-
-    update() {        
+    
+    update() {       
+        
         ctx.fillStyle = "#90d537";
         ctx.lineWidth = 1;
 
         if (CurveTool.curves.length > 0) {
+            this.i = (this.i + 10) % CurveTool.curves[0].length; 
             drawCircle(CurveTool.curves[0].getPoint(0), 2);
             ctx.fill();
             for (let i = 0; i < CurveTool.curves.length; i++) {
@@ -247,6 +250,10 @@ class PointGenTool extends Tool{
                 drawCircle(CurveTool.curves[i].getPoint(1), 2);
                 ctx.fill();
             }
+            
+            let point100 = CurveTool.curves[0].getPoint(CurveTool.curves[0].mapDistanceToT(this.i));
+            drawCircle(point100, 20);
+            ctx.fill();
         }
     }
 }

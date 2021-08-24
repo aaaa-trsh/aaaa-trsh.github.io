@@ -5,7 +5,8 @@ class CubicCurve {
         this.p1 = p1;
         this.p2 = p2;
         this.p3 = p3;
-
+        this.arcLengths = [];
+        this.length = this.getLength();
     }
 
     getPoint(t) {
@@ -35,12 +36,38 @@ class CubicCurve {
     getControlPoints() { return [this.p0, this.p1, this.p2, this.p3] }
 
     getLength(samples=100) {
-        let length = 0;
+        this.length = 0;
+        this.arcLengths = new Array(samples + 1);
+        this.arcLengths[0] = 0;
         for (let i = 1; i < samples; i++) {
             let p = this.getPoint(i / (samples - 1));
             let pNext = this.getPoint((i - 1) / (samples - 1));
-            length += Point.dist(p, pNext);
+
+            this.length += Point.dist(p, pNext);
+            this.arcLengths[i] = this.length;
         }
-        return length;
+        return this.length;
+    }
+    remap(value, low1, high1, low2, high2) {
+        return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
+    }
+    mapDistanceToT(dist) {
+        this.length = this.getLength();
+        let samples = this.arcLengths.length;
+
+        if (0 <= dist && dist <= this.length) {
+            for (let i = 1; i < samples; i++) {
+                if (this.arcLengths[i - 1] <= dist && dist <= this.arcLengths[i]) {
+                    return this.remap(
+                        dist,
+                        this.arcLengths[i - 1],
+                        this.arcLengths[i],
+                        (i - 1) / (samples - 1),
+                        (i) / (samples - 1)
+                    );
+                }
+            }
+        }
+        return dist / this.length;
     }
 }
