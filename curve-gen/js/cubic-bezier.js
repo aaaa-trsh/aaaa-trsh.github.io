@@ -48,9 +48,11 @@ class CubicCurve {
         }
         return this.length;
     }
+
     remap(value, low1, high1, low2, high2) {
         return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
     }
+    
     mapDistanceToT(dist) {
         this.length = this.getLength();
         let samples = this.arcLengths.length;

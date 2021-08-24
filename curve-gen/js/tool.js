@@ -6,6 +6,8 @@ class Tool {
     unclick(e) {}
     move(e) {}
     move(e) {}
+    start() {}
+    end() {}
 }
 
 class CurveTool extends Tool{
@@ -111,7 +113,7 @@ class CurveTool extends Tool{
     }
 
     static drawCurve(curve, drawArrows=true, drawDebug=false) {
-        const samples = 10;
+        const samples = 25;
         let style = ctx.strokeStyle;
         
         if (drawDebug) {
@@ -138,7 +140,7 @@ class CurveTool extends Tool{
             const prev = curve.getPoint((i - 1) / samples);
             drawLine(p, prev);
 
-            if (drawArrows && i < samples) {
+            if (drawArrows && i < samples && i%3 == 0) {
                 let fwd = Point.mul(
                     Point.sub(p, prev).normalize(), 
                     4
@@ -222,10 +224,10 @@ class CurveTool extends Tool{
 
 
 class PointGenTool extends Tool{
-    static curves = [];
+    static points = [];
     constructor(...args){
         super(...args);
-        this.i = 0;
+        this.i = 0;        
     }
 
     move(e) {
@@ -234,9 +236,26 @@ class PointGenTool extends Tool{
     click(e) {
         
     }
+
+    start() {
+        this.generatePoints();
+    }
+
+    generatePoints() {
+        PointGenTool.points = [];
+        for (let i = 0; i < CurveTool.curves.length; i++) {
+            let offset = PointGenTool.points > 0 ? (50-Point.dist(
+                PointGenTool.points[PointGenTool.points.length - 1]),
+                CurveTool.curves[i].p0
+            ) : 0;
+            for (let k = offset; k < CurveTool.curves[i].length; k+=50) {
+                let point = CurveTool.curves[i].getPoint(CurveTool.curves[i].mapDistanceToT(k));
+                PointGenTool.points[PointGenTool.points.length] = point;
+            }
+        }
+    }
     
-    update() {       
-        
+    update() {
         ctx.fillStyle = "#90d537";
         ctx.lineWidth = 1;
 
@@ -246,14 +265,15 @@ class PointGenTool extends Tool{
             ctx.fill();
             for (let i = 0; i < CurveTool.curves.length; i++) {
                 ctx.strokeStyle = "#90d537";
-                CurveTool.drawCurve(CurveTool.curves[i], true, false); 
+                CurveTool.drawCurve(CurveTool.curves[i], false, false); 
                 drawCircle(CurveTool.curves[i].getPoint(1), 2);
                 ctx.fill();
             }
-            
-            let point100 = CurveTool.curves[0].getPoint(CurveTool.curves[0].mapDistanceToT(this.i));
-            drawCircle(point100, 20);
-            ctx.fill();
+
+            for (let j = 0; j < PointGenTool.points.length; j++) {
+                drawCircle(PointGenTool.points[j], 4);
+                ctx.fill();
+            }
         }
     }
 }

@@ -40,6 +40,7 @@ for (let i = 0; i < tools.length; i++) {
 }
 
 function select(idx) {
+    currentTool.toolObj.end();
     tools.forEach((tool, i) => {
         if (i === idx) tool.element.childNodes[1].classList.add("selected");
         else tool.element.childNodes[1].classList.remove("selected");
@@ -50,5 +51,6 @@ function select(idx) {
         }
     });
     currentTool = tools[idx];
+    currentTool.toolObj.start();
 }
 select(0);
