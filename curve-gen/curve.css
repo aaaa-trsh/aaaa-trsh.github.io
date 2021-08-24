@@ -74,3 +74,25 @@ kbd {
     padding: 10px;
     pointer-events: none;
 }
+
+#settings-container input {
+    pointer-events: all;
+    width: 2em;
+    float: right;
+    height: 0.8em;
+    border: 2px solid #fff5;
+    text-align: right;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    border-radius: 3px;
+    background-color: #0000;
+    color: white;
+    font-size: 16px;
+    padding-top: 2px;
+    margin: 0;
+}
+
+#settings-container input::-webkit-outer-spin-button,
+#settings-container input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

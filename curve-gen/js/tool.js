@@ -227,7 +227,7 @@ class PointGenTool extends Tool{
     static points = [];
     constructor(...args){
         super(...args);
-        this.i = 0;        
+        this.i = 0;
     }
 
     move(e) {
@@ -238,17 +238,23 @@ class PointGenTool extends Tool{
     }
 
     start() {
+        this.spacingInput = document.getElementById("point-spacing-input");
+        this.spacingInput.addEventListener("input", () => {
+            this.pointSpacing = parseInt(this.spacingInput.value, 10);
+            this.generatePoints();
+        });
+        this.pointSpacing = parseInt(this.spacingInput.value, 10);
         this.generatePoints();
     }
 
     generatePoints() {
         PointGenTool.points = [];
         for (let i = 0; i < CurveTool.curves.length; i++) {
-            let offset = PointGenTool.points > 0 ? (50-Point.dist(
+            let offset = PointGenTool.points > 0 ? (this.pointSpacing-Point.dist(
                 PointGenTool.points[PointGenTool.points.length - 1]),
                 CurveTool.curves[i].p0
             ) : 0;
-            for (let k = offset; k < CurveTool.curves[i].length; k+=50) {
+            for (let k = offset; k < CurveTool.curves[i].length; k+=this.pointSpacing) {
                 let point = CurveTool.curves[i].getPoint(CurveTool.curves[i].mapDistanceToT(k));
                 PointGenTool.points[PointGenTool.points.length] = point;
             }
@@ -269,7 +275,7 @@ class PointGenTool extends Tool{
                 drawCircle(CurveTool.curves[i].getPoint(1), 2);
                 ctx.fill();
             }
-
+            ctx.fillStyle = "#fff";
             for (let j = 0; j < PointGenTool.points.length; j++) {
                 drawCircle(PointGenTool.points[j], 4);
                 ctx.fill();
