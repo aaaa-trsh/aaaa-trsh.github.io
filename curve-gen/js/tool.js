@@ -11,7 +11,14 @@ class Tool {
 }
 
 class CurveTool extends Tool{
-    static curves = [];
+    static curves = [
+        new CubicCurve(
+            new Point(200, 300),
+            new Point(500, 100),
+            new Point(100, 100),
+            new Point(400, 300),
+        )
+    ];
     constructor(...args){
         super(...args);
         this.newCurvePoints = [];
@@ -259,7 +266,7 @@ class PointGenTool extends Tool{
     }
 
     updateInputs() {
-        this.maxVelocity = parseFloat(this.maxVelocityInput.value);
+        this.maxVelocity = parseFloat(this.maxVelocityInput.value) * 100;
         this.slowdownCoefficient = parseInt(this.slowdownCoefficientInput.value, 10);
 
         this.pointSpacing = parseInt(this.spacingInput.value, 10);
@@ -279,7 +286,7 @@ class PointGenTool extends Tool{
                 let t = CurveTool.curves[i].mapDistanceToT(k);
                 let point = CurveTool.curves[i].getPoint(t);
                 PointGenTool.points[PointGenTool.points.length] = point;//{p: point/*, v: Math.min()*/};
-                PointGenTool.velocities[PointGenTool.velocities.length] = Math.min(this.maxVelocity, this.slowdownCoefficient / (CurveTool.curves[i].getCurvature(t).r));//{p: point/*, v: Math.min()*/};
+                PointGenTool.velocities[PointGenTool.velocities.length] = Math.min(this.maxVelocity, this.slowdownCoefficient / (1/CurveTool.curves[i].getCurvature(t).r));//{p: point/*, v: Math.min()*/};
             }
         }
     }
@@ -287,6 +294,10 @@ class PointGenTool extends Tool{
     lerp(a, b, amt)
     {
         return (b - a) * amt + a;
+    }
+
+    lerpColor(r1, b1, g1, r2, b2, g2, a) {
+        return `rgb(${this.lerp(r1, r2, a)}, ${this.lerp(b1, b2, a)}, ${this.lerp(g1, g2, a)})`;
     }
 
     update() {
@@ -304,7 +315,7 @@ class PointGenTool extends Tool{
             }
             for (let j = 0; j < PointGenTool.points.length; j++) {
                 let a = PointGenTool.velocities[j] / this.maxVelocity;
-                ctx.fillStyle = `rgb(${this.lerp(0, 255, a)}, ${this.lerp(0, 255, a)}, ${this.lerp(0, 255, a)})`;
+                ctx.fillStyle = this.lerpColor(255, 255, 255, 0, 0, 0, 1-a);
                 //console.log(a);
 
                 drawCircle(PointGenTool.points[j], 4);
