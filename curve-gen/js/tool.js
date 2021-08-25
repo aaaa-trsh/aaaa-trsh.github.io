@@ -129,7 +129,7 @@ class CurveTool extends Tool{
             for (let i = 1; i < samples; i+= 2) {
                 ctx.globalAlpha = .01;
 
-                ctx.strokeStyle = "#7cd5f1";
+                ctx.strokeStyle = lightBlue;
                 let curvature = curve.getCurvature(i / samples);
                 drawCircle(
                     new Point(curvature.x, curvature.y),
@@ -141,7 +141,6 @@ class CurveTool extends Tool{
             ctx.lineWidth = 1;
             ctx.globalCompositeOperation = 'source-over';
         }
-        ctx.lineWidth = 1;
         for (let i = 1; i <= samples; i++) {
             const p = curve.getPoint(i / samples);
             const prev = curve.getPoint((i - 1) / samples);
@@ -178,18 +177,18 @@ class CurveTool extends Tool{
                 this.newCurvePoints.length > 2 ? this.newCurvePoints[2] : mousePoint,
                 this.newCurvePoints.length > 3 ? this.newCurvePoints[3] : mousePoint
             )
-            ctx.strokeStyle = "#2a4552";
+            ctx.strokeStyle = darkBlue;
             ctx.lineWidth = 2;
             CurveTool.drawCurve(preVisCurve, true);
             
             ctx.lineWidth = 1;
-            ctx.strokeStyle = "white";
+            ctx.strokeStyle = white;
         }
 
         // draw curves
         ctx.lineWidth = 1;
         for (let i = 0; i < CurveTool.curves.length; i++) {
-            ctx.strokeStyle = "#90d537";
+            ctx.strokeStyle = yellow;
             CurveTool.drawCurve(CurveTool.curves[i], true); 
         }
 
@@ -198,23 +197,23 @@ class CurveTool extends Tool{
         let closest = this.selectableHandle();
         for (let i = 0; i < handles.length; i++) {
             if (i < handles.length - 1 && (handles[i].orbit == null || handles[i + 1].orbit == null)) {
-                ctx.strokeStyle = "#2a4552";
+                ctx.strokeStyle = darkBlue;
                 drawLine(handles[i].p, handles[i+1].p);
-                ctx.strokeStyle = "white";
+                ctx.strokeStyle = white;
             }
 
             if (closest != null && closest.p == handles[i].p) ctx.lineWidth = 3;
             else ctx.lineWidth = 1;
 
             if(handles[i].orbit != null)
-                ctx.strokeStyle = "#7cd5f1";
+                ctx.strokeStyle = lightBlue;
             else {
-                ctx.strokeStyle = "#fff";
+                ctx.strokeStyle = white;
                 ctx.lineWidth += 2;
             }
             
             drawCircle(handles[i].p, closest == handles[i] ? 4 : 5);
-            ctx.strokeStyle = "white";
+            ctx.strokeStyle = white;
             ctx.lineWidth = 1;
         }
 
@@ -229,7 +228,6 @@ class CurveTool extends Tool{
     }
 }
 
-
 class PointGenTool extends Tool{
     static points = [];
     static velocities = [];
@@ -241,6 +239,7 @@ class PointGenTool extends Tool{
     move(e) {
         
     }
+
     click(e) {
         
     }
@@ -248,11 +247,12 @@ class PointGenTool extends Tool{
     start() {
         this.spacingInput = document.getElementById("point-spacing-input");
         this.maxVelocityInput = document.getElementById("point-maxvel-input");
+        this.maxAccelerationInput = document.getElementById("point-maxaccel-input");
         this.slowdownCoefficientInput = document.getElementById("point-slo-input");
-
         let inputs = [
             this.spacingInput,
             this.maxVelocityInput,
+            this.maxAccelerationInput,
             this.slowdownCoefficientInput
         ]
 
@@ -267,6 +267,7 @@ class PointGenTool extends Tool{
 
     updateInputs() {
         this.maxVelocity = parseFloat(this.maxVelocityInput.value) * 100;
+        this.maxAcceleration = parseFloat(this.maxAccelerationInput.value) * 100;
         this.slowdownCoefficient = parseInt(this.slowdownCoefficientInput.value, 10);
 
         this.pointSpacing = parseInt(this.spacingInput.value, 10);
@@ -285,9 +286,17 @@ class PointGenTool extends Tool{
             for (let k = offset; k < CurveTool.curves[i].length; k+=this.pointSpacing) {
                 let t = CurveTool.curves[i].mapDistanceToT(k);
                 let point = CurveTool.curves[i].getPoint(t);
-                PointGenTool.points[PointGenTool.points.length] = point;//{p: point/*, v: Math.min()*/};
-                PointGenTool.velocities[PointGenTool.velocities.length] = Math.min(this.maxVelocity, this.slowdownCoefficient / (1/CurveTool.curves[i].getCurvature(t).r));//{p: point/*, v: Math.min()*/};
+                PointGenTool.points[PointGenTool.points.length] = point;
+
+                let targetVel = Math.min(this.maxVelocity, this.slowdownCoefficient / (1/CurveTool.curves[i].getCurvature(t).r));
+                PointGenTool.velocities[PointGenTool.velocities.length] = targetVel;
             }
+
+            let point = CurveTool.curves[i].getPoint(1);
+            PointGenTool.points[PointGenTool.points.length] = point;
+
+            let targetVel = Math.min(this.maxVelocity, this.slowdownCoefficient / (1/CurveTool.curves[i].getCurvature(1).r));
+            PointGenTool.velocities[PointGenTool.velocities.length] = targetVel;
         }
     }
     
@@ -296,30 +305,106 @@ class PointGenTool extends Tool{
         return (b - a) * amt + a;
     }
 
-    lerpColor(r1, b1, g1, r2, b2, g2, a) {
-        return `rgb(${this.lerp(r1, r2, a)}, ${this.lerp(b1, b2, a)}, ${this.lerp(g1, g2, a)})`;
+    lerpColor(c1, c2, a) {
+        return `rgb(${this.lerp(c1.r, c2.r, a)}, ${this.lerp(c1.g, c2.g, a)}, ${this.lerp(c1.b, c2.b, a)})`;
     }
 
     update() {
-        ctx.fillStyle = "#90d537";
+        ctx.fillStyle = yellow;
         ctx.lineWidth = 1;
         if (CurveTool.curves.length > 0) {
             this.i = (this.i + 10) % CurveTool.curves[0].length; 
-            drawCircle(CurveTool.curves[0].getPoint(0), 2);
-            ctx.fill();
+
+            ctx.lineWidth = 3;
+            ctx.globalAlpha = .2;
+
+            ctx.strokeStyle = lightBlue;
             for (let i = 0; i < CurveTool.curves.length; i++) {
-                ctx.strokeStyle = "#90d537";
                 CurveTool.drawCurve(CurveTool.curves[i], false, false); 
-                drawCircle(CurveTool.curves[i].getPoint(1), 2);
-                ctx.fill();
             }
+
+            ctx.strokeStyle = clear;
+            ctx.globalAlpha = 1;
             for (let j = 0; j < PointGenTool.points.length; j++) {
                 let a = PointGenTool.velocities[j] / this.maxVelocity;
-                ctx.fillStyle = this.lerpColor(255, 255, 255, 0, 0, 0, 1-a);
-                //console.log(a);
+                ctx.fillStyle = lerpColor(hexToRgb(yellow), hexToRgb(red), 1-a);
 
-                drawCircle(PointGenTool.points[j], 4);
+                drawCircle(PointGenTool.points[j], 2*((a)+0.1));
                 ctx.fill();
+            }
+        }
+    }
+}
+// TODO: Refactor states into singletons
+class SimulationTool extends Tool{
+    static points = [];
+    static velocities = [];
+    constructor(...args){
+        super(...args);
+        this.i = 0;
+        this.currentCurve = 0;
+    }
+
+    move(e) {
+        
+    }
+
+    click(e) {
+        
+    }
+
+    start() {
+        this.playingSim = false;
+        this.playButton = document.getElementById("sim-play-toggle");
+        this.playButton.classList.remove("paused");
+        this.playButton.classList.add("play");
+        
+        this.playButton.onclick = () => {
+            
+            this.playingSim = !this.playingSim;
+            if (this.playingSim) {
+                // set to paused
+                this.playButton.classList.remove("play");
+                this.playButton.classList.add("paused");
+            } else {
+                // set to play
+                this.playButton.classList.remove("paused");
+                this.playButton.classList.add("play");
+            }
+            console.log(this.playingSim)
+        };
+        
+        new PointGenTool().start();
+    }
+
+    update() {
+        ctx.lineWidth = 1;
+        if (CurveTool.curves.length > 0) {
+
+            ctx.lineWidth = 1;
+            ctx.globalAlpha = .2;
+
+            ctx.strokeStyle = lightBlue;
+            for (let i = 0; i < CurveTool.curves.length; i++) {
+                CurveTool.drawCurve(CurveTool.curves[i], false, false); 
+            }
+            ctx.strokeStyle = clear;
+            ctx.fillStyle = lightBlue + "44";
+
+            ctx.globalAlpha = 1;
+            for (let j = 0; j < PointGenTool.points.length; j++) {
+                drawCircle(PointGenTool.points[j], 2);
+                ctx.fill();
+            }
+            ctx.fillStyle = "#fff";
+            drawCircle(CurveTool.curves[this.currentCurve].getPoint(CurveTool.curves[this.currentCurve].mapDistanceToT(this.i)), 20);
+            ctx.fill();
+            if (this.playingSim) {
+                this.i += 1;
+                if (this.i > CurveTool.curves[this.currentCurve].length) {
+                    this.i = 0;
+                    this.currentCurve = (this.currentCurve + 1) % CurveTool.curves.length;
+                }
             }
         }
     }

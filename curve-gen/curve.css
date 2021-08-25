@@ -69,15 +69,63 @@ kbd {
     position: absolute;
     top: 10px;
     left: 10px; 
-    width: 200px;
+    width: auto;
     background-color: #0009;
     border: 1px solid #6668;
     border-radius: 6px;
     padding: 10px;
     pointer-events: none;
+    line-height: 1.4em;
 }
 
 #settings-container input {
+    pointer-events: all;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+}
+
+#settings-container #sim-reset-button {
+    width:30px;
+    height:30px;
+    border: none;
+    position: relative;
+    /* background: url("./assets/point-icon.png")  no-repeat top left; */
+    
+}
+
+#settings-container #sim-reset-button img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 30px;
+    transform: rotate(30deg);
+    /* background: url("./assets/point-icon.png")  no-repeat top left; */
+    
+}
+
+#settings-container #sim-play-toggle {
+    background-color: rgb(9, 11, 12);
+    height:30px;
+    width:30px;
+    box-sizing: border-box;
+    
+    transition: 100ms all ease;
+    will-change: border-width;
+    cursor: pointer;
+    border-color: rgb(9, 11, 12) rgb(9, 11, 12) rgb(9, 11, 12) #fff;
+}
+
+#settings-container #sim-play-toggle.play {
+    border-style: solid;
+    border-width: 14px 0 14px 30px;
+}
+
+#settings-container #sim-play-toggle.paused {
+    border-style: double;
+    border-width: 0px 0 0px 30px;
+}
+
+
+#settings-container input[type=number] {
     pointer-events: all;
     width: 2em;
     float: right;
@@ -91,6 +139,7 @@ kbd {
     font-size: 16px;
     padding-top: 2px;
     margin: 0;
+    margin-left: 3px;
 }
 
 #settings-container input::-webkit-outer-spin-button,

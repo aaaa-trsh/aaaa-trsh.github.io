@@ -20,7 +20,7 @@ const tools = [
         src: 'assets/sim-icon.png',
         active: false,
         element: null,
-        toolObj: new PointGenTool(),
+        toolObj: new SimulationTool(),
         id: 2
     }
 ];
