@@ -225,6 +225,7 @@ class CurveTool extends Tool{
 
 class PointGenTool extends Tool{
     static points = [];
+    static velocities = [];
     constructor(...args){
         super(...args);
         this.i = 0;
@@ -239,32 +240,58 @@ class PointGenTool extends Tool{
 
     start() {
         this.spacingInput = document.getElementById("point-spacing-input");
-        this.spacingInput.addEventListener("input", () => {
-            this.pointSpacing = parseInt(this.spacingInput.value, 10);
-            this.generatePoints();
-        });
+        this.maxVelocityInput = document.getElementById("point-maxvel-input");
+        this.slowdownCoefficientInput = document.getElementById("point-slo-input");
+
+        let inputs = [
+            this.spacingInput,
+            this.maxVelocityInput,
+            this.slowdownCoefficientInput
+        ]
+
+        for (let i = 0; i < inputs.length; i++) {
+            inputs[i].addEventListener("input", () => {
+                this.updateInputs();
+            });
+        }
+        
+        this.updateInputs();
+    }
+
+    updateInputs() {
+        this.maxVelocity = parseFloat(this.maxVelocityInput.value);
+        this.slowdownCoefficient = parseInt(this.slowdownCoefficientInput.value, 10);
+
         this.pointSpacing = parseInt(this.spacingInput.value, 10);
         this.generatePoints();
+
     }
 
     generatePoints() {
         PointGenTool.points = [];
+        PointGenTool.velocities = [];
         for (let i = 0; i < CurveTool.curves.length; i++) {
-            let offset = PointGenTool.points > 0 ? (this.pointSpacing-Point.dist(
-                PointGenTool.points[PointGenTool.points.length - 1]),
+            let offset = PointGenTool.points.length > 0 ? (this.pointSpacing-Point.dist(
+                PointGenTool.points[PointGenTool.points.length - 1],
                 CurveTool.curves[i].p0
-            ) : 0;
+            )) : 0;
             for (let k = offset; k < CurveTool.curves[i].length; k+=this.pointSpacing) {
-                let point = CurveTool.curves[i].getPoint(CurveTool.curves[i].mapDistanceToT(k));
-                PointGenTool.points[PointGenTool.points.length] = point;
+                let t = CurveTool.curves[i].mapDistanceToT(k);
+                let point = CurveTool.curves[i].getPoint(t);
+                PointGenTool.points[PointGenTool.points.length] = point;//{p: point/*, v: Math.min()*/};
+                PointGenTool.velocities[PointGenTool.velocities.length] = Math.min(this.maxVelocity, this.slowdownCoefficient / (CurveTool.curves[i].getCurvature(t).r));//{p: point/*, v: Math.min()*/};
             }
         }
     }
     
+    lerp(a, b, amt)
+    {
+        return (b - a) * amt + a;
+    }
+
     update() {
         ctx.fillStyle = "#90d537";
         ctx.lineWidth = 1;
-
         if (CurveTool.curves.length > 0) {
             this.i = (this.i + 10) % CurveTool.curves[0].length; 
             drawCircle(CurveTool.curves[0].getPoint(0), 2);
@@ -275,8 +302,11 @@ class PointGenTool extends Tool{
                 drawCircle(CurveTool.curves[i].getPoint(1), 2);
                 ctx.fill();
             }
-            ctx.fillStyle = "#fff";
             for (let j = 0; j < PointGenTool.points.length; j++) {
+                let a = PointGenTool.velocities[j] / this.maxVelocity;
+                ctx.fillStyle = `rgb(${this.lerp(0, 255, a)}, ${this.lerp(0, 255, a)}, ${this.lerp(0, 255, a)})`;
+                //console.log(a);
+
                 drawCircle(PointGenTool.points[j], 4);
                 ctx.fill();
             }

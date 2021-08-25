@@ -59,6 +59,8 @@ kbd {
     transform: translateY(3px);
 }
 
+.right { float: right; text-align: right; }
+
 #canvas-container {
     position: relative;
 }
@@ -67,7 +69,7 @@ kbd {
     position: absolute;
     top: 10px;
     left: 10px; 
-    width: 150px;
+    width: 200px;
     background-color: #0009;
     border: 1px solid #6668;
     border-radius: 6px;
