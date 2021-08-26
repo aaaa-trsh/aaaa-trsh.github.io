@@ -230,7 +230,6 @@ class CurveTool extends Tool{
 
 class PointGenTool extends Tool{
     static points = [];
-    static velocities = [];
     constructor(...args){
         super(...args);
         this.i = 0;
@@ -277,7 +276,6 @@ class PointGenTool extends Tool{
 
     generatePoints() {
         PointGenTool.points = [];
-        PointGenTool.velocities = [];
         for (let i = 0; i < CurveTool.curves.length; i++) {
             let offset = PointGenTool.points.length > 0 ? (this.pointSpacing-Point.dist(
                 PointGenTool.points[PointGenTool.points.length - 1],
@@ -286,17 +284,14 @@ class PointGenTool extends Tool{
             for (let k = offset; k < CurveTool.curves[i].length; k+=this.pointSpacing) {
                 let t = CurveTool.curves[i].mapDistanceToT(k);
                 let point = CurveTool.curves[i].getPoint(t);
-                PointGenTool.points[PointGenTool.points.length] = point;
-
                 let targetVel = Math.min(this.maxVelocity, this.slowdownCoefficient / (1/CurveTool.curves[i].getCurvature(t).r));
-                PointGenTool.velocities[PointGenTool.velocities.length] = targetVel;
+                PointGenTool.points[PointGenTool.points.length] = PathPoint.fromPoint(point, targetVel);
+
             }
 
             let point = CurveTool.curves[i].getPoint(1);
-            PointGenTool.points[PointGenTool.points.length] = point;
-
             let targetVel = Math.min(this.maxVelocity, this.slowdownCoefficient / (1/CurveTool.curves[i].getCurvature(1).r));
-            PointGenTool.velocities[PointGenTool.velocities.length] = targetVel;
+            PointGenTool.points[PointGenTool.points.length] = PathPoint.fromPoint(point, targetVel);
         }
     }
     
@@ -326,7 +321,7 @@ class PointGenTool extends Tool{
             ctx.strokeStyle = clear;
             ctx.globalAlpha = 1;
             for (let j = 0; j < PointGenTool.points.length; j++) {
-                let a = PointGenTool.velocities[j] / this.maxVelocity;
+                let a = PointGenTool.points[j].vel / this.maxVelocity;
                 ctx.fillStyle = lerpColor(hexToRgb(yellow), hexToRgb(red), 1-a);
 
                 drawCircle(PointGenTool.points[j], 2*((a)+0.1));
@@ -337,8 +332,6 @@ class PointGenTool extends Tool{
 }
 // TODO: Refactor states into singletons
 class SimulationTool extends Tool{
-    static points = [];
-    static velocities = [];
     constructor(...args){
         super(...args);
         this.i = 0;

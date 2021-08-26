@@ -126,3 +126,14 @@ class Point {
         this.y = -d.y + o.y;
     }
 }
+
+class PathPoint extends Point {
+    constructor(x, y, v) {
+        super(x, y);
+        this.vel = v;
+    }
+
+    static fromPoint(p, v) {
+        return new PathPoint(p.x, p.y, v);
+    }
+}
