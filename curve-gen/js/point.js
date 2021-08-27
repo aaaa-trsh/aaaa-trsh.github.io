@@ -105,6 +105,14 @@ class Point {
         }
     }
 
+    static get2PointRadCenter(a, b, r) {
+        let c = Point.sub(a, b);
+        let len = c.len();
+        let angle = Math.acos(r / len);
+        let p = new Point(a.x + c.x * Math.cos(angle), a.y + c.y * Math.cos(angle));
+        return p;
+    }
+
     normalize() {
         let len = this.len();
         return new Point(this.x / len, this.y / len);
