@@ -131,6 +131,15 @@ class Point {
         return [Point.add(new Point(x3, y3), offset), Point.sub(new Point(x3, y3), offset)];
     }
 
+    sign(x) {
+        return x == 0 ? 1 : Math.sign(x);
+    }
+
+    
+    sideOfLine(a, b) {
+        return this.sign((b.x - a.x) * (this.x - a.y) - (b.y - a.y) * (this.x - a.x))
+    }
+
     normalize() {
         let len = this.len();
         return new Point(this.x / len, this.y / len);

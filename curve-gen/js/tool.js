@@ -274,6 +274,17 @@ class PointGenTool extends Tool{
 
     }
 
+    static getNearestPoint(p) {
+        let nearest = PointGenTool.points[0];
+        for (let i = 0; i < PointGenTool.points.length; i++) {
+            if (Point.dist(nearest, p) > Point.dist(PointGenTool.points[i], p)) {
+                nearest = PointGenTool.points[i];
+            }
+        }
+
+        return nearest;
+    }
+
     generatePoints() {
         PointGenTool.points = [];
         for (let i = 0; i < CurveTool.curves.length; i++) {
@@ -404,15 +415,20 @@ class SimulationTool extends Tool{
             
             ctx.strokeStyle = yellow;
             drawLine(this.robot, Point.add(this.robot, Point.mul(Point.fromAngle(this.robot.angle), 100)));
-            
-            ctx.strokeStyle = white+"33";
+            let lhOffset = Point.mul(Point.sub(lh, PointGenTool.getNearestPoint(lh)).normalize(), 100);
+            // console.log( PointGenTool.getNearestPoint(lh))
+            drawLine(Point.sub(lh, lhOffset), (Point.add(lh, lhOffset)));
+            // ctx.fill();
             drawCircle(this.robot, 100);
-            
+            let side = this.robot.getPoint().sideOfLine(Point.sub(lh, lhOffset), Point.add(lh, lhOffset));
+            console.log(side);
+            //ctx.strokeStyle = (side == NaN || side == 1 ? red : yellow)+"99";
             let x = Point.sub(Point.linePointProjection(this.robot, Math.tan(this.robot.angle), lh), lh).len();
-            let icor = Point.get2PointRadCenter(this.robot.getPoint(), lh, (100*100)/(2*x))[0];
-            console.log("icor:", icor, (100*100)/(2*x));
-
+            let icor = Point.get2PointRadCenter(this.robot.getPoint(), lh, (100*100)/(2*x))[1];
             drawCircle(icor, (100*100)/(2*x));
+            icor = Point.get2PointRadCenter(this.robot.getPoint(), lh, (100*100)/(2*x))[0];
+            drawCircle(icor, (100*100)/(2*x));
+            //console.log("icor:", icor, (100*100)/(2*x));
             
             if (this.playingSim) {
                 this.i += 1;
