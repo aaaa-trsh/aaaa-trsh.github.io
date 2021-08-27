@@ -125,6 +125,10 @@ class Point {
         this.x = -d.x + o.x;
         this.y = -d.y + o.y;
     }
+
+    equals(other) {
+        return this.x == other.x && this.y == other.y;
+    }
 }
 
 class PathPoint extends Point {

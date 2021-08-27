@@ -1,13 +1,27 @@
-class PurePursuitRobot {
+class PurePursuitRobot extends Point {
     constructor (x, y, angle, path) {
-        this.x = x;
-        this.y = y;
+        super(x, y);
         this.angle = angle;
         this.path = path;
+        this.lastLookahead = null;
     }
     
     sign(x) {
         return x == 0 ? 1 : Math.sign(x);
+    }
+    
+    closestPointToRobot() {
+        var closestDistance = 10000000000;
+        var closestPose = new Point(10000000000, 10000000000);
+    
+        for (var i = this.path.length - 1; i >= 0; i--) {
+            var abDistance = Point.sub(new Point(mx, my), this.path[i]).len();
+            if (abDistance < closestDistance) {
+                closestDistance = abDistance;
+                closestPose = this.path[i];
+            }
+        }
+        return closestPose;
     }
     
     getLookaheadPoint(x, y, r) {
@@ -28,8 +42,8 @@ class PurePursuitRobot {
             let discriminant = r * r * d * d - D * D;
             if (discriminant < 0 || p1.equals(p2)) continue;
 
-            let x1 = (D * dy + sign(dy) * dx * Math.sqrt(discriminant)) / (d * d);
-            let x2 = (D * dy - sign(dy) * dx * Math.sqrt(discriminant)) / (d * d);
+            let x1 = (D * dy + this.sign(dy) * dx * Math.sqrt(discriminant)) / (d * d);
+            let x2 = (D * dy - this.sign(dy) * dx * Math.sqrt(discriminant)) / (d * d);
 
             let y1 = (-D * dx + Math.abs(dy) * Math.sqrt(discriminant)) / (d * d);
             let y2 = (-D * dx - Math.abs(dy) * Math.sqrt(discriminant)) / (d * d);
@@ -63,8 +77,10 @@ class PurePursuitRobot {
             }
         }
 
-        return lookahead != null ? lookahead : null;
+        let retval = lookahead;
+        if (lookahead != null) {
+            this.lastLookahead = lookahead;
+        }
+        return lookahead != null ? lookahead : (this.lastLookahead != null ? this.lastLookahead : this.closestPointToRobot());
     }
-
-
 }

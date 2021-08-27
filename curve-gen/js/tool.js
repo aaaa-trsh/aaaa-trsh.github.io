@@ -368,9 +368,11 @@ class SimulationTool extends Tool{
         };
         
         new PointGenTool().start();
+        
     }
 
     update() {
+        this.robot = new PurePursuitRobot(mx, my, 2, PointGenTool.points);
         ctx.lineWidth = 1;
         if (CurveTool.curves.length > 0) {
 
@@ -389,9 +391,17 @@ class SimulationTool extends Tool{
                 drawCircle(PointGenTool.points[j], 2);
                 ctx.fill();
             }
-            ctx.fillStyle = "#fff";
-            drawCircle(CurveTool.curves[this.currentCurve].getPoint(CurveTool.curves[this.currentCurve].mapDistanceToT(this.i)), 20);
+            ctx.fillStyle = yellow;
+            drawCircle(this.robot.getLookaheadPoint(this.robot.x, this.robot.y, 100), 2);
             ctx.fill();
+
+            ctx.fillStyle = lightBlue;
+            drawCircle(this.robot, 2);
+            ctx.fill();
+
+            ctx.strokeStyle = white+"33";
+            drawCircle(this.robot, 100);
+            
             if (this.playingSim) {
                 this.i += 1;
                 if (this.i > CurveTool.curves[this.currentCurve].length) {
