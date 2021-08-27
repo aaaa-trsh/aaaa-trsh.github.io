@@ -56,6 +56,10 @@ class Point {
         return Math.atan2(a.y, a.x);
     }
 
+    static cross(a, b) {
+        return (a.x * b.y) - (a.y * b.x);
+    }
+
     static fromAngle(a) {
         return new Point(Math.cos(a), Math.sin(a));
     }
@@ -115,6 +119,8 @@ class Point {
     }
 
     static get2PointRadCenter(a, b, r) {
+        // if (2 * r < Point.dist(a, b))
+        //     return [Point.div(Point.add(a, b), 2),  Point.div(Point.add(a, b), 2)]
         let radsq = r * r;
         let x1 = a.x;
         let y1 = a.y;

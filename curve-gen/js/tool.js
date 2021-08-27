@@ -382,8 +382,12 @@ class SimulationTool extends Tool{
         
     }
 
+    sign(x) {
+        return x == 0 ? 1 : Math.sign(x);
+    }
+
     update() {
-        this.robot = new PurePursuitRobot(mx, my, -0.1, PointGenTool.points);
+        this.robot = new PurePursuitRobot(mx, my, (this.i) * (Math.PI / 180), PointGenTool.points);
         ctx.lineWidth = 1;
         if (CurveTool.curves.length > 0) {
 
@@ -416,18 +420,19 @@ class SimulationTool extends Tool{
             ctx.strokeStyle = yellow;
             drawLine(this.robot, Point.add(this.robot, Point.mul(Point.fromAngle(this.robot.angle), 100)));
             let lhOffset = Point.mul(Point.sub(lh, PointGenTool.getNearestPoint(lh)).normalize(), 100);
-            // console.log( PointGenTool.getNearestPoint(lh))
+
             drawLine(Point.sub(lh, lhOffset), (Point.add(lh, lhOffset)));
-            // ctx.fill();
             drawCircle(this.robot, 100);
-            let side = this.robot.getPoint().sideOfLine(Point.sub(lh, lhOffset), Point.add(lh, lhOffset));
-            console.log(side);
-            //ctx.strokeStyle = (side == NaN || side == 1 ? red : yellow)+"99";
-            let x = Point.sub(Point.linePointProjection(this.robot, Math.tan(this.robot.angle), lh), lh).len();
-            let icor = Point.get2PointRadCenter(this.robot.getPoint(), lh, (100*100)/(2*x))[1];
-            drawCircle(icor, (100*100)/(2*x));
-            icor = Point.get2PointRadCenter(this.robot.getPoint(), lh, (100*100)/(2*x))[0];
-            drawCircle(icor, (100*100)/(2*x));
+
+            let x = Math.abs(-Math.tan(this.robot.angle)*lh.x + lh.y + (Math.tan(this.robot.angle)*this.robot.x-this.robot.y));
+
+            let b = Point.add(this.robot.getPoint(), Point.mul(Point.fromAngle(this.robot.angle), 20))
+            let side = this.sign((b.y - this.robot.y) * (lh.x - this.robot.x) - (b.x - this.robot.x) * (lh.x - this.robot.y));
+
+            let icor = Point.get2PointRadCenter(this.robot.getPoint(), lh, (100*100)/(2*x));
+            drawCircle(icor[side == 1 ? 1 : 0], (100*100)/(2*x));
+
+            let l = V;
             //console.log("icor:", icor, (100*100)/(2*x));
             
             if (this.playingSim) {
