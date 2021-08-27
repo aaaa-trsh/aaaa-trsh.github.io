@@ -5,7 +5,9 @@ class PurePursuitRobot extends Point {
         this.path = path;
         this.lastLookahead = null;
     }
-    
+    getPoint() {
+        return new Point(this.x, this.y)
+    }
     sign(x) {
         return x == 0 ? 1 : Math.sign(x);
     }

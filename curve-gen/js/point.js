@@ -56,6 +56,15 @@ class Point {
         return Math.atan2(a.y, a.x);
     }
 
+    static fromAngle(a) {
+        return new Point(Math.cos(a), Math.sin(a));
+    }
+
+    static linePointProjection(lineCrossPoint, slope, pointToProject) {
+        let perpendicular = slope;
+        return new Point(pointToProject.x, perpendicular*(pointToProject.x - lineCrossPoint.x) + lineCrossPoint.y);
+    }
+
     static get3PointCircle(a, b, c) {
         var x12 = (a.x - b.x);
         var x13 = (a.x - c.x);
@@ -106,11 +115,20 @@ class Point {
     }
 
     static get2PointRadCenter(a, b, r) {
-        let c = Point.sub(a, b);
-        let len = c.len();
-        let angle = Math.acos(r / len);
-        let p = new Point(a.x + c.x * Math.cos(angle), a.y + c.y * Math.cos(angle));
-        return p;
+        let radsq = r * r;
+        let x1 = a.x;
+        let y1 = a.y;
+        let x2 = b.x;
+        let y2 = b.y;
+
+        let q = Math.sqrt(((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)));
+        let x3 = (x1 + x2) / 2;
+        let rx = Math.sqrt(radsq - ((q / 2) * (q / 2))) * ((y1 - y2) / q);
+
+        let y3 = (y1 + y2) / 2;
+        let ry = Math.sqrt(radsq - ((q / 2) * (q / 2))) * ((x2-x1) / q);
+        let offset = new Point(rx, ry)
+        return [Point.add(new Point(x3, y3), offset), Point.sub(new Point(x3, y3), offset)];
     }
 
     normalize() {
