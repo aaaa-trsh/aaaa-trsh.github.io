@@ -1,9 +1,11 @@
 class PurePursuitRobot extends Point {
-    constructor (x, y, angle, path) {
+    constructor (x, y, angle, path, lookaheadDist) {
         super(x, y);
         this.angle = angle;
         this.path = path;
+        this.lookaheadDist = lookaheadDist;
         this.lastLookahead = null;
+        this.speed = 0;
     }
     getPoint() {
         return new Point(this.x, this.y)
@@ -17,7 +19,7 @@ class PurePursuitRobot extends Point {
         var closestPose = new Point(10000000000, 10000000000);
     
         for (var i = this.path.length - 1; i >= 0; i--) {
-            var abDistance = Point.sub(new Point(mx, my), this.path[i]).len();
+            var abDistance = Point.sub(this.getPoint(), this.path[i]).len();
             if (abDistance < closestDistance) {
                 closestDistance = abDistance;
                 closestPose = this.path[i];

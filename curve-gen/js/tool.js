@@ -363,22 +363,25 @@ class SimulationTool extends Tool{
         this.playButton.classList.remove("paused");
         this.playButton.classList.add("play");
         
+        new PointGenTool().start();
+        this.robot = new PurePursuitRobot(0, 300, 0, PointGenTool.points, 20);
+
         this.playButton.onclick = () => {
             
             this.playingSim = !this.playingSim;
             if (this.playingSim) {
-                // set to paused
+                // set to paused (play)
                 this.playButton.classList.remove("play");
                 this.playButton.classList.add("paused");
+                this.robot.speed = 2;
             } else {
-                // set to play
+                // set to play (paused)
                 this.playButton.classList.remove("paused");
                 this.playButton.classList.add("play");
+                this.robot.speed = 0;
             }
-            console.log(this.playingSim)
+            console.log(this.robot.speed)
         };
-        
-        new PointGenTool().start();
         
     }
 
@@ -387,7 +390,6 @@ class SimulationTool extends Tool{
     }
 
     update() {
-        this.robot = new PurePursuitRobot(mx, my, (this.i) * (Math.PI / 180), PointGenTool.points);
         ctx.lineWidth = 1;
         if (CurveTool.curves.length > 0) {
 
@@ -407,7 +409,7 @@ class SimulationTool extends Tool{
                 ctx.fill();
             }
             ctx.fillStyle = yellow;
-            let lh = this.robot.getLookaheadPoint(this.robot.x, this.robot.y, 100);
+            let lh = this.robot.getLookaheadPoint(this.robot.x, this.robot.y, this.robot.lookaheadDist);
             drawCircle(lh, 2);
             ctx.fill();
 
@@ -418,11 +420,11 @@ class SimulationTool extends Tool{
             //ctx.fill();
             
             ctx.strokeStyle = yellow;
-            drawLine(this.robot, Point.add(this.robot, Point.mul(Point.fromAngle(this.robot.angle), 100)));
-            let lhOffset = Point.mul(Point.sub(lh, PointGenTool.getNearestPoint(lh)).normalize(), 100);
-
-            drawLine(Point.sub(lh, lhOffset), (Point.add(lh, lhOffset)));
-            drawCircle(this.robot, 100);
+            // drawLine(this.robot, Point.add(this.robot, Point.mul(Point.fromAngle(this.robot.angle), 100)));
+            let lhOffset = Point.mul(Point.sub(lh, PointGenTool.getNearestPoint(lh)).normalize(), this.robot.lookaheadDist);
+            drawLine(this.robot, lh);
+            // drawLine(Point.sub(lh, lhOffset), (Point.add(lh, lhOffset)));
+            // drawCircle(this.robot, 100);
 
             let x = Math.abs(-Math.tan(this.robot.angle)*lh.x + lh.y + (Math.tan(this.robot.angle)*this.robot.x-this.robot.y));
 
@@ -430,17 +432,20 @@ class SimulationTool extends Tool{
             let side = this.sign((b.y - this.robot.y) * (lh.x - this.robot.x) - (b.x - this.robot.x) * (lh.x - this.robot.y));
 
             let icor = Point.get2PointRadCenter(this.robot.getPoint(), lh, (100*100)/(2*x));
-            drawCircle(icor[side == 1 ? 1 : 0], (100*100)/(2*x));
+            // drawCircle(icor[side == 1 ? 1 : 0], (100*100)/(2*x));
 
-            let l = V;
+            //let l = V;
             //console.log("icor:", icor, (100*100)/(2*x));
             
             if (this.playingSim) {
-                this.i += 1;
-                if (this.i > CurveTool.curves[this.currentCurve].length) {
-                    this.i = 0;
-                    this.currentCurve = (this.currentCurve + 1) % CurveTool.curves.length;
-                }
+                // this.i += 1;
+                // if (this.i > CurveTool.curves[this.currentCurve].length) {
+                //     this.i = 0;
+                //     this.currentCurve = (this.currentCurve + 1) % CurveTool.curves.length;
+                // }
+                let newPos = Point.mul(Point.sub(lh, this.robot.getPoint()).normalize(), this.robot.speed)
+                this.robot.x += newPos.x;
+                this.robot.y += newPos.y;
             }
         }
     }
