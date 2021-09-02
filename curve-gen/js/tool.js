@@ -364,7 +364,7 @@ class SimulationTool extends Tool{
         this.playButton.classList.add("play");
         
         new PointGenTool().start();
-        this.robot = new PurePursuitRobot(0, 300, 0, PointGenTool.points, 20);
+        this.robot = new PurePursuitRobot(300, 210, 0, PointGenTool.points, 20);
 
         this.playButton.onclick = () => {
             
@@ -389,7 +389,9 @@ class SimulationTool extends Tool{
         return x == 0 ? 1 : Math.sign(x);
     }
 
+    
     update() {
+        this.robot = new PurePursuitRobot(mx, my, 0, PointGenTool.points, 20);
         ctx.lineWidth = 1;
         if (CurveTool.curves.length > 0) {
             
@@ -409,7 +411,16 @@ class SimulationTool extends Tool{
                 ctx.fill();
             }
             ctx.fillStyle = yellow;
+            ctx.strokeStyle = yellow;
             let lh = this.robot.getLookaheadPoint(this.robot.x, this.robot.y, this.robot.lookaheadDist);
+            lh.forEach(x => {
+                let p = this.robot.projectToPath(x);
+                console.log(p.p, x)
+                drawLine(x, p.p);
+                drawCircle(x, 2);
+                drawCircle(p.p, 2);
+
+            });
             drawCircle(lh, 2);
             ctx.fill();
             
@@ -418,7 +429,7 @@ class SimulationTool extends Tool{
             ctx.fill();
             ctx.strokeStyle = yellow;
             
-            drawLine(new Point(mx, my), CurveTool.curves[0].project(new Point(mx, my)).p);
+            drawLine(new Point(mx, my), this.robot.projectToPath(new Point(mx, my)).p);
             //ctx.fill();
             
             ctx.strokeStyle = yellow;
@@ -426,7 +437,7 @@ class SimulationTool extends Tool{
             let lhOffset = Point.mul(Point.sub(lh, PointGenTool.getNearestPoint(lh)).normalize(), this.robot.lookaheadDist);
             drawLine(this.robot, lh);
             // drawLine(Point.sub(lh, lhOffset), (Point.add(lh, lhOffset)));
-            // drawCircle(this.robot, 100);
+            drawCircle(this.robot, this.robot.lookaheadDist);
 
             let x = Math.abs(-Math.tan(this.robot.angle)*lh.x + lh.y + (Math.tan(this.robot.angle)*this.robot.x-this.robot.y));
 

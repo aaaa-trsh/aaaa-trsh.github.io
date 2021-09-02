@@ -73,23 +73,6 @@ class CubicCurve {
         return dist / this.length;
     }
 
-    project(point) {
-        let idx = 0;
-        let samples = 25; // More samples -> better chance of being correct
-        let min = Infinity;
-        for (let i = samples + 1; i >= 0; i--) {
-            let dist = Math.pow(point, this.getPoint(i / samples), 2);
-            if (dist < min) {
-                min = dist;
-                idx = i;
-            }
-        }
-
-        let d2ForT = t => Point.dist(point, this.getPoint(t));
-        let t = this.localMinimum(0, 1, d2ForT);
-        return {t: t, p: this.getPoint(t)};
-    }
-
     localMinimum(min, max, f, epsilon=1e-4) {
         if (epsilon===undefined) epsilon=1e-10;
         let m = min;

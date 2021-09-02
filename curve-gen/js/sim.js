@@ -14,18 +14,54 @@ class PurePursuitRobot extends Point {
         return x == 0 ? 1 : Math.sign(x);
     }
     
-    closestPointToRobot() {
-        var closestDistance = 10000000000;
-        var closestPose = new Point(10000000000, 10000000000);
+    closestPoint(point) {
+        let closestDistance = Infinity;
+        let closestPos = new Point(Infinity, Infinity);
     
-        for (var i = this.path.length - 1; i >= 0; i--) {
-            var abDistance = Point.sub(this.getPoint(), this.path[i]).len();
+        for (let i = this.path.length - 1; i >= 0; i--) {
+            let abDistance = Point.sub(point, this.path[i]).len();
             if (abDistance < closestDistance) {
                 closestDistance = abDistance;
-                closestPose = this.path[i];
+                closestPos = this.path[i];
             }
         }
-        return closestPose;
+        return closestPos;
+    }
+
+    projectToPath(point) {
+        let closestDistance = Infinity;
+        let b = new Point(Infinity, Infinity);
+        let idx = 0;
+
+        for (let i = this.path.length - 1; i >= 0; i--) {
+            let abDistance = Point.sub(point, this.path[i]).len();
+            if (abDistance < closestDistance) {
+                closestDistance = abDistance;
+                b = this.path[i];
+                idx = i;
+            }
+        }
+
+        let a = this.path[idx - 1];
+
+        let ab = Point.sub(b, a);
+        let ap = Point.sub(point, a);
+        let len = ab.len();
+        let dot = Point.dot(ap, ab);
+
+        let t = Math.min(1, Math.max( 0, dot / len ));
+
+        //dot = ( b.x - a.x ) * ( p.y - a.y ) - ( b.y - a.y ) * ( p.x - a.x );
+        console.log(t)
+        return {p: Point.add(a, Point.mul(ab, t)), i: idx + t}; //{
+        //     point: {
+        //         x: a.x + atob.x * t,
+        //         y: a.y + atob.y * t
+        //     },
+        //     left: dot < 1,
+        //     dot: dot,
+        //     t: t
+        // };
     }
     
     getLookaheadPoint(x, y, r) {
@@ -57,19 +93,20 @@ class PurePursuitRobot extends Point {
                 let validIntersection2 = Math.min(p1.x, p2.x) < x2 && x2 < Math.max(p1.x, p2.x)
                 || Math.min(p1.y, p2.y) < y2 && y2 < Math.max(p1.y, p2.y);
 
-            if (validIntersection1 || validIntersection2) lookahead = null;
+            //if (validIntersection1 || validIntersection2) lookahead = null;
 
             if (validIntersection1) {
-                lookahead.push(new Point(x1 + x, y1 + y));
+                lookaheadProposals.push(new Point(x1 + x, y1 + y));
             }
 
             if (validIntersection2) {
                 // if (lookahead == null || Math.abs(x1 - p2.x) > Math.abs(x2 - p2.x) || Math.abs(y1 - p2.y) > Math.abs(y2 - p2.y)) {
-                lookahead.push(new Point(x2 + x, y2 + y));
+                    lookaheadProposals.push(new Point(x2 + x, y2 + y));
                 // }
             }
         }
-
+        lookaheadProposals.filter(p => this.projectToPath(p))
+        //console.log(lookaheadProposals);
         if (this.path.length > 0) {
             let lastPoint = this.path[this.path.length - 1];
 
@@ -88,6 +125,6 @@ class PurePursuitRobot extends Point {
         if (lookahead != null) {
             this.lastLookahead = lookahead;
         }
-        return lookahead != null ? lookahead : (this.lastLookahead != null ? this.lastLookahead : this.closestPointToRobot());
+        return lookaheadProposals;//lookahead != null ? lookahead : (this.lastLookahead != null ? this.lastLookahead : this.closestPointToRobot());
     }
 }
