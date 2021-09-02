@@ -29,7 +29,7 @@ class PurePursuitRobot extends Point {
     }
     
     getLookaheadPoint(x, y, r) {
-        let lookahead = null;
+        let lookaheadProposals = [];
 
         for (var i = 0; i < this.path.length - 1; i++) {
             let segmentStart = this.path[i];
@@ -60,13 +60,13 @@ class PurePursuitRobot extends Point {
             if (validIntersection1 || validIntersection2) lookahead = null;
 
             if (validIntersection1) {
-                lookahead = new Point(x1 + x, y1 + y);
+                lookahead.push(new Point(x1 + x, y1 + y));
             }
 
             if (validIntersection2) {
-                if (lookahead == null || Math.abs(x1 - p2.x) > Math.abs(x2 - p2.x) || Math.abs(y1 - p2.y) > Math.abs(y2 - p2.y)) {
-                    lookahead = new Point(x2 + x, y2 + y);
-                }
+                // if (lookahead == null || Math.abs(x1 - p2.x) > Math.abs(x2 - p2.x) || Math.abs(y1 - p2.y) > Math.abs(y2 - p2.y)) {
+                lookahead.push(new Point(x2 + x, y2 + y));
+                // }
             }
         }
 
@@ -80,6 +80,9 @@ class PurePursuitRobot extends Point {
                 return lastPoint;
             }
         }
+
+        // let lookaheadT = lookaheadProposals.map(x)
+        let lookahead = new Point(mx, my);
 
         let retval = lookahead;
         if (lookahead != null) {

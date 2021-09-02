@@ -392,17 +392,17 @@ class SimulationTool extends Tool{
     update() {
         ctx.lineWidth = 1;
         if (CurveTool.curves.length > 0) {
-
+            
             ctx.lineWidth = 1;
             ctx.globalAlpha = .2;
-
+            
             ctx.strokeStyle = lightBlue;
             for (let i = 0; i < CurveTool.curves.length; i++) {
                 CurveTool.drawCurve(CurveTool.curves[i], false, false); 
             }
             ctx.strokeStyle = clear;
             ctx.fillStyle = lightBlue + "44";
-
+            
             ctx.globalAlpha = 1;
             for (let j = 0; j < PointGenTool.points.length; j++) {
                 drawCircle(PointGenTool.points[j], 2);
@@ -412,11 +412,13 @@ class SimulationTool extends Tool{
             let lh = this.robot.getLookaheadPoint(this.robot.x, this.robot.y, this.robot.lookaheadDist);
             drawCircle(lh, 2);
             ctx.fill();
-
+            
             ctx.fillStyle = lightBlue;
             drawCircle(this.robot, 2);
             ctx.fill();
-
+            ctx.strokeStyle = yellow;
+            
+            drawLine(new Point(mx, my), CurveTool.curves[0].project(new Point(mx, my)).p);
             //ctx.fill();
             
             ctx.strokeStyle = yellow;
