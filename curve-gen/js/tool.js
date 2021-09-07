@@ -455,6 +455,9 @@ class PRMTool extends Tool{
         this.newPolygon = null;
         this.maxPoints = 0;
         this.path = [];
+
+        this.goalPos = null;
+        this.goalPosMap = null;
     }
 
     closestPoint(point) {
@@ -527,6 +530,8 @@ class PRMTool extends Tool{
 
         console.log(this.polyPoints.length)
         let bounds = this.getBoundingBox(this.polyPoints);
+        this.goalPos = new Point((bounds.maxX + bounds.minX)/2, (bounds.maxY + bounds.minY)/2);
+        this.points.push(this.goalPos);
         for (let i = 0; i < this.maxPoints; i++) {
             let p = new Point(
                 Math.random() * (bounds.maxX - bounds.minX) + bounds.minX,
@@ -534,8 +539,8 @@ class PRMTool extends Tool{
             );
             let inPoly = false;
             for (let j = 0; j < this.polygons.length; j++) {
-                if (Point.dist(p, this.polygons[j]) > 100) continue;
-                if (this.polygons[j].pointInsideOffset(p, 30)) {
+                // if (Point.dist(p, this.polygons[j]) > 500) continue;
+                if (this.polygons[j].pointInsideOffset(p, 10)) {
                     inPoly = true;
                     break;
                 }
@@ -560,39 +565,43 @@ class PRMTool extends Tool{
                     }
                 }
                 if (!inPoly) {
-                    neighbors.push({ p: b, distance: Point.dist(a, b), idx: j });
+                    neighbors.push({ p: b, idx: j });
                 }
             }
+            neighbors.sort(p => Point.dist(a, p));
+            if (i == 0) this.goalPosMap = {p: a, n: neighbors, idx: i};
             this.map.push({p: a, n: neighbors, idx: i});
         }
-
-        // console.log(this.map)
-        // this.path = this.shortestPath(
-        //     this.map[Math.floor(Math.random() * this.map.length)], 
-        //     this.map[Math.floor(Math.random() * this.map.length)]
-        // );
     }
 
+
     shortestPath(a, b) {
-        let path = [];
-        let visited = [];
-        let queue = [];
-        queue.push(a);
-        while (queue.length > 0) {
-            let cur = queue.shift();
-            path.push(cur);
-            visited.push(cur);
-            for (let i = 0; i < cur.n.length; i++) {
-                let neighbor = cur.n[i];
+        let open = [];
+        let closed = [];
+        const MAX = 1000;
+        let count = 0;
+        open.push({a:a, parent:null});
+        while (open.length > 0 && MAX> count) {
+            let cur = open.shift();
+            closed.push(cur);
+            for (let i = 0; i < cur.a.n.length; i++) {
+                let neighbor = cur.a.n[i];
                 if (neighbor.p.equals(b.p)) {
-                    path.push(this.map[neighbor.idx]);
+                    let path = []
+                    path.push(neighbor.p);
+                    path.push(cur.a.p);
+                    while (cur.parent != null) {
+                        path.push(cur.parent.a.p);
+                        cur = cur.parent;
+                    }
                     console.log(path)
                     return path;
                 }
-                if (!visited.includes(this.map[neighbor.idx])) {
-                    queue.push(this.map[neighbor.idx]);
+                if (!closed.includes(this.map[neighbor.idx])) {
+                    open.push({a:this.map[neighbor.idx], parent:cur});
                 }
             }
+            count ++;
         }
         return [];
     }
@@ -630,8 +639,8 @@ class PRMTool extends Tool{
             }
         }
 
-        
-        ctx.strokeStyle = darkBlue + "10";
+        ctx.lineWidth = 0.7;
+        ctx.strokeStyle = lightBlue + "01";
         this.map.forEach(p => {
             // ctx.strokeStyle = yellow;
             // ctx.fillStyle = yellow;
@@ -641,20 +650,23 @@ class PRMTool extends Tool{
                 drawLine(p.p, n.p);
             });
         });
+        ctx.lineWidth = 1;
         
 
         
         if (keysDown["x"]) {
+            ctx.strokeStyle = yellow;
             if (this.map.length > 0)
-                this.path = this.shortestPath({ p:m, n: [ this.closestPoint(m) ] }, this.map[0]); 
+                this.path = this.shortestPath({ p:m, n: [ this.closestPoint(m) ] }, this.goalPosMap); 
+            drawCircle(this.goalPosMap.p, 2);
+            drawCircle(this.goalPos, 2);
             if (this.path.length > 0) {
-                ctx.strokeStyle = yellow;
-                drawCircle(this.path[0].p, 2);
-                drawCircle(this.path[this.path.length - 1].p, 2);
+                // drawCircle(this.path[0], 2);
+                // drawCircle(this.path[this.path.length - 1], 2);
                 ctx.strokeStyle = yellow + "88";
 
                 for (let i = 0; i < this.path.length - 1; i++) {
-                    drawLine(this.path[i].p, this.path[i + 1].p);
+                    drawLine(this.path[i], this.path[i + 1]);
                 }
             }
         }
@@ -664,7 +676,7 @@ class PRMTool extends Tool{
 
         for (let i = 0; i < this.polygons.length; i++) {
             this.polygons[i].draw();
-            // ctx.fill();
+            ctx.fill();
         }
 
         if (this.newPolygon != null && this.newPolygon.points.length > 0) {
