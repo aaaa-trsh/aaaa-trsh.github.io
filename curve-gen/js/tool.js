@@ -13,10 +13,10 @@ class Tool {
 class CurveTool extends Tool{
     static curves = [
         new CubicCurve(
-            new Point(200, 300),
-            new Point(500, 100),
-            new Point(100, 100),
-            new Point(400, 300),
+            new Point(100, 200),
+            new Point(400, 200),
+            new Point(100, 500),
+            new Point(400, 500),
         )
     ];
     constructor(...args){
@@ -314,7 +314,7 @@ class PointGenTool extends Tool{
     lerpColor(c1, c2, a) {
         return `rgb(${this.lerp(c1.r, c2.r, a)}, ${this.lerp(c1.g, c2.g, a)}, ${this.lerp(c1.b, c2.b, a)})`;
     }
-
+    
     update() {
         ctx.fillStyle = yellow;
         ctx.lineWidth = 1;
@@ -345,8 +345,6 @@ class PointGenTool extends Tool{
 class SimulationTool extends Tool{
     constructor(...args){
         super(...args);
-        this.i = 0;
-        this.currentCurve = 0;
     }
 
     move(e) {
@@ -354,35 +352,63 @@ class SimulationTool extends Tool{
     }
 
     click(e) {
-        
+        if (keysDown.Shift) {
+            this.robot = new PurePursuitRobot(
+                new Point(mx, my),
+                Point.getAngle(Point.sub(PointGenTool.points[1], PointGenTool.points[0])),
+                20,
+                PointGenTool.points,
+                10
+            );
+            this.setStopped(true);
+        }
     }
 
     start() {
-        this.playingSim = false;
         this.playButton = document.getElementById("sim-play-toggle");
+        this.resetButton = document.getElementById("sim-reset-button");
+        this.ldInput = document.getElementById("sim-ld-input");
+
         this.playButton.classList.remove("paused");
         this.playButton.classList.add("play");
         
         new PointGenTool().start();
-        this.robot = new PurePursuitRobot(300, 210, 0, PointGenTool.points, 20);
-
-        this.playButton.onclick = () => {
-            
-            this.playingSim = !this.playingSim;
-            if (this.playingSim) {
-                // set to paused (play)
-                this.playButton.classList.remove("play");
-                this.playButton.classList.add("paused");
-                this.robot.speed = 2;
-            } else {
-                // set to play (paused)
-                this.playButton.classList.remove("paused");
-                this.playButton.classList.add("play");
-                this.robot.speed = 0;
-            }
-            console.log(this.robot.speed)
-        };
+        this.robot = new PurePursuitRobot(
+            PointGenTool.points[0],
+            Point.getAngle(Point.sub(PointGenTool.points[1], PointGenTool.points[0])),
+            20,
+            PointGenTool.points,
+            10
+        );
         
+        this.robot.stopped = true;
+        this.playButton.onclick = () => {
+            this.setStopped(!this.robot.stopped);
+        };
+
+        this.resetButton.onclick = () => {
+            console.log("reset")
+            this.robot = new PurePursuitRobot(
+                PointGenTool.points[0],
+                Point.getAngle(Point.sub(PointGenTool.points[1], PointGenTool.points[0])),
+                20,
+                PointGenTool.points,
+                10
+            );
+            this.setStopped(true);
+        };
+    }
+
+    setStopped(stopped) {
+        if (stopped) {
+            this.playButton.classList.remove("paused");
+            this.playButton.classList.add("play");
+            this.robot.stopped = true;
+        } else {
+            this.playButton.classList.remove("play");
+            this.playButton.classList.add("paused");
+            this.robot.stopped = false;
+        }
     }
 
     sign(x) {
@@ -391,10 +417,9 @@ class SimulationTool extends Tool{
 
     
     update() {
-        this.robot = new PurePursuitRobot(mx, my, 0, PointGenTool.points, 20);
-        ctx.lineWidth = 1;
+        this.robot.lookaheadDistance = parseInt(this.ldInput.value);
+        // this.robot = new PurePursuitRobot(mx, my, 0, PointGenTool.points, 20);
         if (CurveTool.curves.length > 0) {
-            
             ctx.lineWidth = 1;
             ctx.globalAlpha = .2;
             
@@ -410,55 +435,273 @@ class SimulationTool extends Tool{
                 drawCircle(PointGenTool.points[j], 2);
                 ctx.fill();
             }
-            ctx.fillStyle = yellow;
-            ctx.strokeStyle = yellow;
-            let lh = this.robot.getLookaheadPoint(this.robot.x, this.robot.y, this.robot.lookaheadDist);
-            lh.forEach(x => {
-                let p = this.robot.projectToPath(x);
-                console.log(p.p, x)
-                drawLine(x, p.p);
-                drawCircle(x, 2);
-                drawCircle(p.p, 2);
+            
+            // drawCircle(Point.add(this.robot.getPoint(), Point.mul(Point.fromAngle(this.robot.angle+Math.PI*1.5), 10)), 2);
+            // drawCircle(Point.add(this.robot.getPoint(), Point.mul(Point.fromAngle(this.robot.angle+Math.PI*.5), 10)), 2);
 
+            // this.robot.tankDrive(lspeed, rspeed);
+            
+            this.robot.execute();
+        }
+    }
+}
+
+class PRMTool extends Tool{
+    constructor(...args){
+        super(...args);
+        this.polygons = [];
+        this.map = [];
+        this.points = [];
+        this.newPolygon = null;
+        this.maxPoints = 0;
+        this.path = [];
+    }
+
+    closestPoint(point) {
+        let min = Infinity;
+        let pos = new Point(Infinity, Infinity);
+    
+        for (let i = this.map.length - 1; i >= 0; i--) {
+            let abDistance = Point.sub(point, this.map[i].p).len();
+            if (abDistance < min) {
+                min = abDistance;
+                pos = this.map[i];
+            }
+        }
+        return pos;
+    }
+
+
+    move(e) {
+        
+    }
+
+    click(e) {
+        if (keysDown.Shift) {
+            this.newPolygon.points.push(new Point(mx, my));
+        }
+    }
+
+    start() {
+        this.genButton = document.getElementById("prm-gen-button");
+        this.maxPointsInput = document.getElementById("prm-maxpoints-input");
+        this.maxPoints = parseInt(this.maxPointsInput.value);
+        this.maxPointsInput.onchange = () => {
+            this.maxPoints = parseInt(this.maxPointsInput.value);
+        }
+
+        this.genButton.onclick = () => {
+            this.generateMap();
+        }
+    }
+
+    getBoundingBox(points) {
+        let minX = points[0].x;
+        let minY = points[0].y;
+        let maxX = points[0].x;
+        let maxY = points[0].y;
+        for (let i = 1; i < points.length; i++) {
+            if (points[i].x < minX) minX = points[i].x;
+            if (points[i].y < minY) minY = points[i].y;
+            if (points[i].x > maxX) maxX = points[i].x;
+            if (points[i].y > maxY) maxY = points[i].y;
+        }
+        return {
+            minX: minX,
+            minY: minY,
+            maxX: maxX,
+            maxY: maxY
+        };
+    }
+
+    generateMap() {
+        this.map = [];
+        this.path = [];
+        this.points = [];
+        this.polyPoints = [];
+        for (let i = 0; i < this.polygons.length; i++) {
+            for (let j = 0; j < this.polygons[i].points.length; j++) {
+                this.polyPoints.push(this.polygons[i].points[j]);
+            }
+        }
+
+        console.log(this.polyPoints.length)
+        let bounds = this.getBoundingBox(this.polyPoints);
+        for (let i = 0; i < this.maxPoints; i++) {
+            let p = new Point(
+                Math.random() * (bounds.maxX - bounds.minX) + bounds.minX,
+                Math.random() * (bounds.maxY - bounds.minY) + bounds.minY
+            );
+            let inPoly = false;
+            for (let j = 0; j < this.polygons.length; j++) {
+                if (Point.dist(p, this.polygons[j]) > 100) continue;
+                if (this.polygons[j].pointInsideOffset(p, 30)) {
+                    inPoly = true;
+                    break;
+                }
+            }
+            if (!inPoly) {
+                this.points.push(p);
+            } else {
+                i--;
+            }
+        }
+
+        // for (let i = 0; i < allPoints.length; i++) {}
+        for (let i = 0; i < this.points.length; i++) {
+            let a = this.points[i];
+            let neighbors = [];
+            for (let j = 0; j < this.points.length; j++) {
+                let b = this.points[j];
+                let inPoly = false;
+                for (let k = 0; k < this.polygons.length; k++) {
+                    if (this.polygons[k].rayCast(a, Point.sub(b, a).normalize())) {
+                        inPoly = true;
+                    }
+                }
+                if (!inPoly) {
+                    neighbors.push({ p: b, distance: Point.dist(a, b), idx: j });
+                }
+            }
+            this.map.push({p: a, n: neighbors, idx: i});
+        }
+
+        // console.log(this.map)
+        // this.path = this.shortestPath(
+        //     this.map[Math.floor(Math.random() * this.map.length)], 
+        //     this.map[Math.floor(Math.random() * this.map.length)]
+        // );
+    }
+
+    shortestPath(a, b) {
+        let path = [];
+        let visited = [];
+        let queue = [];
+        queue.push(a);
+        while (queue.length > 0) {
+            let cur = queue.shift();
+            path.push(cur);
+            visited.push(cur);
+            for (let i = 0; i < cur.n.length; i++) {
+                let neighbor = cur.n[i];
+                if (neighbor.p.equals(b.p)) {
+                    path.push(this.map[neighbor.idx]);
+                    console.log(path)
+                    return path;
+                }
+                if (!visited.includes(this.map[neighbor.idx])) {
+                    queue.push(this.map[neighbor.idx]);
+                }
+            }
+        }
+        return [];
+    }
+
+    sign(x) {
+
+    }
+
+    isPointObstructed(point) {
+        for (let i = 0; i < this.polygons.length; i++) {
+            if (this.polygons[i].pointInside(point)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    update() {
+        let m = new Point(mx, my);
+        if (CurveTool.curves.length > 0) {
+            ctx.lineWidth = 1;
+            ctx.globalAlpha = .2;
+            
+            ctx.strokeStyle = lightBlue;
+            for (let i = 0; i < CurveTool.curves.length; i++) {
+                CurveTool.drawCurve(CurveTool.curves[i], false, false); 
+            }
+            ctx.strokeStyle = clear;
+            ctx.fillStyle = lightBlue + "44";
+            
+            ctx.globalAlpha = 1;
+            for (let j = 0; j < PointGenTool.points.length; j++) {
+                drawCircle(PointGenTool.points[j], 2);
+                ctx.fill();
+            }
+        }
+
+        
+        ctx.strokeStyle = darkBlue + "10";
+        this.map.forEach(p => {
+            // ctx.strokeStyle = yellow;
+            // ctx.fillStyle = yellow;
+            // drawSquare(p.p, 1);
+            // ctx.fill();
+            p.n.forEach(n => {
+                drawLine(p.p, n.p);
             });
-            drawCircle(lh, 2);
-            ctx.fill();
-            
-            ctx.fillStyle = lightBlue;
-            drawCircle(this.robot, 2);
-            ctx.fill();
+        });
+        
+
+        
+        if (keysDown["x"]) {
+            if (this.map.length > 0)
+                this.path = this.shortestPath({ p:m, n: [ this.closestPoint(m) ] }, this.map[0]); 
+            if (this.path.length > 0) {
+                ctx.strokeStyle = yellow;
+                drawCircle(this.path[0].p, 2);
+                drawCircle(this.path[this.path.length - 1].p, 2);
+                ctx.strokeStyle = yellow + "88";
+
+                for (let i = 0; i < this.path.length - 1; i++) {
+                    drawLine(this.path[i].p, this.path[i + 1].p);
+                }
+            }
+        }
+        
+        ctx.strokeStyle = red;
+        ctx.fillStyle = red + "44";
+
+        for (let i = 0; i < this.polygons.length; i++) {
+            this.polygons[i].draw();
+            // ctx.fill();
+        }
+
+        if (this.newPolygon != null && this.newPolygon.points.length > 0) {
+            this.newPolygon.draw();
+        }
+
+        let int = false;
+        for (let i = 0; i < this.polygons.length; i++) {
+            if (this.polygons[i].rayCast(new Point(mx, my), new Point(0, 1)) && !int) {
+                int = true;
+                break
+            }
+        }
+
+        if (int) {//this.isPointObstructed(m)) {
+            ctx.strokeStyle = red;
+            ctx.fillStyle = red + "44";
+        } else {
             ctx.strokeStyle = yellow;
-            
-            drawLine(new Point(mx, my), this.robot.projectToPath(new Point(mx, my)).p);
-            //ctx.fill();
-            
-            ctx.strokeStyle = yellow;
-            // drawLine(this.robot, Point.add(this.robot, Point.mul(Point.fromAngle(this.robot.angle), 100)));
-            let lhOffset = Point.mul(Point.sub(lh, PointGenTool.getNearestPoint(lh)).normalize(), this.robot.lookaheadDist);
-            drawLine(this.robot, lh);
-            // drawLine(Point.sub(lh, lhOffset), (Point.add(lh, lhOffset)));
-            drawCircle(this.robot, this.robot.lookaheadDist);
+            ctx.fillStyle = clear;
+        }
+        drawCircle(m, 5);
+        ctx.fill();
 
-            let x = Math.abs(-Math.tan(this.robot.angle)*lh.x + lh.y + (Math.tan(this.robot.angle)*this.robot.x-this.robot.y));
 
-            let b = Point.add(this.robot.getPoint(), Point.mul(Point.fromAngle(this.robot.angle), 20))
-            let side = this.sign((b.y - this.robot.y) * (lh.x - this.robot.x) - (b.x - this.robot.x) * (lh.x - this.robot.y));
-
-            let icor = Point.get2PointRadCenter(this.robot.getPoint(), lh, (100*100)/(2*x));
-            // drawCircle(icor[side == 1 ? 1 : 0], (100*100)/(2*x));
-
-            //let l = V;
-            //console.log("icor:", icor, (100*100)/(2*x));
-            
-            if (this.playingSim) {
-                // this.i += 1;
-                // if (this.i > CurveTool.curves[this.currentCurve].length) {
-                //     this.i = 0;
-                //     this.currentCurve = (this.currentCurve + 1) % CurveTool.curves.length;
-                // }
-                let newPos = Point.mul(Point.sub(lh, this.robot.getPoint()).normalize(), this.robot.speed)
-                this.robot.x += newPos.x;
-                this.robot.y += newPos.y;
+        if (keysDown.Shift) {
+            document.body.style.cursor = "crosshair";
+            if (this.newPolygon == null)
+                this.newPolygon = new Polygon([]);
+        } else {
+            document.body.style.cursor = "default";
+            if (this.newPolygon != null) {
+                if (this.newPolygon.points.length > 2) {
+                    this.newPolygon.points = this.newPolygon.convexHull();
+                    this.polygons.push(this.newPolygon);
+                }
+                this.newPolygon = null;
             }
         }
     }

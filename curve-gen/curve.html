@@ -25,15 +25,17 @@
                 <div id="settings-container">
                     <div id="curve-settings">
                         <b>curve</b><br>
+                        <div class="line"></div>
                         <kbd>SHIFT</kbd> + <kbd>CLICK</kbd> to draw
                     </div>
                     <div id="point-settings">
                         <b>point</b><br>
+                        <div class="line"></div>
                         spacing
                         <input
                             type="number"
-                            value="10"
-                            min="10"
+                            value="6"
+                            min="3"
                             id="point-spacing-input"
                         ></input><span class="right">(px)</span><br>
                         max velocity
@@ -44,7 +46,7 @@
                             value="1.3"
                             id="point-maxvel-input"
                         ></input><span class="right">(m/s)</span><br>
-                        max acceleration &emsp;
+                        max acceleration
                         <input
                             type="number"
                             min="0.1"
@@ -63,8 +65,30 @@
                     </div>
                     <div id="simulate-settings">
                         <b>sim</b><br>
+                        <div class="line"></div>
+                        lookahead distance
+                        <input
+                            type="number"
+                            value="20"
+                            min="1"
+                            id="sim-ld-input"
+                        ></input><span class="right">(px)</span><br>
                         <input id="sim-play-toggle" class="play" type="button"/>
-                        <input id="sim-reset-button" type="image" src="./assets/curve-icon.png"/>
+                        <input id="sim-reset-button" type="image" src="./assets/reset-icon.png"/>
+                    </div>
+                    <div id="prm-settings">
+                        <b>prm path generation</b><br>
+                        <div class="line"></div>
+                        <kbd>SHIFT</kbd> + <kbd>CLICK</kbd> to draw obstacles <br>
+                        max points
+                        <input
+                            type="number"
+                            value="250"
+                            min="10"
+                            max="500"
+                            id="prm-maxpoints-input"
+                        ></input><br>
+                        <input id="prm-gen-button" type="button" value="generate" style=""/>
                     </div>
                 </div>
             </div>

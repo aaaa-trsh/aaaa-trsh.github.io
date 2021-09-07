@@ -40,6 +40,21 @@ function drawLine(a, b) {
     ctx.closePath();
 } 
 
+function drawSquare(a, r) {
+    ctx.beginPath();
+    ctx.rect(a.x - r, a.y - r, 2 * r, 2 * r);
+    ctx.stroke();
+    ctx.closePath();
+} 
+
+function drawRay(a, theta, l, sOffset=0) {
+    ctx.beginPath();
+    ctx.moveTo(a.x + (Math.cos(theta) * sOffset), a.y + (Math.sin(theta) * sOffset));
+    ctx.lineTo(a.x + (Math.cos(theta) * l), a.y + (Math.sin(theta) * l));
+    ctx.stroke();
+    ctx.closePath();
+} 
+
 function drawTri(p, width, height, angle) {
     ctx.translate(p.x, p.y);
     ctx.rotate(angle);

@@ -52,12 +52,16 @@ class Point {
         return new Point(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t);
     }
 
+    static cross(a, b) {
+        return (a.x * b.y) - (a.y * b.x);
+    }
+
     static getAngle(a) {
         return Math.atan2(a.y, a.x);
     }
 
-    static cross(a, b) {
-        return (a.x * b.y) - (a.y * b.x);
+    static angleTo(a, b) {
+        return Point.getAngle(a) - Point.getAngle(b);
     }
 
     static fromAngle(a) {
@@ -66,7 +70,7 @@ class Point {
 
     static linePointProjection(lineCrossPoint, slope, pointToProject) {
         let perpendicular = slope;
-        return new Point(pointToProject.x, perpendicular*(pointToProject.x - lineCrossPoint.x) + lineCrossPoint.y);
+        return new Point(pointToProject.x, perpendicular * (pointToProject.x - lineCrossPoint.x) + lineCrossPoint.y);
     }
 
     static get3PointCircle(a, b, c) {
@@ -143,7 +147,7 @@ class Point {
 
     
     sideOfLine(a, b) {
-        return this.sign((b.x - a.x) * (this.x - a.y) - (b.y - a.y) * (this.x - a.x))
+        return this.sign((b.x - a.x) * (this.y - a.y) - (b.y - a.y) * (this.x - a.x))
     }
 
     normalize() {
@@ -180,5 +184,180 @@ class PathPoint extends Point {
 
     static fromPoint(p, v) {
         return new PathPoint(p.x, p.y, v);
+    }
+}
+
+class TrajectoryState extends Point {
+    constructor(x, y, c, v, a) {
+        super(x, y);
+        this.x = x;
+        this.y = y;
+        this.c = c;
+        this.v = v;
+        this.a = a;
+    }
+}
+
+class Polygon {
+    constructor(points) {
+        this.points = points;
+    }
+
+    getCenter() {
+        let x = 0;
+        let y = 0;
+        for (let i = 0; i < this.points.length; i++) {
+            x += this.points[i].x;
+            y += this.points[i].y;
+        }
+        return new Point(x / this.points.length, y / this.points.length);
+    }
+
+    convexHull() {
+        let points = this.points;
+        let endpoint = points[0]
+        points.sort(function (a, b) {
+            return a.x - b.x
+        });
+        let pointOnHull = points[0];
+        let hull = []
+
+        while (true) {
+            hull.push(pointOnHull);
+            let x = 0
+            for (let i = 0; i < points.length; i++) {
+                let point = points[i]
+                let position = (endpoint.x - pointOnHull.x) * (point.y - pointOnHull.y) - (endpoint.y - pointOnHull.y) * (point.x - pointOnHull.x)
+                if ((endpoint.equals(pointOnHull)) || (position > 0.0001)) {
+                    endpoint = point
+                    x += 1
+                }
+            }
+            pointOnHull = endpoint;
+            if (endpoint == hull[0]) break
+        }
+        return hull
+    }
+
+    pointInside(p)
+    {
+        let sides = this.points.map((x, i) => {
+            return p.sideOfLine(this.points[i], this.points[(i + 1) % this.points.length]);
+        });
+        
+        return sides.every(x => x == sides[0]);
+    }
+    pointInsideOffset(p, offset)
+    {
+        return new Polygon(this.getOffsetPoints(offset)).pointInside(p);
+    }
+
+    getBoundingBox() {
+        let minX = this.points[0].x;
+        let minY = this.points[0].y;
+        let maxX = this.points[0].x;
+        let maxY = this.points[0].y;
+        for (let i = 1; i < this.points.length; i++) {
+            if (this.points[i].x < minX) minX = this.points[i].x;
+            if (this.points[i].y < minY) minY = this.points[i].y;
+            if (this.points[i].x > maxX) maxX = this.points[i].x;
+            if (this.points[i].y > maxY) maxY = this.points[i].y;
+        }
+        return {
+            minX: minX,
+            minY: minY,
+            maxX: maxX,
+            maxY: maxY
+        };
+    }
+    leftPerp(p) { return new Point(p.y, -p.x); }
+    rightPerp(p) { return new Point(-p.y, p.x); }
+
+    rayIntersectsSegment(rayOrigin, rayDirection, a, b, tmax) {
+        let seg = Point.sub(b, a);
+        let segPerp = this.leftPerp(seg);
+        let perpDotd = Point.dot(rayDirection, segPerp);
+        if (Math.abs(perpDotd) < 0.001)
+        {
+            return { 
+                hit: false,
+                t: Infinity
+            };
+        }
+    
+        let d = Point.sub(a, rayOrigin);
+        let t = Point.dot(segPerp, d) / perpDotd;
+        let s = Point.dot(this.leftPerp(rayDirection), d) / perpDotd;
+    
+        return { 
+            hit: t >= 0.0 && t <= tmax && s >= 0.0 && s <= 1.0,
+            t: t
+        }
+    }
+    rayCast(rayOrigin, rayDirection, maxDist=Infinity)
+    {
+        // let t = Infinity;        
+        // let distance;
+        // let crossings = 0;
+
+        for (let j = 1; j < this.points.length; j++) {
+            let h = this.rayIntersectsSegment(
+                rayOrigin,
+                rayDirection.normalize(), 
+                this.points[j - 1], 
+                this.points[j], 
+                maxDist
+            ).hit;
+            if (h) {
+                // crossings++;
+                return true;
+            }
+        }
+        return false;
+        // return crossings > 0 && crossings % 2 == 0;
+    }
+
+    segmentIntersection(a, b, c, d) {
+        let u = Point.sub(b, a);
+        let v = Point.sub(d, c);
+        let w = Point.sub(a, c);
+        let D = Point.cross(u, v);
+        let s = Point.cross(v, w) / D;
+        let t = Point.cross(w, u) / D;
+        return s >= 0 && s <= 1 && t >= 0 && t <= 1;
+    }
+
+    getOffsetPoints(x) {
+        let c = this.getCenter();
+        let points = [];
+        let maxDist = Math.max(...this.points.map(p => Point.dist(p, c)))
+        for (let i = 0; i < this.points.length; i++) {
+            let p = this.points[i];
+            let v = Point.mul(Point.div(Point.sub(p, c), maxDist), x);
+            // let v2 = v.rotate(x);
+            points.push(Point.add(p, v));
+        }
+        return points;
+    }
+
+    draw() {
+        // let offsetPoints = this.getOffsetPoints(14);
+        // drawCircle(offsetPoints[0], 2);
+        // for (let i = 1; i < offsetPoints.length; i++) {
+        //     drawCircle(offsetPoints[i], 2);
+        //     drawLine(offsetPoints[i - 1], offsetPoints[i]);
+        // }
+        // drawLine(offsetPoints[offsetPoints.length - 1], offsetPoints[0]);
+
+
+        ctx.beginPath();
+        ctx.moveTo(this.points[0].x, this.points[0].y);
+        for (let i = 1; i < this.points.length; i++) {
+            ctx.lineTo(this.points[i].x, this.points[i].y);
+        }
+        ctx.lineTo(this.points[this.points.length - 1].x, this.points[this.points.length - 1].y);
+        ctx.closePath();
+        ctx.stroke();
+        
     }
 }

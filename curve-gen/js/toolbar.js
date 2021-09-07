@@ -22,6 +22,14 @@ const tools = [
         element: null,
         toolObj: new SimulationTool(),
         id: 2
+    },
+    {
+        name: 'prm',
+        src: 'assets/planning-icon.png',
+        active: false,
+        element: null,
+        toolObj: new PRMTool(),
+        id: 2
     }
 ];
 let currentTool = tools[0];
