@@ -568,14 +568,55 @@ class PRMTool extends Tool{
                     neighbors.push({ p: b, idx: j });
                 }
             }
-            neighbors.sort(p => Point.dist(a, p));
+            neighbors.sort(p => Point.dist(this.goalPos, p.p));
             if (i == 0) this.goalPosMap = {p: a, n: neighbors, idx: i};
             this.map.push({p: a, n: neighbors, idx: i});
         }
     }
 
-
     shortestPath(a, b) {
+        let visited = [];
+        let prev = [];
+        let distance = [];
+        let queue = [];
+        for (let i = 0; i < this.map.length; i++) {
+            visited.push(false);
+            prev.push(-1);
+            distance.push(Infinity);
+        }
+        distance[a.idx] = 0;
+        queue.push(a);
+
+        while (queue.length > 0) {
+            let u = queue[0];
+            queue.splice(0, 1);
+            visited[u.idx] = true;
+            for (let i = 0; i < this.map[u].n.length; i++) {
+                let v = this.map[u.idx].n[i];
+                let alt = distance[u.idx] + Point.dist(this.map[u.idx].p, this.map[v].p);
+                if (alt < distance[v]) {
+                    distance[v] = alt;
+                    prev[v] = u;
+                    if (!visited[v])
+                        queue.push(v);
+                }
+            }
+        }
+
+        let path = [];
+        let cur = b;
+        while (cur != a) {
+            path.push(cur.p);
+            cur = prev[cur.idx];
+        }
+        path.push(a.p);
+        path.reverse();
+
+        return path;
+
+    }
+
+    x(a, b) {
         let open = [];
         let closed = [];
         const MAX = 1000;
@@ -601,7 +642,7 @@ class PRMTool extends Tool{
                     open.push({a:this.map[neighbor.idx], parent:cur});
                 }
             }
-            count ++;
+            count++;
         }
         return [];
     }
