@@ -625,7 +625,7 @@ class PRMTool extends Tool{
                     neighbors.push({ p: b, idx: j });
                 }
             }
-            neighbors.sort(p => Point.dist(a, p) + Point.dist(this.goalPos, p)).reverse()
+            neighbors.sort(p => Point.dist(this.goalPos, p)).reverse()
             if (i == 0) this.goalPosMap = {p: a, n: neighbors, idx: i};
             this.map.push({p: a, n: neighbors, idx: i});
         }
@@ -657,7 +657,7 @@ class PRMTool extends Tool{
                     open.push({a:this.map[neighbor.idx], parent:cur});
                 }
             }
-            count ++;
+            count++;
         }
         return [];
     }
