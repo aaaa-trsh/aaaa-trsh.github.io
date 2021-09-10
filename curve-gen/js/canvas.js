@@ -55,6 +55,14 @@ function drawRay(a, theta, l, sOffset=0) {
     ctx.closePath();
 } 
 
+function drawBezier(a, b, c, d) {
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.bezierCurveTo(b.x, b.y, c.x, c.y, d.x, d.y);
+    ctx.stroke();
+    ctx.closePath();
+}
+
 function drawTri(p, width, height, angle) {
     ctx.translate(p.x, p.y);
     ctx.rotate(angle);

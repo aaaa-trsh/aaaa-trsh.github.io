@@ -9,9 +9,9 @@ const gctx = gcanvas.getContext('2d');
 const rule = [[2, 5, 6, 7, 8], [5, 6, 7, 8]];
 const COLOR_PALETTE = [
     (value) => [hexToRgb(d3.interpolateInferno(value/255)), "FIRE"],
-    //(value) => [hexToRgb(d3.interpolateMagma(value/255)), "RUBY"]
-    //(value) => [hexToRgb(d3.interpolateViridis(value/255)), "LIME"],
-][0];
+    (value) => [hexToRgb(d3.interpolateMagma(value/255)), "RUBY"],
+    (value) => [hexToRgb(d3.interpolateViridis(value/255)), "LIME"],
+][Math.floor(Math.random() * 3)];
 
 infoText.innerHTML = `a decaying variant on 'iceballs' (B25678/S5678), pallet '${COLOR_PALETTE(0)[1]}'`;
 

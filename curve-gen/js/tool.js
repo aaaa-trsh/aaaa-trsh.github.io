@@ -449,7 +449,62 @@ class SimulationTool extends Tool{
 class PRMTool extends Tool{
     constructor(...args){
         super(...args);
-        this.polygons = [];
+        this.polygons = [
+            new Polygon([
+                new Point(200, 350),
+                new Point(200, 460),
+                new Point(710, 460),
+                new Point(710, 350),
+            ]),
+            new Polygon([
+                new Point(400, 285),
+                new Point(400, 275),
+                new Point(510, 275),
+                new Point(510, 285),
+            ]),
+            new Polygon([
+                new Point(200, 200),
+                new Point(210, 200),
+                new Point(210, 350),
+                new Point(200, 350),
+            ]),
+            new Polygon([
+                new Point(320, 275),
+                new Point(330, 275),
+                new Point(330, 350),
+                new Point(320, 350),
+            ]),
+            new Polygon([
+                new Point(270, 275),
+                new Point(330, 275),
+                new Point(330, 285),
+                new Point(270, 285),
+            ]),
+            new Polygon([
+                new Point(450, 200),
+                new Point(460, 200),
+                new Point(460, 275),
+                new Point(450, 275),
+            ]),
+            new Polygon([
+                new Point(580, 275),
+                new Point(570, 275),
+                new Point(570, 350),
+                new Point(580, 350),
+            ]),
+            new Polygon([
+                new Point(630, 275),
+                new Point(570, 275),
+                new Point(570, 285),
+                new Point(630, 285),
+            ]),
+            new Polygon([
+                new Point(700, 200),
+                new Point(710, 200),
+                new Point(710, 350),
+                new Point(700, 350),
+            ])
+        ];
         this.map = [];
         this.points = [];
         this.newPolygon = null;
@@ -496,6 +551,7 @@ class PRMTool extends Tool{
         this.genButton.onclick = () => {
             this.generateMap();
         }
+        this.generateMap();
     }
 
     getBoundingBox(points) {
@@ -539,8 +595,7 @@ class PRMTool extends Tool{
             );
             let inPoly = false;
             for (let j = 0; j < this.polygons.length; j++) {
-                // if (Point.dist(p, this.polygons[j]) > 500) continue;
-                if (this.polygons[j].pointInsideOffset(p, 10)) {
+                if (this.polygons[j].pointInsideOffset(p, 3)) {
                     inPoly = true;
                     break;
                 }
@@ -558,27 +613,28 @@ class PRMTool extends Tool{
             let neighbors = [];
             for (let j = 0; j < this.points.length; j++) {
                 let b = this.points[j];
+
                 let inPoly = false;
                 for (let k = 0; k < this.polygons.length; k++) {
-                    if (this.polygons[k].rayCast(a, Point.sub(b, a).normalize())) {
+                    if (this.polygons[k].rayCast(a, Point.sub(b, a).normalize(), Point.sub(b, a).len())) {
                         inPoly = true;
+                        break;
                     }
                 }
                 if (!inPoly) {
                     neighbors.push({ p: b, idx: j });
                 }
             }
-            neighbors.sort(p => Point.dist(a, p));
+            neighbors.sort(p => Point.dist(a, p) + Point.dist(this.goalPos, p)).reverse()
             if (i == 0) this.goalPosMap = {p: a, n: neighbors, idx: i};
             this.map.push({p: a, n: neighbors, idx: i});
         }
     }
 
-
-    shortestPath(a, b) {
+    generatePath(a) {
         let open = [];
         let closed = [];
-        const MAX = 1000;
+        const MAX = 100;
         let count = 0;
         open.push({a:a, parent:null});
         while (open.length > 0 && MAX> count) {
@@ -586,7 +642,7 @@ class PRMTool extends Tool{
             closed.push(cur);
             for (let i = 0; i < cur.a.n.length; i++) {
                 let neighbor = cur.a.n[i];
-                if (neighbor.p.equals(b.p)) {
+                if (neighbor.p.equals(this.goalPosMap.p)) {
                     let path = []
                     path.push(neighbor.p);
                     path.push(cur.a.p);
@@ -595,7 +651,7 @@ class PRMTool extends Tool{
                         cur = cur.parent;
                     }
                     console.log(path)
-                    return path;
+                    return this.shortenPath(path);
                 }
                 if (!closed.includes(this.map[neighbor.idx])) {
                     open.push({a:this.map[neighbor.idx], parent:cur});
@@ -604,6 +660,36 @@ class PRMTool extends Tool{
             count ++;
         }
         return [];
+    }
+
+    controlPointsFromPath(path) {
+        let cp = [];
+        for (let i = 0; i < path.length; i++) {
+            if (i == 0) {
+                cp.push(path[i]);
+            } else {
+                cp.push(
+                    Point.add(path[i], 
+                    Point.mul(
+                        Point.sub(path[i], path[i-1]).normalize(), 10
+                    ))
+                );
+            }
+        }
+        return cp;
+    }
+
+    shortenPath(path) {
+        // for (let i = 0; i < path.length; i++) {
+        //     let intersecting
+        //     for (let j = 0; j < this.polygons.length; j++) {
+        //         if (this.polygons[j].rayCast(path[i], Point.sub(path[i+1], path[i]).normalize())) {
+
+        //         }
+        //     }
+        // }
+        return path;
+        
     }
 
     sign(x) {
@@ -639,41 +725,45 @@ class PRMTool extends Tool{
             }
         }
 
-        ctx.lineWidth = 0.7;
-        ctx.strokeStyle = lightBlue + "01";
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = lightBlue + "04";
         this.map.forEach(p => {
-            // ctx.strokeStyle = yellow;
+            ctx.strokeStyle = yellow;
             // ctx.fillStyle = yellow;
-            // drawSquare(p.p, 1);
-            // ctx.fill();
-            p.n.forEach(n => {
+            drawSquare(p.p, 3);
+            ctx.fill();
+            ctx.strokeStyle = lightBlue + "04";
+            p.n.forEach((n) => {
                 drawLine(p.p, n.p);
             });
         });
         ctx.lineWidth = 1;
         
-
-        
-        if (keysDown["x"]) {
+        if (keysDown["x"] && this.map.length > 1) {
             ctx.strokeStyle = yellow;
+            // drawLine(m, this.closestPoint(m).p)
             if (this.map.length > 0)
-                this.path = this.shortestPath({ p:m, n: [ this.closestPoint(m) ] }, this.goalPosMap); 
+                this.path = this.generatePath({ p:m, n: [ this.closestPoint(m) ] }); 
             drawCircle(this.goalPosMap.p, 2);
             drawCircle(this.goalPos, 2);
             if (this.path.length > 0) {
                 // drawCircle(this.path[0], 2);
                 // drawCircle(this.path[this.path.length - 1], 2);
                 ctx.strokeStyle = yellow + "88";
-
-                for (let i = 0; i < this.path.length - 1; i++) {
-                    drawLine(this.path[i], this.path[i + 1]);
+                for (let i = 1; i < this.path.length; i++) {
+                    drawLine(this.path[i - 1], this.path[i]);
+                }
+                let test = this.controlPointsFromPath(this.path);
+                console.log("test", test)
+                for (let i = 1; i < test.length; i++) {
+                    drawLine(test[i - 1], test[i]);
                 }
             }
         }
         
         ctx.strokeStyle = red;
         ctx.fillStyle = red + "44";
-
+// this is line 747 and gowdham typed this at 8:09 on 9/9/21
         for (let i = 0; i < this.polygons.length; i++) {
             this.polygons[i].draw();
             ctx.fill();
