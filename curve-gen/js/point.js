@@ -174,6 +174,10 @@ class Point {
     equals(other) {
         return this.x == other.x && this.y == other.y;
     }
+
+    getAngle() {
+        return Math.atan2(this.y, this.x);
+    }
 }
 
 class PathPoint extends Point {

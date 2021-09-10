@@ -595,7 +595,7 @@ class PRMTool extends Tool{
             );
             let inPoly = false;
             for (let j = 0; j < this.polygons.length; j++) {
-                if (this.polygons[j].pointInsideOffset(p, 3)) {
+                if (this.polygons[j].pointInsideOffset(p, 50)) {
                     inPoly = true;
                     break;
                 }
@@ -625,7 +625,7 @@ class PRMTool extends Tool{
                     neighbors.push({ p: b, idx: j });
                 }
             }
-            neighbors.sort(p => Point.dist(this.goalPos, p)).reverse()
+            neighbors.sort(p => Point.dist(this.goalPos, p))
             if (i == 0) this.goalPosMap = {p: a, n: neighbors, idx: i};
             this.map.push({p: a, n: neighbors, idx: i});
         }
@@ -651,7 +651,7 @@ class PRMTool extends Tool{
                         cur = cur.parent;
                     }
                     console.log(path)
-                    return this.shortenPath(path);
+                    return path;
                 }
                 if (!closed.includes(this.map[neighbor.idx])) {
                     open.push({a:this.map[neighbor.idx], parent:cur});
@@ -663,37 +663,44 @@ class PRMTool extends Tool{
     }
 
     controlPointsFromPath(path) {
-        let cp = [];
-        for (let i = 0; i < path.length; i++) {
-            if (i == 0) {
-                cp.push(path[i]);
-            } else {
-                cp.push(
-                    Point.add(path[i], 
-                    Point.mul(
-                        Point.sub(path[i], path[i-1]).normalize(), 10
-                    ))
+        path = path.reverse();
+        const offset = 0.7;
+        const maxScaling = 70;
+        let cp = [
+            path[0],
+            Point.add(path[0], Point.sub(path[1], path[0]).normalize())
+        ];
+
+        for (let i = 1; i < path.length; i++) {
+            // cp.push(path[i]);
+            if (i < path.length - 1) {
+                let a1 = Point.sub(path[i], path[i-1]).getAngle();
+                let a2 = Point.sub(path[i+1], path[i]).getAngle();
+                let dir = Point.fromAngle(-Math.PI+(a1+a2)/2);
+                let dot =  Point.dot(dir, Point.sub(path[i+1], path[i]).normalize());
+                let scaling = Math.min(maxScaling, Point.dist(path[i - 1], path[i]))
+                let point = Point.add(
+                    path[i],
+                    Point.mul(dir, scaling * offset * dot)
                 );
+                let point2 = Point.add(
+                    path[i],
+                    Point.mul(dir, scaling * -offset * dot)
+                );
+                // drawLine(
+                //     path[i],
+                //     point
+                // );
+                cp.push(point2)
+                cp.push(path[i]);
+                cp.push(point)
+            }
+            else {
+                cp.push(path[i]);
+                cp.push(path[i]);
             }
         }
         return cp;
-    }
-
-    shortenPath(path) {
-        // for (let i = 0; i < path.length; i++) {
-        //     let intersecting
-        //     for (let j = 0; j < this.polygons.length; j++) {
-        //         if (this.polygons[j].rayCast(path[i], Point.sub(path[i+1], path[i]).normalize())) {
-
-        //         }
-        //     }
-        // }
-        return path;
-        
-    }
-
-    sign(x) {
-
     }
 
     isPointObstructed(point) {
@@ -728,9 +735,9 @@ class PRMTool extends Tool{
         ctx.lineWidth = 1;
         ctx.strokeStyle = lightBlue + "04";
         this.map.forEach(p => {
-            ctx.strokeStyle = yellow;
-            // ctx.fillStyle = yellow;
-            drawSquare(p.p, 3);
+            ctx.strokeStyle = lightBlue;
+            ctx.fillStyle = lightBlue;
+            drawSquare(p.p, 1);
             ctx.fill();
             ctx.strokeStyle = lightBlue + "04";
             p.n.forEach((n) => {
@@ -741,22 +748,24 @@ class PRMTool extends Tool{
         
         if (keysDown["x"] && this.map.length > 1) {
             ctx.strokeStyle = yellow;
-            // drawLine(m, this.closestPoint(m).p)
             if (this.map.length > 0)
                 this.path = this.generatePath({ p:m, n: [ this.closestPoint(m) ] }); 
             drawCircle(this.goalPosMap.p, 2);
             drawCircle(this.goalPos, 2);
             if (this.path.length > 0) {
-                // drawCircle(this.path[0], 2);
-                // drawCircle(this.path[this.path.length - 1], 2);
-                ctx.strokeStyle = yellow + "88";
-                for (let i = 1; i < this.path.length; i++) {
-                    drawLine(this.path[i - 1], this.path[i]);
-                }
+                ctx.strokeStyle = yellow;
                 let test = this.controlPointsFromPath(this.path);
-                console.log("test", test)
+                for (let i = 0; i < test.length-1; i+=3) {
+                    drawBezier(test[i], test[i+1], test[i+2], test[i+3]);
+                }
+                ctx.strokeStyle = yellow + "33";
                 for (let i = 1; i < test.length; i++) {
                     drawLine(test[i - 1], test[i]);
+                }
+                ctx.strokeStyle = white + "88";
+
+                for (let i = 1; i < this.path.length; i++) {
+                    drawLine(this.path[i - 1], this.path[i]);
                 }
             }
         }
