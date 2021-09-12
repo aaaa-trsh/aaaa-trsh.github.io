@@ -442,69 +442,88 @@ class SimulationTool extends Tool{
             // this.robot.tankDrive(lspeed, rspeed);
             
             this.robot.execute();
+            ctx.strokeStyle = red;
+            ctx.fillStyle = red + "44";
+            for (let i = 0; i < PRMTool.polygons.length; i++) {
+                PRMTool.polygons[i].draw();
+                ctx.fill();
+            }
         }
     }
 }
 
 class PRMTool extends Tool{
+    static polygons = [
+        // new Polygon([
+        //     new Point(200, 350),
+        //     new Point(200, 460),
+        //     new Point(710, 460),
+        //     new Point(710, 350),
+        // ]),
+        new Polygon([
+            new Point(400, 385),
+            new Point(400, 375),
+            new Point(510, 375),
+            new Point(510, 385),
+        ]),
+        new Polygon([
+            new Point(450, 400),
+            new Point(460, 400),
+            new Point(460, 475),
+            new Point(450, 475),
+        ]),
+        new Polygon([
+            new Point(400, 285),
+            new Point(400, 275),
+            new Point(510, 275),
+            new Point(510, 285),
+        ]),
+        new Polygon([
+            new Point(200, 200),
+            new Point(210, 200),
+            new Point(210, 475),
+            new Point(200, 475),
+        ]),
+        new Polygon([
+            new Point(320, 275),
+            new Point(330, 275),
+            new Point(330, 475),
+            new Point(320, 475),
+        ]),
+        new Polygon([
+            new Point(270, 275),
+            new Point(330, 275),
+            new Point(330, 285),
+            new Point(270, 285),
+        ]),
+        new Polygon([
+            new Point(450, 200),
+            new Point(460, 200),
+            new Point(460, 275),
+            new Point(450, 275),
+        ]),
+        new Polygon([
+            new Point(580, 275),
+            new Point(570, 275),
+            new Point(570, 475),
+            new Point(580, 475),
+        ]),
+        new Polygon([
+            new Point(630, 275),
+            new Point(570, 275),
+            new Point(570, 285),
+            new Point(630, 285),
+        ]),
+        new Polygon([
+            new Point(700, 200),
+            new Point(710, 200),
+            new Point(710, 475),
+            new Point(700, 475),
+        ])
+    ];
     constructor(...args){
         super(...args);
-        this.polygons = [
-            new Polygon([
-                new Point(200, 350),
-                new Point(200, 460),
-                new Point(710, 460),
-                new Point(710, 350),
-            ]),
-            new Polygon([
-                new Point(400, 285),
-                new Point(400, 275),
-                new Point(510, 275),
-                new Point(510, 285),
-            ]),
-            new Polygon([
-                new Point(200, 200),
-                new Point(210, 200),
-                new Point(210, 350),
-                new Point(200, 350),
-            ]),
-            new Polygon([
-                new Point(320, 275),
-                new Point(330, 275),
-                new Point(330, 350),
-                new Point(320, 350),
-            ]),
-            new Polygon([
-                new Point(270, 275),
-                new Point(330, 275),
-                new Point(330, 285),
-                new Point(270, 285),
-            ]),
-            new Polygon([
-                new Point(450, 200),
-                new Point(460, 200),
-                new Point(460, 275),
-                new Point(450, 275),
-            ]),
-            new Polygon([
-                new Point(580, 275),
-                new Point(570, 275),
-                new Point(570, 350),
-                new Point(580, 350),
-            ]),
-            new Polygon([
-                new Point(630, 275),
-                new Point(570, 275),
-                new Point(570, 285),
-                new Point(630, 285),
-            ]),
-            new Polygon([
-                new Point(700, 200),
-                new Point(710, 200),
-                new Point(710, 350),
-                new Point(700, 350),
-            ])
-        ];
+        
         this.map = [];
         this.points = [];
         this.newPolygon = null;
@@ -515,7 +534,7 @@ class PRMTool extends Tool{
         this.goalPosMap = null;
     }
 
-    closestPoint(point) {
+    closestPointInMap(point) {
         let min = Infinity;
         let pos = new Point(Infinity, Infinity);
     
@@ -524,6 +543,20 @@ class PRMTool extends Tool{
             if (abDistance < min) {
                 min = abDistance;
                 pos = this.map[i];
+            }
+        }
+        return pos;
+    }
+
+    closestPoint(point, points) {
+        let min = Infinity;
+        let pos = new Point(Infinity, Infinity);
+    
+        for (let i = this.map.length - 1; i >= 0; i--) {
+            let abDistance = Point.sub(point, points[i]).len();
+            if (abDistance < min) {
+                min = abDistance;
+                pos = points[i];
             }
         }
         return pos;
@@ -578,24 +611,30 @@ class PRMTool extends Tool{
         this.path = [];
         this.points = [];
         this.polyPoints = [];
-        for (let i = 0; i < this.polygons.length; i++) {
-            for (let j = 0; j < this.polygons[i].points.length; j++) {
-                this.polyPoints.push(this.polygons[i].points[j]);
+        for (let i = 0; i < PRMTool.polygons.length; i++) {
+            for (let j = 0; j < PRMTool.polygons[i].points.length; j++) {
+                this.polyPoints.push(PRMTool.polygons[i].points[j]);
             }
         }
 
         console.log(this.polyPoints.length)
         let bounds = this.getBoundingBox(this.polyPoints);
-        this.goalPos = new Point((bounds.maxX + bounds.minX)/2, (bounds.maxY + bounds.minY)/2);
+        this.goalPos = new Point(300, 300);
         this.points.push(this.goalPos);
         for (let i = 0; i < this.maxPoints; i++) {
-            let p = new Point(
-                Math.random() * (bounds.maxX - bounds.minX) + bounds.minX,
-                Math.random() * (bounds.maxY - bounds.minY) + bounds.minY
+            let possible = Array.from(
+                {length: 6}, 
+                () => new Point(
+                    Math.random() * (bounds.maxX - bounds.minX) + bounds.minX,
+                    Math.random() * (bounds.maxY - bounds.minY) + bounds.minY
+                )
             );
+            possible.sort(p => Point.dist(p, this.closestPoint(p, this.points)))//.reverse()
+            let p = possible[0];
+            
             let inPoly = false;
-            for (let j = 0; j < this.polygons.length; j++) {
-                if (this.polygons[j].pointInsideOffset(p, 50)) {
+            for (let j = 0; j < PRMTool.polygons.length; j++) {
+                if (PRMTool.polygons[j].pointInsideOffset(p, 100)) {
                     inPoly = true;
                     break;
                 }
@@ -615,8 +654,8 @@ class PRMTool extends Tool{
                 let b = this.points[j];
 
                 let inPoly = false;
-                for (let k = 0; k < this.polygons.length; k++) {
-                    if (this.polygons[k].rayCast(a, Point.sub(b, a).normalize(), Point.sub(b, a).len())) {
+                for (let k = 0; k < PRMTool.polygons.length; k++) {
+                    if (new Polygon(PRMTool.polygons[k].getOffsetPoints(10)).rayCast(a, Point.sub(b, a).normalize(), Point.sub(b, a).len())) {
                         inPoly = true;
                         break;
                     }
@@ -625,26 +664,84 @@ class PRMTool extends Tool{
                     neighbors.push({ p: b, idx: j });
                 }
             }
-            neighbors.sort(p => Point.dist(this.goalPos, p))
             if (i == 0) this.goalPosMap = {p: a, n: neighbors, idx: i};
             this.map.push({p: a, n: neighbors, idx: i});
         }
     }
 
+    djikstraAlgorithm(start, end, map) {
+        let graph = map;
+        for (let i = 0; i < graph.length; i++) {
+            graph[i].d = Infinity;
+            graph[i].visited = false;
+        }
+        graph[start.idx].d = 0;
+        let current = start;
+        let maxIterations = graph.length;
+        let iterations = 0;
+        while (maxIterations > iterations) {
+            for (let i = 0; i < current.n.length; i++) {
+                let neighbor = graph[current.n[i].idx];
+                let d = Point.dist(neighbor.p, current.p) + current.d;
+                if (d < neighbor.d) {
+                    neighbor.d = d;
+                    neighbor.prev = current;
+                }
+            }
+            graph[current.idx].visited = true;
+
+            if (graph[end.idx].visited) {
+                break;
+            }
+
+            let min = Infinity;
+            let minIdx = -1;
+            for (let i = 0; i < graph.length; i++) {
+                if (!graph[i].visited && graph[i].d < min) {
+                    min = graph[i].d;
+                    minIdx = i;
+                }
+            }
+            if (minIdx == -1) {
+                return [];
+            }
+            current = graph[minIdx];
+            iterations++;
+        }
+        iterations = 0;
+
+        let path = [];
+        current = graph[end.idx];
+        while (maxIterations > iterations) {
+            path.push(current.p);
+            current = current.prev;
+            if (current == undefined || current.p.equals(start.p)) break;
+            iterations++;
+        }
+        return path;
+    }
+
     generatePath(a) {
         let open = [];
         let closed = [];
-        const MAX = 100;
+        const MAX = 1000;
         let count = 0;
         open.push({a:a, parent:null});
-        while (open.length > 0 && MAX> count) {
+        while (open.length > 0 && MAX > count) {
             let cur = open.shift();
             closed.push(cur);
+            // cur.a.n.sort((p) => Math.abs(Point.sub(p.p, cur.parent).getAngle() - Point.sub(cur.parent, cur.a.p).getAngle()))//.reverse();
+            cur.a.n.sort((p) => Point.dist(p.p, cur.parent)).reverse();
+
             for (let i = 0; i < cur.a.n.length; i++) {
                 let neighbor = cur.a.n[i];
-                if (neighbor.p.equals(this.goalPosMap.p)) {
+                if (neighbor.p.equals(this.goalPosMap.p) ||
+                !this.polygons.some(p => new Polygon(p.getOffsetPoints(30)).rayCast(neighbor.p, Point.sub(this.goalPos, neighbor.p).normalize(), Point.dist(neighbor.p, this.goalPos)))) {
                     let path = []
-                    path.push(neighbor.p);
+                    
+                    path.push(this.goalPos);
+                    if (!neighbor.p.equals(this.goalPosMap.p))
+                        path.push(neighbor.p);
                     path.push(cur.a.p);
                     while (cur.parent != null) {
                         path.push(cur.parent.a.p);
@@ -665,7 +762,7 @@ class PRMTool extends Tool{
     controlPointsFromPath(path) {
         path = path.reverse();
         const offset = 0.7;
-        const maxScaling = 70;
+        const maxScaling = 40;
         let cp = [
             path[0],
             Point.add(path[0], Point.sub(path[1], path[0]).normalize())
@@ -678,7 +775,7 @@ class PRMTool extends Tool{
                 let a2 = Point.sub(path[i+1], path[i]).getAngle();
                 let dir = Point.fromAngle(-Math.PI+(a1+a2)/2);
                 let dot =  Point.dot(dir, Point.sub(path[i+1], path[i]).normalize());
-                let scaling = Math.min(maxScaling, Point.dist(path[i - 1], path[i]))
+                let scaling = Math.min(maxScaling, Point.dist(path[i - 1], path[i])*0.75, Point.dist(path[i], path[i+1])*0.75)
                 let point = Point.add(
                     path[i],
                     Point.mul(dir, scaling * offset * dot)
@@ -692,11 +789,13 @@ class PRMTool extends Tool{
                 //     point
                 // );
                 cp.push(point2)
+                // cp.push(Point.lerp(path[i-1], path[i], .75));
                 cp.push(path[i]);
+                // cp.push(Point.lerp(path[i], path[i+1], .25));
                 cp.push(point)
             }
             else {
-                cp.push(path[i]);
+                cp.push(Point.lerp(path[i-1], path[i], .75));
                 cp.push(path[i]);
             }
         }
@@ -704,8 +803,8 @@ class PRMTool extends Tool{
     }
 
     isPointObstructed(point) {
-        for (let i = 0; i < this.polygons.length; i++) {
-            if (this.polygons[i].pointInside(point)) {
+        for (let i = 0; i < PRMTool.polygons.length; i++) {
+            if (PRMTool.polygons[i].pointInside(point)) {
                 return true;
             }
         }
@@ -722,14 +821,7 @@ class PRMTool extends Tool{
             for (let i = 0; i < CurveTool.curves.length; i++) {
                 CurveTool.drawCurve(CurveTool.curves[i], false, false); 
             }
-            ctx.strokeStyle = clear;
-            ctx.fillStyle = lightBlue + "44";
-            
             ctx.globalAlpha = 1;
-            for (let j = 0; j < PointGenTool.points.length; j++) {
-                drawCircle(PointGenTool.points[j], 2);
-                ctx.fill();
-            }
         }
 
         ctx.lineWidth = 1;
@@ -748,16 +840,33 @@ class PRMTool extends Tool{
         
         if (keysDown["x"] && this.map.length > 1) {
             ctx.strokeStyle = yellow;
-            if (this.map.length > 0)
-                this.path = this.generatePath({ p:m, n: [ this.closestPoint(m) ] }); 
+            if (this.map.length > 0) {
+                this.path = this.djikstraAlgorithm(
+                    this.closestPointInMap(m), 
+                    this.closestPointInMap(this.goalPos),
+                    this.map
+                );
+                // this.path.unshift(this.goalPos);
+                if (this.path.length > 0)
+                    this.path.push(m);
+            }
+                
+                // this.path = this.generatePath({ p:m, n: [ this.closestPointInMap(m) ] }); 
             drawCircle(this.goalPosMap.p, 2);
             drawCircle(this.goalPos, 2);
             if (this.path.length > 0) {
                 ctx.strokeStyle = yellow;
                 let test = this.controlPointsFromPath(this.path);
+                CurveTool.curves = [];
                 for (let i = 0; i < test.length-1; i+=3) {
                     drawBezier(test[i], test[i+1], test[i+2], test[i+3]);
+                    drawSquare(test[i], 1)
+                    drawSquare(test[i+1], 1)
+                    drawSquare(test[i+2], 1)
+                    drawSquare(test[i+3], 1)
+                    CurveTool.curves.push(new CubicCurve(test[i], test[i+1], test[i+2], test[i+3]));
                 }
+                
                 ctx.strokeStyle = yellow + "33";
                 for (let i = 1; i < test.length; i++) {
                     drawLine(test[i - 1], test[i]);
@@ -773,8 +882,8 @@ class PRMTool extends Tool{
         ctx.strokeStyle = red;
         ctx.fillStyle = red + "44";
 // this is line 747 and gowdham typed this at 8:09 on 9/9/21
-        for (let i = 0; i < this.polygons.length; i++) {
-            this.polygons[i].draw();
+        for (let i = 0; i < PRMTool.polygons.length; i++) {
+            PRMTool.polygons[i].draw();
             ctx.fill();
         }
 
@@ -783,8 +892,8 @@ class PRMTool extends Tool{
         }
 
         let int = false;
-        for (let i = 0; i < this.polygons.length; i++) {
-            if (this.polygons[i].rayCast(new Point(mx, my), new Point(0, 1)) && !int) {
+        for (let i = 0; i < PRMTool.polygons.length; i++) {
+            if (PRMTool.polygons[i].rayCast(new Point(mx, my), new Point(0, 1)) && !int) {
                 int = true;
                 break
             }
@@ -810,7 +919,7 @@ class PRMTool extends Tool{
             if (this.newPolygon != null) {
                 if (this.newPolygon.points.length > 2) {
                     this.newPolygon.points = this.newPolygon.convexHull();
-                    this.polygons.push(this.newPolygon);
+                    PRMTool.polygons.push(this.newPolygon);
                 }
                 this.newPolygon = null;
             }
