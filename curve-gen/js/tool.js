@@ -617,36 +617,23 @@ class PRMTool extends Tool{
             }
         }
 
-        console.log(this.polyPoints.length)
+        // console.log(this.polyPoints.length)
         let bounds = this.getBoundingBox(this.polyPoints);
         this.goalPos = new Point(300, 300);
         this.points.push(this.goalPos);
-        for (let i = 0; i < this.maxPoints; i++) {
-            let possible = Array.from(
-                {length: 6}, 
-                () => new Point(
-                    Math.random() * (bounds.maxX - bounds.minX) + bounds.minX,
-                    Math.random() * (bounds.maxY - bounds.minY) + bounds.minY
-                )
-            );
-            possible.sort(p => Point.dist(p, this.closestPoint(p, this.points)))//.reverse()
-            let p = possible[0];
-            
-            let inPoly = false;
-            for (let j = 0; j < PRMTool.polygons.length; j++) {
-                if (PRMTool.polygons[j].pointInsideOffset(p, 100)) {
-                    inPoly = true;
-                    break;
-                }
-            }
-            if (!inPoly) {
-                this.points.push(p);
-            } else {
-                i--;
-            }
-        }
 
-        // for (let i = 0; i < allPoints.length; i++) {}
+        let p = new PoissonDiskSampling({
+            shape: [bounds.maxX - bounds.minX, bounds.maxY - bounds.minY],
+            minDistance: 30,
+            maxDistance: 50,
+            tries: 10
+        });
+        let pts = p.fill();
+        let points = p.fill()
+            .map(p => new Point(p[0] + bounds.minX, p[1] + bounds.minY))
+            .filter(p => !PRMTool.polygons.some(poly => new Polygon(poly.getOffsetPoints(100)).pointInside(p)));
+        this.points = this.points.concat(points);
+
         for (let i = 0; i < this.points.length; i++) {
             let a = this.points[i];
             let neighbors = [];
@@ -747,7 +734,7 @@ class PRMTool extends Tool{
                         path.push(cur.parent.a.p);
                         cur = cur.parent;
                     }
-                    console.log(path)
+                    // console.log(path)
                     return path;
                 }
                 if (!closed.includes(this.map[neighbor.idx])) {
@@ -762,7 +749,7 @@ class PRMTool extends Tool{
     controlPointsFromPath(path) {
         path = path.reverse();
         const offset = 0.7;
-        const maxScaling = 40;
+        const maxScaling = 80;
         let cp = [
             path[0],
             Point.add(path[0], Point.sub(path[1], path[0]).normalize())
