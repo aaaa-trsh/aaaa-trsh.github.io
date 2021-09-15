@@ -705,47 +705,28 @@ class PRMTool extends Tool{
             if (current == undefined || current.p.equals(start.p)) break;
             iterations++;
         }
+        return this.shortcut(path);
+    }
+    shortcut(path, iterations=100) {
+        for (let i = 0; i < iterations; i++) {
+            let idx1 = Math.floor(Math.random() * path.length-1);
+            let idx2 = Math.floor(Math.random() * path.length-1);
+            let blends = [
+                Math.random() * path.length-1,
+                Math.random() * path.length-1
+            ];
+            let min = Math.min(blends[0], blends[1]);
+            let max = Math.max(blends[0], blends[1]);
+            let a = Point.lerp(path[Math.floor(min)], path[Math.ceil(min)], blends[0] - min);
+            let b = Point.lerp(path[Math.floor(max)], path[Math.ceil(max)], blends[1] - max);
+
+            if (!this.polygons.some(p => new Polygon(p.getOffsetPoints(30)).rayCast(a, Point.sub(b, a).normalize(), Point.sub(b, a).len()))) {
+                // splice all points between min and max with a and b
+                path.splice(Math.floor(min), Math.ceil(max) - Math.floor(min) + 1, a, b);
+            }
+        }
         return path;
     }
-
-    generatePath(a) {
-        let open = [];
-        let closed = [];
-        const MAX = 1000;
-        let count = 0;
-        open.push({a:a, parent:null});
-        while (open.length > 0 && MAX > count) {
-            let cur = open.shift();
-            closed.push(cur);
-            // cur.a.n.sort((p) => Math.abs(Point.sub(p.p, cur.parent).getAngle() - Point.sub(cur.parent, cur.a.p).getAngle()))//.reverse();
-            cur.a.n.sort((p) => Point.dist(p.p, cur.parent)).reverse();
-
-            for (let i = 0; i < cur.a.n.length; i++) {
-                let neighbor = cur.a.n[i];
-                if (neighbor.p.equals(this.goalPosMap.p) ||
-                !this.polygons.some(p => new Polygon(p.getOffsetPoints(30)).rayCast(neighbor.p, Point.sub(this.goalPos, neighbor.p).normalize(), Point.dist(neighbor.p, this.goalPos)))) {
-                    let path = []
-                    
-                    path.push(this.goalPos);
-                    if (!neighbor.p.equals(this.goalPosMap.p))
-                        path.push(neighbor.p);
-                    path.push(cur.a.p);
-                    while (cur.parent != null) {
-                        path.push(cur.parent.a.p);
-                        cur = cur.parent;
-                    }
-                    // console.log(path)
-                    return path;
-                }
-                if (!closed.includes(this.map[neighbor.idx])) {
-                    open.push({a:this.map[neighbor.idx], parent:cur});
-                }
-            }
-            count++;
-        }
-        return [];
-    }
-
     controlPointsFromPath(path) {
         path = path.reverse();
         const offset = 0.7;
