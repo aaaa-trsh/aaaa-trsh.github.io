@@ -332,14 +332,18 @@ class Polygon {
     }
 
     getOffsetPoints(x) {
-        let c = this.getCenter();
         let points = [];
-        let maxDist = Math.max(...this.points.map(p => Point.dist(p, c)))
+        // add 2 points per segment, offset from their segment
         for (let i = 0; i < this.points.length; i++) {
-            let p = this.points[i];
-            let v = Point.mul(Point.div(Point.sub(p, c), maxDist), x);
-            // let v2 = v.rotate(x);
-            points.push(Point.add(p, v));
+            let back = this.points[(i + 1) % this.points.length];
+            let cur = this.points[i];
+            let front = this.points[(i + 1) % this.points.length];
+
+            let normalA = Point.sub(back, cur).normalize().getAngle();
+            let normalB = Point.sub(front, cur).normalize().getAngle();
+
+            points.push(Point.add(Point.lerp(back, cur), Point.mul(Point.fromAngle((normalA), x))));
+            
         }
         return points;
     }

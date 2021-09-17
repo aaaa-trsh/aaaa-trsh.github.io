@@ -611,12 +611,15 @@ class PRMTool extends Tool{
         this.path = [];
         this.points = [];
         this.polyPoints = [];
+        let obstacleEdgePoints = [];
         for (let i = 0; i < PRMTool.polygons.length; i++) {
             for (let j = 0; j < PRMTool.polygons[i].points.length; j++) {
                 this.polyPoints.push(PRMTool.polygons[i].points[j]);
             }
+            obstacleEdgePoints = obstacleEdgePoints.concat(PRMTool.polygons[i].getOffsetPoints(20));
         }
-
+        console.log(obstacleEdgePoints)
+        
         // console.log(this.polyPoints.length)
         let bounds = this.getBoundingBox(this.polyPoints);
         this.goalPos = new Point(300, 300);
@@ -624,15 +627,14 @@ class PRMTool extends Tool{
 
         let p = new PoissonDiskSampling({
             shape: [bounds.maxX - bounds.minX, bounds.maxY - bounds.minY],
-            minDistance: 30,
-            maxDistance: 50,
+            minDistance: 20,
+            maxDistance: 40,
             tries: 10
         });
-        let pts = p.fill();
         let points = p.fill()
             .map(p => new Point(p[0] + bounds.minX, p[1] + bounds.minY))
-            .filter(p => !PRMTool.polygons.some(poly => new Polygon(poly.getOffsetPoints(100)).pointInside(p)));
-        this.points = this.points.concat(points);
+            .filter(p => !PRMTool.polygons.some(poly => new Polygon(poly.getOffsetPoints(30)).pointInside(p)));
+        this.points = (obstacleEdgePoints);
 
         for (let i = 0; i < this.points.length; i++) {
             let a = this.points[i];
@@ -706,7 +708,7 @@ class PRMTool extends Tool{
         //     path[i].d = dist;
         // }
 
-        return this.shortcut(path);
+        return path;
     }
 
     badrandom(seed) {
@@ -714,59 +716,58 @@ class PRMTool extends Tool{
         return x - Math.floor(x);
     }
     
-    shortcut(path, iterations=6) {
-        let sigmoid = (x) => {
-            return Math.exp(x) / (Math.exp(x) + 1)
-        };
-        let ogPath = path;
-        path.reverse();
-        for (let i = 0; i < iterations; i++) {
-            let pair = null;
-            let pairIndices = null;
-            let minDist = Infinity;
-            for (let j = 0; j < 16; j++) {
-                // TODO: replace with getting random point in bb, and getting closest point to that to avoid bias
-                let indexes = [
-                    this.badrandom(mx + i + j) * (ogPath.length - 2),
-                    this.badrandom(my + i + j + 1) * (ogPath.length - 1)
-                ];
-                let startIdx = Math.min(indexes[0], indexes[1]);
-                let endIdx = Math.max(indexes[0], indexes[1]);
-                if (Math.ceil(startIdx) == Math.ceil(endIdx)) continue;
-                let a = Point.lerp(ogPath[Math.floor(startIdx)], ogPath[Math.ceil(startIdx)], sigmoid(this.badrandom(mx + i + j + 3)));
-                let b = Point.lerp(ogPath[Math.floor(endIdx)], ogPath[Math.ceil(endIdx)], sigmoid(this.badrandom(mx + i + j + 3)));
+    // shortcut(path, iterations=6) {
+    //     let sigmoid = (x) => {
+    //         return Math.exp(x) / (Math.exp(x) + 1)
+    //     };
+    //     let ogPath = path;
+    //     path.reverse();
+    //     for (let i = 0; i < iterations; i++) {
+    //         let pair = null;
+    //         let pairIndices = null;
+    //         let minDist = Infinity;
+    //         for (let j = 0; j < 16; j++) {
+    //             // TODO: replace with getting random point in bb, and getting closest point to that to avoid bias
+    //             let indexes = [
+    //                 this.badrandom(mx + i + j) * (ogPath.length - 2),
+    //                 this.badrandom(my + i + j + 1) * (ogPath.length - 1)
+    //             ];
+    //             let startIdx = Math.min(indexes[0], indexes[1]);
+    //             let endIdx = Math.max(indexes[0], indexes[1]);
+    //             if (Math.ceil(startIdx) == Math.ceil(endIdx)) continue;
+    //             let a = Point.lerp(ogPath[Math.floor(startIdx)], ogPath[Math.ceil(startIdx)], sigmoid(this.badrandom(mx + i + j + 3)));
+    //             let b = Point.lerp(ogPath[Math.floor(endIdx)], ogPath[Math.ceil(endIdx)], sigmoid(this.badrandom(mx + i + j + 3)));
 
-                if (!PRMTool.polygons.some(poly => new Polygon(poly.getOffsetPoints(10)).rayCast(a, Point.sub(b, a).normalize(), Point.dist(b, a)))) {
-                    if (Point.dist(b, a) < minDist) {
-                        pair = [a, b];
-                        pairIndices = [startIdx, endIdx];
-                        minDist = Point.dist(b, a);
-                    }
-                }
-            }
-            if (pair != null) {
-                ctx.globalAlpha = 0.5;
-                ctx.globalAlpha = 1;
-                for (let x = Math.ceil(pairIndices[0]); x < Math.ceil(pairIndices[1]); x++)
-                    path.splice(x, 1);
-                path.splice(Math.ceil(pairIndices[0]), 0, pair[0], pair[1]);
-            }
-        }
-        path.reverse();
-        return path;
-    }
+    //             if (!PRMTool.polygons.some(poly => new Polygon(poly.getOffsetPoints(10)).rayCast(a, Point.sub(b, a).normalize(), Point.dist(b, a)))) {
+    //                 if (Point.dist(b, a) < minDist) {
+    //                     pair = [a, b];
+    //                     pairIndices = [startIdx, endIdx];
+    //                     minDist = Point.dist(b, a);
+    //                 }
+    //             }
+    //         }
+    //         if (pair != null) {
+    //             ctx.globalAlpha = 0.5;
+    //             ctx.globalAlpha = 1;
+    //             for (let x = Math.ceil(pairIndices[0]); x < Math.ceil(pairIndices[1]); x++)
+    //                 path.splice(x, 1);
+    //             path.splice(Math.ceil(pairIndices[0]), 0, pair[0], pair[1]);
+    //         }
+    //     }
+    //     path.reverse();
+    //     return path;
+    // }
     
     controlPointsFromPath(path) {
         path = path.reverse();
         const offset = 0.7;
         const maxScaling = 80;
-        let cp = [
+        let controlPoints = [
             path[0],
             Point.add(path[0], Point.sub(path[1], path[0]).normalize())
         ];
 
         for (let i = 1; i < path.length; i++) {
-            // cp.push(path[i]);
             if (i < path.length - 1) {
                 let a1 = Point.sub(path[i], path[i-1]).getAngle();
                 let a2 = Point.sub(path[i+1], path[i]).getAngle();
@@ -781,22 +782,22 @@ class PRMTool extends Tool{
                     path[i],
                     Point.mul(dir, scaling * -offset * dot)
                 );
-                // drawLine(
-                //     path[i],
-                //     point
-                // );
-                cp.push(point2)
-                // cp.push(Point.lerp(path[i-1], path[i], .75));
-                cp.push(path[i]);
-                // cp.push(Point.lerp(path[i], path[i+1], .25));
-                cp.push(point)
+                controlPoints.push(point2)
+                controlPoints.push(path[i]);
+                controlPoints.push(point)
             }
             else {
-                cp.push(Point.lerp(path[i-1], path[i], .75));
-                cp.push(path[i]);
+                controlPoints.push(Point.lerp(path[i-1], path[i], .75));
+                controlPoints.push(path[i]);
             }
         }
-        return cp;
+
+        // randomly move control points, set them if the velocity is higher then previous generation
+        let curves = [];
+        for (let i = 0; i < controlPoints.length-1; i+=3) {
+            curves.push(new CubicCurve(controlPoints[i], controlPoints[i+1], controlPoints[i+2], controlPoints[i+3]));
+        }
+        return controlPoints;
     }
 
     isPointObstructed(point) {
