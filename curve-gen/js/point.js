@@ -204,6 +204,14 @@ class TrajectoryState extends Point {
 
 class Polygon {
     constructor(points) {
+        // sort points by angle to center
+        this.points = points;
+        let c = this.getCenter();
+        this.points = points.sort((a, b) => {
+            let aa = Math.atan2(a.y - c.y, a.x - c.x);
+            let bb = Math.atan2(b.y - c.y, b.x - c.x);
+            return aa - bb;
+        });
         this.points = points;
     }
 
@@ -331,19 +339,64 @@ class Polygon {
         return s >= 0 && s <= 1 && t >= 0 && t <= 1;
     }
 
+    /*
+    def makeOffsetPoly(oldX, oldY, offset, outer_ccw = 1):
+        num_points = len(oldX)
+
+        for curr in range(num_points):
+            prev = (curr + num_points - 1) % num_points
+            next = (curr + 1) % num_points
+
+            vnX =  oldX[next] - oldX[curr]
+            vnY =  oldY[next] - oldY[curr]
+            vnnX, vnnY = normalizeVec(vnX,vnY)
+            nnnX = vnnY
+            nnnY = -vnnX
+
+            vpX =  oldX[curr] - oldX[prev]
+            vpY =  oldY[curr] - oldY[prev]
+            vpnX, vpnY = normalizeVec(vpX,vpY)
+            npnX = vpnY * outer_ccw
+            npnY = -vpnX * outer_ccw
+
+            bisX = (nnnX + npnX) * outer_ccw
+            bisY = (nnnY + npnY) * outer_ccw
+
+            bisnX, bisnY = normalizeVec(bisX,  bisY)
+            bislen = offset /  np.sqrt(1 + nnnX*npnX + nnnY*npnY)
+
+            newX.append(oldX[curr] + bislen * bisnX)
+            newY.append(oldY[curr] + bislen * bisnY)
+    */
     getOffsetPoints(x) {
         let points = [];
         // add 2 points per segment, offset from their segment
         for (let i = 0; i < this.points.length; i++) {
-            let back = this.points[(i + 1) % this.points.length];
-            let cur = this.points[i];
-            let front = this.points[(i + 1) % this.points.length];
+            let prev = (i + this.points.length - 1) % this.points.length;
+            let next = (i + 1) % this.points.length;
+            let vnX = this.points[next].x - this.points[i].x;
+            let vnY = this.points[next].y - this.points[i].y;
+            let vnn = new Point(vnX, vnY).normalize();
+            let vnnX = vnn.x;
+            let vnnY = vnn.y;
+            let nnnX = vnnY;
+            let nnnY = -vnnX;
+            let vpX = this.points[i].x - this.points[prev].x;
+            let vpY = this.points[i].y - this.points[prev].y;
+            let vpn = new Point(vpX, vpY).normalize();
+            let vpnX = vpn.x;
+            let vpnY = vpn.y;
+            let npnX = vpnY;
+            let npnY = -vpnX;
+            let bisX = (nnnX + npnX) * x;
+            let bisY = (nnnY + npnY) * x;
+            let bisn = new Point(bisX, bisY).normalize();
 
-            let normalA = Point.sub(back, cur).normalize().getAngle();
-            let normalB = Point.sub(front, cur).normalize().getAngle();
-
-            points.push(Point.add(Point.lerp(back, cur), Point.mul(Point.fromAngle((normalA), x))));
-            
+            let bisLen = x / Math.sqrt(1 + nnnX * npnX + nnnY * npnY);
+            // console.log(bisLen);
+            let newX = this.points[i].x + bisLen * bisn.x;
+            let newY = this.points[i].y + bisLen * bisn.y;
+            points.push(new Point(newX, newY));
         }
         return points;
     }

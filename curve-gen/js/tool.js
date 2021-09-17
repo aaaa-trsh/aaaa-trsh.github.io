@@ -355,7 +355,7 @@ class SimulationTool extends Tool{
         if (keysDown.Shift) {
             this.robot = new PurePursuitRobot(
                 new Point(mx, my),
-                Point.getAngle(Point.sub(PointGenTool.points[1], PointGenTool.points[0])),
+                Point.getAngle(Point.sub(PointGenTool.points[10], PointGenTool.points[0])),
                 20,
                 PointGenTool.points,
                 10
@@ -375,7 +375,7 @@ class SimulationTool extends Tool{
         new PointGenTool().start();
         this.robot = new PurePursuitRobot(
             PointGenTool.points[0],
-            Point.getAngle(Point.sub(PointGenTool.points[1], PointGenTool.points[0])),
+            Point.getAngle(Point.sub(PointGenTool.points[10], PointGenTool.points[0])),
             20,
             PointGenTool.points,
             10
@@ -461,10 +461,10 @@ class PRMTool extends Tool{
         //     new Point(710, 350),
         // ]),
         new Polygon([
-            new Point(400, 385),
+            new Point(400, 395),
             new Point(400, 375),
             new Point(510, 375),
-            new Point(510, 385),
+            new Point(510, 395),
         ]),
         new Polygon([
             new Point(450, 400),
@@ -602,7 +602,10 @@ class PRMTool extends Tool{
             minX: minX,
             minY: minY,
             maxX: maxX,
-            maxY: maxY
+            maxY: maxY,
+            inBounds: (point) => {
+                return point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY;
+            }
         };
     }
 
@@ -616,25 +619,29 @@ class PRMTool extends Tool{
             for (let j = 0; j < PRMTool.polygons[i].points.length; j++) {
                 this.polyPoints.push(PRMTool.polygons[i].points[j]);
             }
-            obstacleEdgePoints = obstacleEdgePoints.concat(PRMTool.polygons[i].getOffsetPoints(20));
+            obstacleEdgePoints = obstacleEdgePoints.concat(PRMTool.polygons[i].getOffsetPoints(15));
         }
+        let bounds = this.getBoundingBox(this.polyPoints);
+        this.bounds = bounds;
+        console.log(bounds)
+        obstacleEdgePoints = obstacleEdgePoints.filter(x => this.bounds.inBounds(x));
         console.log(obstacleEdgePoints)
         
         // console.log(this.polyPoints.length)
-        let bounds = this.getBoundingBox(this.polyPoints);
         this.goalPos = new Point(300, 300);
-        this.points.push(this.goalPos);
 
         let p = new PoissonDiskSampling({
             shape: [bounds.maxX - bounds.minX, bounds.maxY - bounds.minY],
-            minDistance: 20,
-            maxDistance: 40,
+            minDistance: 50,
+            maxDistance: 70,
             tries: 10
         });
         let points = p.fill()
             .map(p => new Point(p[0] + bounds.minX, p[1] + bounds.minY))
-            .filter(p => !PRMTool.polygons.some(poly => new Polygon(poly.getOffsetPoints(30)).pointInside(p)));
-        this.points = (obstacleEdgePoints);
+            .filter(p => !PRMTool.polygons.some(poly => new Polygon(poly.getOffsetPoints(10)).pointInside(p)));
+        // this.points = points.concat(obstacleEdgePoints);
+        this.points = points.concat(obstacleEdgePoints);
+        this.points.push(this.goalPos);
 
         for (let i = 0; i < this.points.length; i++) {
             let a = this.points[i];
@@ -642,7 +649,7 @@ class PRMTool extends Tool{
             for (let j = 0; j < this.points.length; j++) {
                 let b = this.points[j];
 
-                if (!PRMTool.polygons.some(poly => new Polygon(poly.getOffsetPoints(10)).rayCast(a, Point.sub(b, a).normalize(), Point.dist(b, a)))) {
+                if (!PRMTool.polygons.some(poly => new Polygon(poly.getOffsetPoints(8)).rayCast(a, Point.sub(b, a).normalize(), Point.dist(b, a)))) {
                     neighbors.push({ p: b, idx: j });
                 }
             }
@@ -810,6 +817,8 @@ class PRMTool extends Tool{
     }
     
     update() {
+        // draw bounds
+        ctx.strokeRect(this.bounds.minX, this.bounds.minY, this.bounds.maxX - this.bounds.minX, this.bounds.maxY - this.bounds.minY);
         let m = new Point(mx, my);
         if (CurveTool.curves.length > 0) {
             ctx.lineWidth = 1;
@@ -893,15 +902,8 @@ class PRMTool extends Tool{
             this.newPolygon.draw();
         }
 
-        let int = false;
-        for (let i = 0; i < PRMTool.polygons.length; i++) {
-            if (PRMTool.polygons[i].rayCast(new Point(mx, my), new Point(0, 1)) && !int) {
-                int = true;
-                break
-            }
-        }
-
-        if (int) {//this.isPointObstructed(m)) {
+    
+        if (this.bounds.inBounds(m)) {//this.isPointObstructed(m)) {
             ctx.strokeStyle = red;
             ctx.fillStyle = red + "44";
         } else {
