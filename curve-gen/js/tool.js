@@ -534,7 +534,7 @@ class PRMTool extends Tool{
         this.goalPosMap = null;
     }
 
-    closestPointInMap(point) {
+    closestPointInMap(point, map=this.map) {
         let min = Infinity;
         let pos = new Point(Infinity, Infinity);
     
@@ -640,14 +640,7 @@ class PRMTool extends Tool{
             for (let j = 0; j < this.points.length; j++) {
                 let b = this.points[j];
 
-                let inPoly = false;
-                for (let k = 0; k < PRMTool.polygons.length; k++) {
-                    if (new Polygon(PRMTool.polygons[k].getOffsetPoints(10)).rayCast(a, Point.sub(b, a).normalize(), Point.sub(b, a).len())) {
-                        inPoly = true;
-                        break;
-                    }
-                }
-                if (!inPoly) {
+                if (!PRMTool.polygons.some(poly => new Polygon(poly.getOffsetPoints(10)).rayCast(a, Point.sub(b, a).normalize(), Point.dist(b, a)))) {
                     neighbors.push({ p: b, idx: j });
                 }
             }
@@ -705,47 +698,64 @@ class PRMTool extends Tool{
             if (current == undefined || current.p.equals(start.p)) break;
             iterations++;
         }
-        return path;
+        path.push(start.p);
+
+        // let dist = 0;
+        // for (let i = 0; i < path.length; i++) {
+        //     if (i > 0) dist += Point.dist(path[i], path[i - 1]);
+        //     path[i].d = dist;
+        // }
+
+        return this.shortcut(path);
     }
 
-    generatePath(a) {
-        let open = [];
-        let closed = [];
-        const MAX = 1000;
-        let count = 0;
-        open.push({a:a, parent:null});
-        while (open.length > 0 && MAX > count) {
-            let cur = open.shift();
-            closed.push(cur);
-            // cur.a.n.sort((p) => Math.abs(Point.sub(p.p, cur.parent).getAngle() - Point.sub(cur.parent, cur.a.p).getAngle()))//.reverse();
-            cur.a.n.sort((p) => Point.dist(p.p, cur.parent)).reverse();
+    badrandom(seed) {
+        var x = Math.sin(seed) * 10000;
+        return x - Math.floor(x);
+    }
+    
+    shortcut(path, iterations=6) {
+        let sigmoid = (x) => {
+            return Math.exp(x) / (Math.exp(x) + 1)
+        };
+        let ogPath = path;
+        path.reverse();
+        for (let i = 0; i < iterations; i++) {
+            let pair = null;
+            let pairIndices = null;
+            let minDist = Infinity;
+            for (let j = 0; j < 16; j++) {
+                // TODO: replace with getting random point in bb, and getting closest point to that to avoid bias
+                let indexes = [
+                    this.badrandom(mx + i + j) * (ogPath.length - 2),
+                    this.badrandom(my + i + j + 1) * (ogPath.length - 1)
+                ];
+                let startIdx = Math.min(indexes[0], indexes[1]);
+                let endIdx = Math.max(indexes[0], indexes[1]);
+                if (Math.ceil(startIdx) == Math.ceil(endIdx)) continue;
+                let a = Point.lerp(ogPath[Math.floor(startIdx)], ogPath[Math.ceil(startIdx)], sigmoid(this.badrandom(mx + i + j + 3)));
+                let b = Point.lerp(ogPath[Math.floor(endIdx)], ogPath[Math.ceil(endIdx)], sigmoid(this.badrandom(mx + i + j + 3)));
 
-            for (let i = 0; i < cur.a.n.length; i++) {
-                let neighbor = cur.a.n[i];
-                if (neighbor.p.equals(this.goalPosMap.p) ||
-                !this.polygons.some(p => new Polygon(p.getOffsetPoints(30)).rayCast(neighbor.p, Point.sub(this.goalPos, neighbor.p).normalize(), Point.dist(neighbor.p, this.goalPos)))) {
-                    let path = []
-                    
-                    path.push(this.goalPos);
-                    if (!neighbor.p.equals(this.goalPosMap.p))
-                        path.push(neighbor.p);
-                    path.push(cur.a.p);
-                    while (cur.parent != null) {
-                        path.push(cur.parent.a.p);
-                        cur = cur.parent;
+                if (!PRMTool.polygons.some(poly => new Polygon(poly.getOffsetPoints(10)).rayCast(a, Point.sub(b, a).normalize(), Point.dist(b, a)))) {
+                    if (Point.dist(b, a) < minDist) {
+                        pair = [a, b];
+                        pairIndices = [startIdx, endIdx];
+                        minDist = Point.dist(b, a);
                     }
-                    // console.log(path)
-                    return path;
-                }
-                if (!closed.includes(this.map[neighbor.idx])) {
-                    open.push({a:this.map[neighbor.idx], parent:cur});
                 }
             }
-            count++;
+            if (pair != null) {
+                ctx.globalAlpha = 0.5;
+                ctx.globalAlpha = 1;
+                for (let x = Math.ceil(pairIndices[0]); x < Math.ceil(pairIndices[1]); x++)
+                    path.splice(x, 1);
+                path.splice(Math.ceil(pairIndices[0]), 0, pair[0], pair[1]);
+            }
         }
-        return [];
+        path.reverse();
+        return path;
     }
-
+    
     controlPointsFromPath(path) {
         path = path.reverse();
         const offset = 0.7;
@@ -828,17 +838,21 @@ class PRMTool extends Tool{
         if (keysDown["x"] && this.map.length > 1) {
             ctx.strokeStyle = yellow;
             if (this.map.length > 0) {
+                let closestToMouse = this.closestPointInMap(m);
+                let inclusiveMap = [...this.map];
+                let mouseNode = { p:m, n: [ { p: closestToMouse.p, idx: closestToMouse.idx } ], idx: this.map.length };
+                inclusiveMap.push(mouseNode);
                 this.path = this.djikstraAlgorithm(
-                    this.closestPointInMap(m), 
+                    mouseNode,
                     this.closestPointInMap(this.goalPos),
-                    this.map
+                    inclusiveMap
                 );
                 // this.path.unshift(this.goalPos);
-                if (this.path.length > 0)
-                    this.path.push(m);
+                // if (this.path.length > 0)
+                //     this.path.push(m);
             }
                 
-                // this.path = this.generatePath({ p:m, n: [ this.closestPointInMap(m) ] }); 
+                // this.path = this.generatePath(); 
             drawCircle(this.goalPosMap.p, 2);
             drawCircle(this.goalPos, 2);
             if (this.path.length > 0) {

@@ -4,7 +4,7 @@ infoText.innerHTML = "a colored noise field - and your cursor is a particle attr
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext('2d');
-canvas.style.filter = "blur(2px) brightness(2)"
+canvas.style.filter = "blur(2px) brightness(3)"
 const G = 7e-11;
 resizeCanvas();
 let planets = [
@@ -20,8 +20,8 @@ function init() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    for(let i = 0; i < 50; i++) {
-        let rad = Math.max(Math.min(1/Math.log(Math.random() + 0.2), 40), 4);
+    for(let i = 0; i < 10; i++) {
+        let rad = Math.random() * 30;
     
         // let angle = Math.random()*2*Math.PI;
         // let x = (Math.cos(angle) * canvas.height/4) + canvas.width/2;
@@ -51,8 +51,8 @@ function init() {
             mass: rad*200000+1000000,
             x: x,
             y: y,
-            vx: 0,//(Math.random() * 20) - 10,
-            vy: 0,//(Math.random() * 20) - 10,
+            vx: (Math.random() * 40) - 20,
+            vy: (Math.random() * 40) - 20,
             ax: 0,
             ay: 0,
             color: `hsl(${(i / 50) * 70}, 100%, 60%)`,
@@ -76,23 +76,29 @@ function drawCircle(a, r) {
     ctx.beginPath();
     ctx.arc(a.x, a.y, r, 0, 2 * Math.PI);
     ctx.closePath();
+    ctx.fill();
 }
 
 function update() {
     ctx.globalAlpha = 1;
-    ctx.fillStyle = "#0005"
+    ctx.fillStyle = "#0009"
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     
     for (let i = 0; i < planets.length; i++) {
         let planet = planets[i];
         ctx.fillStyle = planet.color;
-        drawCircle(planet, planet.radius);
+        ctx.globalAlpha = .1;
+
+        drawCircle(planet, planet.radius * 0.8);
         ctx.fill();
-        ctx.globalAlpha = .3;
-        ctx.fillStyle = "white";
-        drawCircle(planet, Math.min(planet.radius / 2, 10));
-        ctx.fill();
+        ctx.globalAlpha = .1;
+        drawCircle(planet, planet.radius * 0.9);
+        drawCircle(planet, planet.radius * 1);
+
+        ctx.fillStyle = "white"
+        drawCircle(planet, planet.radius * .4);
+        // drawCircle(planet, planet.radius * .5);
         ctx.globalAlpha = 1;
         //gravitate
         planet.ax = 0;
@@ -133,7 +139,7 @@ function update() {
             planet.y < -planet.radius * 1.2 || 
             planet.y > canvas.height + planet.radius * 1.2) {
             planets.splice(i, 1);
-            let rad = Math.max(Math.min(1/Math.log(Math.random() + 0.2), 40), 4);
+            let rad = Math.random() * 30;
         
             let x = Math.random() * canvas.width;
             let y = Math.random() * canvas.height;
@@ -151,14 +157,14 @@ function update() {
         
             planets.push({
                 radius: rad,
-                mass: rad*200000+1000000,
+                mass: rad*200000+10000000,
                 x: x,
                 y: y,
-                vx: 0,//(Math.random() * 20) - 10,
-                vy: 0,//(Math.random() * 20) - 10,
+                vx: (Math.random() * 20) - 10,
+                vy: (Math.random() * 20) - 10,
                 ax: 0,
                 ay: 0,
-                color: `hsl(${(i / 50) * 70}, 100%, 60%)`,
+                color: `hsl(${(i / 50) * 90}, 100%, 60%)`,
             });
         }
     }
