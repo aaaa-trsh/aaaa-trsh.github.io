@@ -306,28 +306,29 @@ class Polygon {
             t: t
         }
     }
-    rayCast(rayOrigin, rayDirection, maxDist=Infinity)
+    lineCast(a, b)
     {
-        // let t = Infinity;        
-        // let distance;
-        // let crossings = 0;
 
+        let rayOrigin = a;
+        let rayDirection = Point.sub(b, a).normalize();
+        let maxDist = Point.dist(b, a);
+
+        if (this.pointInside(a) || this.pointInside(b)) return true;
         for (let j = 1; j < this.points.length; j++) {
             let h = this.rayIntersectsSegment(
                 rayOrigin,
                 rayDirection.normalize(), 
-                this.points[j - 1], 
+                this.points[(j - 1) % this.points.length], 
                 this.points[j], 
                 maxDist
             ).hit;
             if (h) {
-                // crossings++;
                 return true;
             }
         }
         return false;
-        // return crossings > 0 && crossings % 2 == 0;
     }
+    
 
     segmentIntersection(a, b, c, d) {
         let u = Point.sub(b, a);
@@ -339,66 +340,31 @@ class Polygon {
         return s >= 0 && s <= 1 && t >= 0 && t <= 1;
     }
 
-    /*
-    def makeOffsetPoly(oldX, oldY, offset, outer_ccw = 1):
-        num_points = len(oldX)
-
-        for curr in range(num_points):
-            prev = (curr + num_points - 1) % num_points
-            next = (curr + 1) % num_points
-
-            vnX =  oldX[next] - oldX[curr]
-            vnY =  oldY[next] - oldY[curr]
-            vnnX, vnnY = normalizeVec(vnX,vnY)
-            nnnX = vnnY
-            nnnY = -vnnX
-
-            vpX =  oldX[curr] - oldX[prev]
-            vpY =  oldY[curr] - oldY[prev]
-            vpnX, vpnY = normalizeVec(vpX,vpY)
-            npnX = vpnY * outer_ccw
-            npnY = -vpnX * outer_ccw
-
-            bisX = (nnnX + npnX) * outer_ccw
-            bisY = (nnnY + npnY) * outer_ccw
-
-            bisnX, bisnY = normalizeVec(bisX,  bisY)
-            bislen = offset /  np.sqrt(1 + nnnX*npnX + nnnY*npnY)
-
-            newX.append(oldX[curr] + bislen * bisnX)
-            newY.append(oldY[curr] + bislen * bisnY)
-    */
-    getOffsetPoints(x) {
+    getOffsetPoints(offset) {
         let points = [];
-        // add 2 points per segment, offset from their segment
+
         for (let i = 0; i < this.points.length; i++) {
             let prev = (i + this.points.length - 1) % this.points.length;
-            let next = (i + 1) % this.points.length;
-            let vnX = this.points[next].x - this.points[i].x;
-            let vnY = this.points[next].y - this.points[i].y;
-            let vnn = new Point(vnX, vnY).normalize();
-            let vnnX = vnn.x;
-            let vnnY = vnn.y;
-            let nnnX = vnnY;
-            let nnnY = -vnnX;
-            let vpX = this.points[i].x - this.points[prev].x;
-            let vpY = this.points[i].y - this.points[prev].y;
-            let vpn = new Point(vpX, vpY).normalize();
-            let vpnX = vpn.x;
-            let vpnY = vpn.y;
-            let npnX = vpnY;
-            let npnY = -vpnX;
-            let bisX = (nnnX + npnX) * x;
-            let bisY = (nnnY + npnY) * x;
-            let bisn = new Point(bisX, bisY).normalize();
-
-            let bisLen = x / Math.sqrt(1 + nnnX * npnX + nnnY * npnY);
-            // console.log(bisLen);
-            let newX = this.points[i].x + bisLen * bisn.x;
-            let newY = this.points[i].y + bisLen * bisn.y;
-            points.push(new Point(newX, newY));
+            let next = (i + this.points.length + 1) % this.points.length;
+            let flip = Point.dot(
+                this.rightPerp(Point.sub(this.points[i], this.points[next])),
+                Point.sub(this.points[prev], this.points[i]), 
+            ) < 0 ? 1 : -1;
+            let lineNormal = this.rightPerp(Point.sub(this.points[prev], this.points[i]).normalize())
+                
+            points.push(Point.add(this.points[i], Point.mul(lineNormal, offset * flip)));
+            points.push(Point.add(this.points[prev], Point.mul(lineNormal, offset * flip)));
         }
         return points;
+    }
+
+    perimeter() {
+        let perimeter = 0;
+        for (let i = 0; i < this.points.length; i++) {
+            let prev = (i + this.points.length - 1) % this.points.length;
+            perimeter += Point.dist(this.points[i], this.points[prev]);
+        }
+        return perimeter;
     }
 
     draw() {

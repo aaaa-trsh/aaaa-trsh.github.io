@@ -609,6 +609,9 @@ class PRMTool extends Tool{
         };
     }
 
+    createMapPoint() {
+
+    }
     generateMap() {
         this.map = [];
         this.path = [];
@@ -623,9 +626,7 @@ class PRMTool extends Tool{
         }
         let bounds = this.getBoundingBox(this.polyPoints);
         this.bounds = bounds;
-        console.log(bounds)
         obstacleEdgePoints = obstacleEdgePoints.filter(x => this.bounds.inBounds(x));
-        console.log(obstacleEdgePoints)
         
         // console.log(this.polyPoints.length)
         this.goalPos = new Point(300, 300);
@@ -636,11 +637,9 @@ class PRMTool extends Tool{
             maxDistance: 70,
             tries: 10
         });
-        let points = p.fill()
-            .map(p => new Point(p[0] + bounds.minX, p[1] + bounds.minY))
-            .filter(p => !PRMTool.polygons.some(poly => new Polygon(poly.getOffsetPoints(10)).pointInside(p)));
-        // this.points = points.concat(obstacleEdgePoints);
+        let points = p.fill().map(p => new Point(p[0] + bounds.minX, p[1] + bounds.minY));
         this.points = points.concat(obstacleEdgePoints);
+        this.points = this.points.filter(p => !PRMTool.polygons.some(poly => new Polygon(poly.getOffsetPoints(8)).pointInside(p)));
         this.points.push(this.goalPos);
 
         for (let i = 0; i < this.points.length; i++) {
@@ -649,7 +648,7 @@ class PRMTool extends Tool{
             for (let j = 0; j < this.points.length; j++) {
                 let b = this.points[j];
 
-                if (!PRMTool.polygons.some(poly => new Polygon(poly.getOffsetPoints(8)).rayCast(a, Point.sub(b, a).normalize(), Point.dist(b, a)))) {
+                if (!PRMTool.polygons.some(poly => new Polygon(poly.getOffsetPoints(8)).lineCast(a, b))) {
                     neighbors.push({ p: b, idx: j });
                 }
             }
@@ -723,48 +722,6 @@ class PRMTool extends Tool{
         return x - Math.floor(x);
     }
     
-    // shortcut(path, iterations=6) {
-    //     let sigmoid = (x) => {
-    //         return Math.exp(x) / (Math.exp(x) + 1)
-    //     };
-    //     let ogPath = path;
-    //     path.reverse();
-    //     for (let i = 0; i < iterations; i++) {
-    //         let pair = null;
-    //         let pairIndices = null;
-    //         let minDist = Infinity;
-    //         for (let j = 0; j < 16; j++) {
-    //             // TODO: replace with getting random point in bb, and getting closest point to that to avoid bias
-    //             let indexes = [
-    //                 this.badrandom(mx + i + j) * (ogPath.length - 2),
-    //                 this.badrandom(my + i + j + 1) * (ogPath.length - 1)
-    //             ];
-    //             let startIdx = Math.min(indexes[0], indexes[1]);
-    //             let endIdx = Math.max(indexes[0], indexes[1]);
-    //             if (Math.ceil(startIdx) == Math.ceil(endIdx)) continue;
-    //             let a = Point.lerp(ogPath[Math.floor(startIdx)], ogPath[Math.ceil(startIdx)], sigmoid(this.badrandom(mx + i + j + 3)));
-    //             let b = Point.lerp(ogPath[Math.floor(endIdx)], ogPath[Math.ceil(endIdx)], sigmoid(this.badrandom(mx + i + j + 3)));
-
-    //             if (!PRMTool.polygons.some(poly => new Polygon(poly.getOffsetPoints(10)).rayCast(a, Point.sub(b, a).normalize(), Point.dist(b, a)))) {
-    //                 if (Point.dist(b, a) < minDist) {
-    //                     pair = [a, b];
-    //                     pairIndices = [startIdx, endIdx];
-    //                     minDist = Point.dist(b, a);
-    //                 }
-    //             }
-    //         }
-    //         if (pair != null) {
-    //             ctx.globalAlpha = 0.5;
-    //             ctx.globalAlpha = 1;
-    //             for (let x = Math.ceil(pairIndices[0]); x < Math.ceil(pairIndices[1]); x++)
-    //                 path.splice(x, 1);
-    //             path.splice(Math.ceil(pairIndices[0]), 0, pair[0], pair[1]);
-    //         }
-    //     }
-    //     path.reverse();
-    //     return path;
-    // }
-    
     controlPointsFromPath(path) {
         path = path.reverse();
         const offset = 0.7;
@@ -806,15 +763,6 @@ class PRMTool extends Tool{
         }
         return controlPoints;
     }
-
-    isPointObstructed(point) {
-        for (let i = 0; i < PRMTool.polygons.length; i++) {
-            if (PRMTool.polygons[i].pointInside(point)) {
-                return true;
-            }
-        }
-        return false;
-    }
     
     update() {
         // draw bounds
@@ -849,17 +797,30 @@ class PRMTool extends Tool{
             ctx.strokeStyle = yellow;
             if (this.map.length > 0) {
                 let closestToMouse = this.closestPointInMap(m);
+                
+                let n = [];
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = lightBlue + "40";
+                if (!PRMTool.polygons.some(poly => poly.pointInside(m))) {
+                    for (let i = 0; i < this.map.length; i++) {
+                        if (!PRMTool.polygons.some(poly => new Polygon(poly.getOffsetPoints(8)).lineCast(m, this.map[i].p))) {
+                            n.push({ p: this.map[i].p, idx: i });
+                            drawLine(m, this.map[i].p);
+                        }
+                    }
+                }
+
+                // if (n.length == 0)
+                //     n.push( { p: closestToMouse.p, idx: closestToMouse.idx } )
+                console.log(n.length)
                 let inclusiveMap = [...this.map];
-                let mouseNode = { p:m, n: [ { p: closestToMouse.p, idx: closestToMouse.idx } ], idx: this.map.length };
+                let mouseNode = { p:m, n: n, idx: this.map.length };
                 inclusiveMap.push(mouseNode);
                 this.path = this.djikstraAlgorithm(
                     mouseNode,
                     this.closestPointInMap(this.goalPos),
                     inclusiveMap
                 );
-                // this.path.unshift(this.goalPos);
-                // if (this.path.length > 0)
-                //     this.path.push(m);
             }
                 
                 // this.path = this.generatePath(); 
@@ -903,7 +864,7 @@ class PRMTool extends Tool{
         }
 
     
-        if (this.bounds.inBounds(m)) {//this.isPointObstructed(m)) {
+        if (this.bounds.inBounds(m)) {
             ctx.strokeStyle = red;
             ctx.fillStyle = red + "44";
         } else {
