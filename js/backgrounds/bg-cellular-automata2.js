@@ -8,11 +8,11 @@ const gcanvas = document.createElement("canvas");
 const gctx = gcanvas.getContext('2d');
 
 ctx.webkitImageSmoothingEnabled = false;
-var cellSize = 6;
+var cellSize = 10;
 var map = null
 var row = null
 const rule = Array.from([...(30).toString(2).padStart(8, '0')].reverse(), e => parseInt(e)) // 45 is also cool
-var boundary = 20
+var boundary = 0
 
 function elementaryRule(p1, p2, p3) {
     return rule[parseInt([p1, p2, p3].join(""), 2)]
@@ -21,13 +21,14 @@ function elementaryRule(p1, p2, p3) {
 function init() {
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
-    update();
+    // update();
+    setInterval(update, 1000 / 40);
 };
 init();
 
 function resizeCanvas() {
-    canvas.width = window.innerWidth/cellSize;
-    canvas.height = window.innerHeight/cellSize;
+    canvas.width = canvas.clientWidth/cellSize;
+    canvas.height = canvas.clientHeight/cellSize;
     gcanvas.width = canvas.width;
     gcanvas.height = canvas.height
     scaleMap(Math.ceil(canvas.width), Math.ceil(canvas.height));
@@ -41,8 +42,8 @@ function scaleMap(newSizeX, newSizeY) {
     ctx.fillStyle = "#0a0a0a"
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
-function getScore(x, y) {
-    return x < map[0].length && x > -1 && y < map.length && y > -1 ? Math.sign(map[y][x]) : Math.round(Math.random()/1.9)
+function getScore(x, y, rand=true) {
+    return x < map[0].length && x > -1 && y < map.length && y > -1 ? Math.sign(map[y][x]) : (rand?Math.round(Math.random()/.4):false)
 }
 
 function draw(draw=false) {
@@ -73,7 +74,7 @@ function draw(draw=false) {
                 //ctx.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
             }
             if (y < m.length - boundary) {
-                score = getScore(x-1, y+1)+getScore(x, y+1)+getScore(x+1, y+1)+getScore(x-1, y)+getScore(x+1, y)+getScore(x-1, y-1)+getScore(x, y-1)+getScore(x+1, y-1);
+                score = getScore(x-1, y+1, false)+getScore(x, y+1)+getScore(x+1, y+1)+getScore(x-1, y, false)+getScore(x+1, y, false)+getScore(x-1, y-1, false)+getScore(x, y-1, false)+getScore(x+1, y-1, false);
                 //score += getScore(x-2, y)+getScore(x+2, y)+getScore(x, y+2)+getScore(x, y-2)
                 if (((score == 3 || score == 2) && m[y][x] == 1) || ((score == 3 || score == 6) && m[y][x] == 0)) {
                     m[y][x] = 1
@@ -86,7 +87,7 @@ function draw(draw=false) {
         }
     }
     if(draw){
-        gctx.globalAlpha = 0.03;
+        gctx.globalAlpha = 0.04;
         gctx.fillStyle = "black"
         gctx.fillRect(0, 0, gcanvas.width, gcanvas.height);
 
@@ -111,9 +112,9 @@ function hexToRgb(hex) {
     };
 }
 function colorRamp() {
-    const startColor = [162, 130, 18];
-    const endColor = [28, 29, 33];
-    const lerpSpeed = 0.1;
+    // const startColor = [162, 130, 18];
+    // const endColor = [28, 29, 33];
+    // const lerpSpeed = 0.1;
     var imageData = gctx.getImageData(0, 0, canvas.width, canvas.height);
     var pixels = imageData.data;
     var numPixels = pixels.length;
@@ -124,6 +125,11 @@ function colorRamp() {
         }
         if (pixels[i*4+0] != 255){
             if (pixels[i*4+0] > 3) {
+                // var color = {
+                //     r: pixels[i*4+0] * .9,
+                //     g: pixels[i*4+0] * .9,
+                //     b: pixels[i*4+0] * .9
+                // };
                 var color = hexToRgb(d3.interpolateInferno(pixels[i*4+0]/255))
 
                 pixels[i*4+0] = color.r
@@ -137,11 +143,17 @@ function colorRamp() {
         }
     }
     ctx.putImageData(imageData, 0, 0);
+
 }
+
 function update() {
+    
     console.time("update");
     colorRamp()
     draw(true)
-    window.requestAnimationFrame(update)
+    // window.requestAnimationFrame(update)
+    
     console.timeEnd("update");
+
+    
 }

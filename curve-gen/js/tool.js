@@ -633,8 +633,8 @@ class PRMTool extends Tool{
 
         let p = new PoissonDiskSampling({
             shape: [bounds.maxX - bounds.minX, bounds.maxY - bounds.minY],
-            minDistance: 50,
-            maxDistance: 70,
+            minDistance: this.maxPoints,
+            maxDistance: this.maxPoints + 20,
             tries: 10
         });
         let points = p.fill().map(p => new Point(p[0] + bounds.minX, p[1] + bounds.minY));
@@ -763,7 +763,7 @@ class PRMTool extends Tool{
         }
         return controlPoints;
     }
-    
+
     update() {
         // draw bounds
         ctx.strokeRect(this.bounds.minX, this.bounds.minY, this.bounds.maxX - this.bounds.minX, this.bounds.maxY - this.bounds.minY);

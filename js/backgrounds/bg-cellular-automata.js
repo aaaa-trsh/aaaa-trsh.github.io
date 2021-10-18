@@ -8,10 +8,10 @@ const gctx = gcanvas.getContext('2d');
 
 const rule = [[2, 5, 6, 7, 8], [5, 6, 7, 8]];
 const COLOR_PALETTE = [
-    (value) => [hexToRgb(d3.interpolateInferno(value/255)), "FIRE"],
+    // (value) => [hexToRgb(d3.interpolateInferno(value/255)), "FIRE"],
     (value) => [hexToRgb(d3.interpolateMagma(value/255)), "RUBY"],
-    (value) => [hexToRgb(d3.interpolateViridis(value/255)), "LIME"],
-][Math.floor(Math.random() * 3)];
+    // (value) => [hexToRgb(d3.interpolateViridis(value/255)), "LIME"],
+][Math.floor(Math.random() * 1)];
 
 infoText.innerHTML = `a decaying variant on 'iceballs' (B25678/S5678), pallet '${COLOR_PALETTE(0)[1]}'`;
 
@@ -28,9 +28,9 @@ function init() {
 init();
 
 function resizeCanvas() {
-    var cellSize = Math.min(window.innerWidth, window.innerHeight) / 50;
-    canvas.width = Math.ceil(window.innerWidth/cellSize);
-    canvas.height = Math.ceil(window.innerHeight/cellSize);
+    var cellSize = 20;
+    canvas.width = Math.ceil(canvas.clientWidth/cellSize);
+    canvas.height = Math.ceil(canvas.clientHeight/cellSize);
     gcanvas.width = canvas.width;
     gcanvas.height = canvas.height
     scaleMap(Math.ceil(canvas.width), Math.ceil(canvas.height));
@@ -66,7 +66,7 @@ function cellularAutomata(i) {
                 map[y][x] = 0;
             }
 
-            if (Math.random() > 0.99996) map[y][x] = 1; 
+            if (Math.random() > 0.9996) map[y][x] = 1; 
             //if (Math.random() > Math.hypot(Math.abs((x/map[0].length) - 0.5), Math.abs((y/map.length) - 0.5)) * 30) map[y][x] = 1; 
             
             if (map[y][x] == 1) {
