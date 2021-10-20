@@ -148,6 +148,6 @@ function update() {
     i++;
     map = cellularAutomata(i);
     colorRamp()
-    setTimeout(() => window.requestAnimationFrame(update), 30);
+    setTimeout(() => window.requestAnimationFrame(update), 60);
     console.timeEnd("update");
 }
