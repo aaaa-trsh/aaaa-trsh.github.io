@@ -16,7 +16,7 @@
         <style type="text/css">
             body {
                 font-family: "Atkinson Hyperlegible";
-                background-color: #fff;
+                background-color: #eee;
                 margin: 0;
                 color: #141414;
                 /* overflow: hidden; */
@@ -64,8 +64,8 @@
             }
 
             .content {
-                height: clamp(0px, 40vw, 30vh);
-                background-color: #eee;
+                /* height: clamp(0px, 40vw, 30vh); */
+                /* background-color: #eee; */
                 /* background-image: url("/assets/me.png"); */
                 background-repeat: no-repeat;
                 background-size: 100% 100%; 
@@ -74,13 +74,15 @@
             .canvas{
                 position: relative;
                 width: 100%;
-                height: 100%;
+                height: 20vw;
                 /* padding: 4em; */
-
+                /* color: white !important; */
+                
                 margin-top: -1.4em;
             }
 
             #canvas {
+                /* display:none; */
                 position: absolute;
                 top: 0;
                 left: 0;
@@ -97,7 +99,7 @@
         </style>
     </head>
 
-    <body id="body">
+    <body id="body" style="scroll-behavior: smooth;">
         <div class="navbar-wrap">
             <div class="navbar">
                 <h1 class="navbar-title">keith bartlett <img class="navbar-icon" src="assets/dino.png"></img></h1> 
@@ -108,40 +110,42 @@
             </div>
         </div>
 
-        <div class="content">
-            <h4 style="display: none"><span id="bg-name">flow</span> <span id="bg-info">a colored noise field - and your cursor is a particle attractor!</span></h4>
-            <div class="canvas">
-                <canvas id="canvas"></canvas>
-                <div style="padding-left: 2em; margin:0 auto; height: 100%;">
-                    
-                    <h1 style="
-                        position: absolute;
-                        bottom: 0; 
-                        color: #fff;
-                        margin:0;
-                        font-size: clamp(40px, 20.5vw, 200px);
-                        -webkit-text-stroke: 3 #fff;
-                        /* filter: blur(3px); */
-                        user-select: none;
-                        text-overflow: clip;
-                        width: 100%;
-                        text-align: left;
-                        white-space: nowrap;
-                        ">
-                        <span style="mix-blend-mode: difference;">projects</span>
-                        <div style="
-                        display: inline-block;
-                        font-size: 15%;
-                        font-weight: 300;
-                        font-family: 'Roboto Mono';
-                        font-style: italic;
-                        /* white-space: normal; */
-                        vertical-align: baseline;
-                        color:black;
-                        width:100px;">things <br/>that blink, breathe, <br/>wiggle and drive</div>
-                    </h1>
-                </div>
+        <div class="canvas">
+            <canvas id="canvas"></canvas>
+            <div style="padding-left: 2em; margin:0 auto; height: 100%;">
+                
+                <h1 style="
+                    position: absolute;
+                    bottom: 0; 
+                    color: #fff;
+                    margin:0;
+                    font-size: clamp(40px, 20.5vw, 200px);
+                    -webkit-text-stroke: 3 #fff;
+                    /* filter: blur(3px); */
+                    user-select: none;
+                    text-overflow: clip;
+                    width: auto;
+                    text-align: left;
+                    white-space: nowrap;
+                    ">
+                    <span style="
+                    /* mix-blend-mode: difference; */
+                    ">projects</span>
+                    <div style="
+                    display: inline-block;
+                    font-size: 15%;
+                    font-weight: 300;
+                    font-family: 'Roboto Mono';
+                    font-style: italic;
+                    /* white-space: normal; */
+                    vertical-align: baseline;
+                    /* color:black; */
+                    width:100px;">things <br/>that blink, breathe, <br/>wiggle and drive</div>
+                </h1>
             </div>
+        </div>
+        <div class="content" style="height:auto; width: 50%; margin: 0 auto;">
+            <h4 style="display: none"><span id="bg-name">flow</span> <span id="bg-info">a colored noise field - and your cursor is a particle attractor!</span></h4>
 
             <!-- <div class="featured">
                 <div class="featured-content">
@@ -150,7 +154,109 @@
                 </div>
             </div> -->
             <p style="text-align: center; font-weight: 100; font-family: 'Atkinson Hyperlegible'; font-style: italic; color: #aaa;">background: custom cellular automata with aging and random stimulus</p>
-            <div style="padding: 4em;">
+            <div class="vae-container" style="margin: 0 auto; height: auto; display:flex;">
+                <div class="x" style="flex:1; height: auto;">
+                    <div style="height: 13vw; overflow-y: auto">
+                    <input type="range" style="width: 100%; margin: 10px 0;" />
+                    <input type="range" style="width: 100%; margin: 10px 0;" />
+                    <input type="range" style="width: 100%; margin: 10px 0;" />
+                    <input type="range" style="width: 100%; margin: 10px 0;" />
+                    <input type="range" style="width: 100%; margin: 10px 0;" />
+                    </div>
+                    <div class="x" style="display: grid; height: 7vw; grid-gap: 5px; grid-template-columns: repeat(auto-fit, minmax(64px, 1fr)); overflow-y: scroll; padding: 2px;
+                
+                ">
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                    <div style="background-color: gray; aspect-ratio: 1;"></div>
+                </div>
+                </div>
+                
+                <div class="left-container" style="height: auto;">
+                    <div style="height: auto; float:right; display:flex;">
+                    <input type="range" style="
+                        writing-mode: bt-lr;
+                        -webkit-appearance: slider-vertical;
+                        /* height: auto; */
+                        margin: 0;
+                        width:30px;
+                        float: right;
+                    " />
+                    <div style="width:10vw; float:right; height:auto;">
+                        <img style="display:block;float:right;width:10vw; padding: 2px 0;" src="https://via.placeholder.com/150"></img>
+                        <img style="display:block;float:right;width:10vw; padding: 2px 0; padding-top: 0; border-top: none" src="https://via.placeholder.com/150"></img>
+                        
+                    </div>
+                </div>
+                    <!-- </div -->
+                    
+                </div>
+                
+                <div class="right-container" style="width:fit-content">
+                    <img src="https://via.placeholder.com/300" style="padding: 2px; width: calc(20vw + 2px);"></img>
+                </div>
+            </div>
+            <h1>test</h1>
+            
+            <!-- <div style="padding: 4em;">
                 <p class="bold">
                     PERSONAL PROJECTS <br/>
                 </p>
@@ -180,10 +286,10 @@
                         </table>
                     </li>
                 </ul>
-            </div>
+            </div> -->
             
         </div>
-        <script src="./js/backgrounds/bg-cellular-automata.js"></script>
+        <!-- <script src="./js/backgrounds/bg-cellular-automata.js"></script> -->
         <!-- <div id="terminal">
             <p>
                 <span class="yellow bold">keithb@pc</span>:<span class="blue">~</span>$ info <br/>
