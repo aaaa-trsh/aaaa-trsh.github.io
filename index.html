@@ -8,101 +8,19 @@
         <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">        
         <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;300;400;600;700&display=swap" rel="stylesheet">
         <script src="https://d3js.org/d3.v4.min.js"></script> 
-        <script src="https://d3js.org/d3-color.v1.min.js"></script>
         <script src="https://d3js.org/d3-interpolate.v1.min.js"></script> 
-        <script src="https://d3js.org/d3-scale-chromatic.v3.min.js"></script> 
         <script src="./js/perlin.js"></script>
-
-        <style type="text/css">
-            body {
-                font-family: "Atkinson Hyperlegible";
-                background-color: #eee;
-                margin: 0;
-                color: #141414;
-                /* overflow: hidden; */
-            }
-            .navbar-wrap{ position: relative; filter: drop-shadow(0px 10px 19px rgba(0,0,0,.1)) drop-shadow(0px 0px 7px rgba(0,0,0,.5)) drop-shadow(0px 0px 2px rgba(0,0,0,.5)); z-index: 300; }
-            .navbar {
-                flex-direction: row;
-                display: flex;
-                padding: 20px;
-                padding-bottom: 14px;
-                margin: 0;
-                background-color: #fff;
-                clip-path: polygon(
-                    100% 0%,
-                    100% calc(100% - 17px),
-                    20em calc(100% - 17px),
-                    0% 100%,
-                    0% 0%
-                );
-                border-bottom: 17px solid rgb(230, 230, 230);
-            }
-
-            .navbar-icon {
-                width: 1.5em;
-            }
-            .navbar-title {
-                /* border: 1px solid #ccc; */
-                margin: 0;
-                white-space: nowrap;
-                padding-left: 20px;
-            }
-            .navbar-option {
-                font-family: "Roboto Mono";
-                font-weight: 300;
-                /* flex: 1; */
-                float: right;
-                /* border: 1px solid #ccc; */
-                text-align: right;
-                margin: 0;
-                padding: 5px 10px 0 10px;
-                transition: padding 0.2s;
-            }
-            .navbar-option:hover {
-                padding: 0px 10px 0 10px;
-            }
-
-            .content {
-                /* height: clamp(0px, 40vw, 30vh); */
-                /* background-color: #eee; */
-                /* background-image: url("/assets/me.png"); */
-                background-repeat: no-repeat;
-                background-size: 100% 100%; 
-                object-fit: fill;
-            }
-            .canvas{
-                position: relative;
-                width: 100%;
-                height: clamp(100px, 20vw, 300px);
-                /* padding: 4em; */
-                /* color: white !important; */
-                
-                margin-top: -1.4em;
-            }
-
-            #canvas {
-                /* display:none; */
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: #000;
-                background-clip: text;
-                image-rendering: pixelated;
-                filter: invert(1) blur(12px);
-                overflow: hidden;
-                z-index: 0;
-            }
-            ::selection { background: rgba(0, 0, 0, 0.1); color: black; }
-        </style>
+        <link rel="stylesheet" href="./assets/styles/main.css">
+        <link rel="stylesheet" href="./assets/styles/widgets.css">
     </head>
 
-    <body id="body" style="scroll-behavior: smooth;">
+    <body id="body">
         <div class="navbar-wrap">
             <div class="navbar">
-                <h1 class="navbar-title">keith bartlett <img class="navbar-icon" src="assets/dino.png"></img></h1> 
+                <h1 class="navbar-title">
+                    keith bartlett
+                    <img class="navbar-icon" src="./assets/imgs/icons/dino.png"/>
+                </h1> 
                 <h1 class="navbar-option" style="flex: 3"></h1>
                 <h3 class="navbar-option">projects</h3>
                 <h3 class="navbar-option">contact</h3>
@@ -110,165 +28,189 @@
             </div>
         </div>
 
-        <div class="canvas">
+        <div class="canvas-container" style="overflow: hidden">
             <canvas id="canvas"></canvas>
-            <div style="padding-left: max(calc(22.5% - 8em), 4em); margin:0 auto; height: 100%;">
-                
-                <h1 style="
-                    position: absolute;
-                    bottom: 0; 
-                    color: #fff;
-                    margin:0;
-                    font-size: clamp(40px, 10.5vw, 200px);
-                    -webkit-text-stroke: 3 #fff;
-                    /* filter: blur(3px); */
-                    user-select: none;
-                    text-overflow: clip;
-                    width: auto;
-                    text-align: left;
-                    white-space: nowrap;
-                    ">
-                    <span style="
-                    mix-blend-mode: difference;
-                    ">projects</span>
-                    <div style="
-                    display: inline-block;
-                    font-size: 15%;
-                    font-weight: 300;
-                    font-family: 'Roboto Mono';
-                    font-style: italic;
-                    /* white-space: normal; */
-                    vertical-align: baseline;
-                    color:black;
-                    width:100px;">things <br/>that blink, breathe, <br/>wiggle and drive</div>
+            <div class="canvas-header-container">
+                <h1 class="header-title">
+                    projects
+                    <span class="header-subtitle">
+                        things <br/>
+                        that blink, breathe, <br/>
+                        wiggle and drive
+                    </span>
                 </h1>
             </div>
         </div>
-        <div class="content" style="height:auto; width: 55%; margin: 0 auto; background-color: #f9f9f9; padding: 8em; ">
-            <h4 style="display: none"><span id="bg-name">flow</span> <span id="bg-info">a colored noise field - and your cursor is a particle attractor!</span></h4>
-
-            <!-- <div class="featured">
-                <div class="featured-content">
-                    <h1 style="margin-bottom: 0; width:100%; font-size:5vw">i like cheese</h1>
-                    <p style="font-style: italic; font-family: 'Roboto Mono'; margin-top: 0; text-align: left;">mozeralla specifically</p>
-                </div>
-            </div> -->
-            <p style="text-align: center; font-weight: 100; font-family: 'Atkinson Hyperlegible'; font-style: italic; color: #aaa;">background: custom cellular automata with aging and random stimulus</p>
-            <div class="vae-container" style="margin: 0 auto; height: auto; display:flex;">
-                <div class="x" style="flex:1; height: auto;">
-                    <div style="height: 13vw; overflow-y: auto">
-                    <input type="range" style="width: 100%; margin: 10px 0;" />
-                    <input type="range" style="width: 100%; margin: 10px 0;" />
-                    <input type="range" style="width: 100%; margin: 10px 0;" />
-                    <input type="range" style="width: 100%; margin: 10px 0;" />
-                    <input type="range" style="width: 100%; margin: 10px 0;" />
+        <div class="content" style="height: auto">
+            <h4 style="display: none"><span id="bg-name"></span> <span id="bg-info"></span></h4>
+            <div class="vae-widget" style="">
+                <div class="vae-widget-leftbar">
+                    <div class="vae-widget-leftbar-pca-container">
                     </div>
-                    <div class="x" style="display: grid; height: 7vw; grid-gap: 5px; grid-template-columns: repeat(auto-fit, minmax(32px, 1fr)); overflow-y: scroll; padding: 2px;
-                
-                ">
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                    <div style="background-color: gray; aspect-ratio: 1;"></div>
-                </div>
+                    <!-- <div class="vae-widget-leftbar-preset-grid">
+                        <div class="vae-widget-preset"></div>
+                    </div> -->
                 </div>
                 
-                <div class="left-container" style="height: auto;">
-                    <div style="height: auto; float:right; display:flex;">
-                    <input type="range" style="
-                        writing-mode: bt-lr;
-                        -webkit-appearance: slider-vertical;
-                        /* height: auto; */
-                        margin: 0;
-                        width:30px;
-                        float: right;
-                    " />
-                    <div style="width:10vw; float:right; height:auto;">
-                        <img style="display:block;float:right;width:10vw; padding: 2px 0;" src="https://via.placeholder.com/150"></img>
-                        <img style="display:block;float:right;width:10vw; padding: 2px 0; padding-top: 0; border-top: none" src="https://via.placeholder.com/150"></img>
+                <div class="vae-widget-mix-container">
+                    <div class="vae-widget-mix-box">
+                        <input class="vae-widget-mix-slider" oninput="mix(parseFloat(this.value))" type="range" />
+                        <div class="vae-widget-mix-preset-container" style="position: relative;">
+                            <img draggable="false" class="vae-widget-mix-preset" src="https://via.placeholder.com/300/fff/d1dce3?text=1">
+                                <button style="left:1px;top:2.4px;" onclick="load(0)"><img src="./assets/imgs/icons/up.png"/></button>
+                                <button style="left:1px;top:24px;" onclick="save(0)"><img src="./assets/imgs/icons/save.png"/></button>
+                            </img>
+                            <img draggable="false" class="vae-widget-mix-preset" style="padding: 0;" src="https://via.placeholder.com/300/fff/d1dce3?text=2">
+                                <button style="left:1px;top:calc(10vw + 5px)" onclick="load(1)"><img src="./assets/imgs/icons/up.png"/></button>
+                                <button style="left:1px;top:calc(10vw + 27px)" onclick="save(1)"><img src="./assets/imgs/icons/save.png"/></button>
+                            </img>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="vae-widget-output-container" style="position:relative;">
+                    <canvas id="vae-output-canvas" class="vae-widget-output" src="https://via.placeholder.com/300">
                         
-                    </div>
+                    </canvas>
+                    <button style="position:absolute; top:2px; left: 2px;" onclick="
+                        for (var i = 0; i < sliders.length; i++) {
+                            sliders[i].value = (Math.random()-.5) * std[i] * 1.4;
+                        }
+                        decodeCurrent()
+                    "><img src="./assets/imgs/icons/dice.png"/></button>
                 </div>
-                    <!-- </div -->
+                <script src="./js/tf.js"></script> 
+
+                <script type="text/javascript">
+                    const size = 32;
+                    const scale = 1;
+                    const vaeCanvas = document.getElementById("vae-output-canvas");
+                    vaeCanvas.width = size * scale;
+                    vaeCanvas.height = size * scale;
+                    const vaeCTX = vaeCanvas.getContext('2d');
+                    var decoder;
+                    const sliderCount = 20;
+                    const range = 80;
+                    const mean = [-1.672, 0.057, -1.77, 1.74, 2.272, 2.68, -1.514, 1.582, 1.895, 1.776, -1.223, -3.493, -1.643, 0.426, 1.264, 2.176, -0.518, -2.646, 0.727, -2.826]
+                    const std = [3.072, 3.645, 1.893, 3.574, 3.428, 2.77, 2.29, 2.223, 2.766, 2.023, 2.094, 1.644, 3.381, 2.503, 3.565, 3.902, 4.477, 3.236, 2.659, 2.332]
+
+                    let sliders = [];
+                    let saved = [[new Array(sliderCount).fill(-1)], [new Array(sliderCount).fill(1)]];
+                    async function loadModel() {
+                        decoder = await tf.loadLayersModel('./models/faces/decoder/model.json');
+                        console.log("Model Loaded");
+
+                        let sliderContainer = document.getElementsByClassName("vae-widget-leftbar-pca-container")[0];
+                        for (var i = 0; i < sliderCount; i++) {
+                            var div = document.createElement('div');
+                            div.innerHTML = `<input id="pca${i+1}" class="vae-widget-pca" type="range" min="-3" max="3" step="0.001" oninput="decodeCurrent()" />`;
+                            let newSlider = sliderContainer.appendChild(div.children[0]);
+                            newSlider.value = (Math.random()-.5) * std[i] * 1.4;
+                        }
+                        
+                        sliders = [...document.getElementsByClassName("vae-widget-pca")]
+                        setTimeout(tf.tidy(()=>{
+                            decode(sliders.map(elem => {return elem != null ?  Math.random()-.5 : 0;}));
+                            setTimeout(() => {
+                                save(0)
+                                save(1)
+                            }, 10)
+                        }), 10);
+                    }
+                    window.addEventListener('mousemove', (e) => { 
+                        mx = (-e.clientX + window.innerWidth/2)/window.innerWidth;
+                        my = (-e.clientY + window.innerHeight/2)/window.innerHeight; 
+                    });
+
+                    loadModel();
+
+                    function drawFromRGB_imdata(arr, px, py) {
+                        arr = arr[0]
+
+                        var imgData = vaeCTX.createImageData(size * scale, size * scale);
+                        for (var y = 0; y < size * scale; y+=scale)
+                        {
+                            for (var x = 0; x < size * scale; x+=scale)
+                            {
+                                var pixX = Math.round(x/scale)
+                                var pixY = Math.round(y/scale)
+                                for (var oy = 0; oy < scale; oy++) {
+                                    for (var ox = 0; ox < scale; ox++) {
+                                        imgData.data[(((y+oy)*scale * size) + x + ox)*4+0] = (arr[pixY][pixX][0] + 1.9) * 65
+                                        imgData.data[(((y+oy)*scale * size) + x + ox)*4+1] = (arr[pixY][pixX][1] + 1.9) * 65
+                                        imgData.data[(((y+oy)*scale * size) + x + ox)*4+2] = (arr[pixY][pixX][2] + 1.9) * 65
+                                        imgData.data[(((y+oy)*scale * size) + x + ox)*4+3] = 255
+                                    }
+                                }
+                            }
+                        }
+
+                        vaeCTX.putImageData(imgData, 0, 0)                
+                    }
+
+                    async function decode(dense, x, y) {
+                        if (decoder !== undefined) {
+                            var rgb = await decoder.predict(tf.tensor([dense])).array();
+                            drawFromRGB_imdata(rgb, x, y);
+                        }
+                    }
                     
-                </div>
-                
-                <div class="right-container" style="width:fit-content">
-                    <img src="https://via.placeholder.com/300" style="padding: 2px; width: calc(20vw + 2px);"></img>
-                </div>
+                    function decodeCurrent() {
+                        setTimeout(tf.tidy(()=>{
+                            decode(sliders.map(elem => parseFloat(elem.value)))
+                        }), 10)
+                    }
+
+                    function save(index) {
+                        saved[index] = sliders.map(elem => {return elem != null? parseFloat(elem.value) : 0;});
+                        var dataURL = vaeCanvas.toDataURL();
+                        document.getElementsByClassName("vae-widget-mix-preset")[index].src = dataURL;
+                    }
+
+                    function load(index) {
+                        sliders.forEach((elem, i) => {
+                            elem.value = saved[index][i];
+                        });
+                        decodeCurrent();
+                    }
+
+
+                    function mix(t) {
+                        t/=100
+                        sliders.forEach((elem, i) => {
+                            a = saved[0][i];
+                            b = saved[1][i];
+                            elem.value = a * t + b * (1 - t);
+                        });
+                        decodeCurrent();
+                    }
+                </script>
             </div>
-            <h1 style="font-size: 4em; margin-bottom: 0; border-bottom: 2px solid slategray;">header</h1>
-            <p style="font-size: 14pt; color:#666">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Non curabitur gravida arcu ac. Consequat nisl vel pretium lectus quam id leo in vitae. In tellus integer feugiat scelerisque varius morbi enim. Nisl pretium fusce id velit ut tortor pretium viverra suspendisse. Phasellus faucibus scelerisque eleifend donec pretium vulputate sapien. Metus vulputate eu scelerisque felis imperdiet proin. Non enim praesent elementum facilisis leo vel fringilla. Lectus magna fringilla urna porttitor rhoncus dolor. Vestibulum mattis ullamcorper velit sed. Eu nisl nunc mi ipsum faucibus vitae aliquet. Tortor consequat id porta nibh venenatis cras sed. Proin sagittis nisl rhoncus mattis rhoncus urna neque viverra. Nullam eget felis eget nunc lobortis mattis aliquam faucibus.
-            </p>
-            <div>
-                <div style="width: 100%; display: flex; justify-content: space-around;">
-                    <img style="height: 10vw;" src="https://via.placeholder.com/300"></img>
-                    <img style="height: 10vw;" src="https://via.placeholder.com/200x100"></img>
-                    <img style="height: 10vw;" src="https://via.placeholder.com/20"></img>
+            <div class="article" style="">
+                <h1 class="article-header">header</h1>
+                <p class="article-text">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Non curabitur gravida arcu ac. Consequat nisl vel pretium lectus quam id leo in vitae. In tellus integer feugiat scelerisque varius morbi enim. Nisl pretium fusce id velit ut tortor pretium viverra suspendisse. Phasellus faucibus scelerisque eleifend donec pretium vulputate sapien. Metus vulputate eu scelerisque felis imperdiet proin. Non enim praesent elementum facilisis leo vel fringilla. Lectus magna fringilla urna porttitor rhoncus dolor. Vestibulum mattis ullamcorper velit sed. Eu nisl nunc mi ipsum faucibus vitae aliquet. Tortor consequat id porta nibh venenatis cras sed. Proin sagittis nisl rhoncus mattis rhoncus urna neque viverra. Nullam eget felis eget nunc lobortis mattis aliquam faucibus.
+                </p>
+                <div class="article-gallery-container">
+                    <div class="article-gallery">
+                        <img src="https://via.placeholder.com/300"></img>
+                        <img src="https://via.placeholder.com/200x100"></img>
+                        <img src="https://via.placeholder.com/20"></img>
+                    </div>
+                    <p class="article-gallery-caption">This is a test caption. (above)</p>
                 </div>
-                <p style="font-weight: 300; font-family: 'Roboto Mono'; font-style: italic; color: gray; text-align: center;">This is a test caption. (above)</p>
+                <p class="article-text">
+                    Lacus sed turpis tincidunt id aliquet risus. Praesent tristique magna sit amet purus gravida quis blandit. Massa tincidunt nunc pulvinar sapien. Pellentesque habitant morbi tristique senectus et netus et. Est velit egestas dui id ornare arcu. Dictumst quisque sagittis purus sit amet volutpat consequat. Massa sapien faucibus et molestie ac feugiat sed lectus. Quam vulputate dignissim suspendisse in est ante in nibh mauris. Pretium nibh ipsum consequat nisl vel. Laoreet suspendisse interdum consectetur libero id faucibus nisl tincidunt. Varius duis at consectetur lorem donec. Cras adipiscing enim eu turpis egestas pretium aenean. Viverra orci sagittis eu volutpat. Lorem dolor sed viverra ipsum nunc. Enim blandit volutpat maecenas volutpat blandit aliquam etiam erat velit. Libero enim sed faucibus turpis in eu mi bibendum. Neque vitae tempus quam pellentesque nec nam aliquam sem et. Cras sed felis eget velit aliquet sagittis id consectetur purus. Sed turpis tincidunt id aliquet. Purus faucibus ornare suspendisse sed nisi lacus sed viverra tellus.
+                </p>
             </div>
-            <p style="font-size: 14pt; color:#666">
-                Lacus sed turpis tincidunt id aliquet risus. Praesent tristique magna sit amet purus gravida quis blandit. Massa tincidunt nunc pulvinar sapien. Pellentesque habitant morbi tristique senectus et netus et. Est velit egestas dui id ornare arcu. Dictumst quisque sagittis purus sit amet volutpat consequat. Massa sapien faucibus et molestie ac feugiat sed lectus. Quam vulputate dignissim suspendisse in est ante in nibh mauris. Pretium nibh ipsum consequat nisl vel. Laoreet suspendisse interdum consectetur libero id faucibus nisl tincidunt. Varius duis at consectetur lorem donec. Cras adipiscing enim eu turpis egestas pretium aenean. Viverra orci sagittis eu volutpat. Lorem dolor sed viverra ipsum nunc. Enim blandit volutpat maecenas volutpat blandit aliquam etiam erat velit. Libero enim sed faucibus turpis in eu mi bibendum. Neque vitae tempus quam pellentesque nec nam aliquam sem et. Cras sed felis eget velit aliquet sagittis id consectetur purus. Sed turpis tincidunt id aliquet. Purus faucibus ornare suspendisse sed nisi lacus sed viverra tellus.
-            </p>
+            <!-- <div style="display: table; height: auto; width:100%;">
+                <img style="aspect-ratio: 4/3; object-fit: cover;float:right;width:40%;filter:brightness(.85) contrast(1.7);" src="assets/imgs/frc/frc2020_offseason_bot.PNG" >
+                <img style="aspect-ratio: 4/3; object-fit: cover;float:left; width:40%;filter:brightness(.85) contrast(1.7);" src="assets/imgs/frc/frc2020_bot.PNG" >
+            </div>
+            <div style="display: table; height: auto; width:100%; margin-top: 2em">
+                <img style="aspect-ratio: 4/3; object-fit: cover;float:right;width:40%;filter:brightness(.85) contrast(1.7);" src="assets/imgs/frc/drivebase.PNG" >
+                <img style="aspect-ratio: 4/3; object-fit: cover;float:left; width:40%;filter:brightness(.85) contrast(1.7);" src="assets/imgs/frc/small_bot.PNG" >
+            </div> -->
             
             <!-- <div style="padding: 4em;">
                 <p class="bold">

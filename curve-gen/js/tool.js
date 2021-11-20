@@ -707,13 +707,6 @@ class PRMTool extends Tool{
             iterations++;
         }
         path.push(start.p);
-
-        // let dist = 0;
-        // for (let i = 0; i < path.length; i++) {
-        //     if (i > 0) dist += Point.dist(path[i], path[i - 1]);
-        //     path[i].d = dist;
-        // }
-
         return path;
     }
 

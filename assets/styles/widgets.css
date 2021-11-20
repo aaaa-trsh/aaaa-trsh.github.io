@@ -1,0 +1,96 @@
+/* VAE WIDGET */
+.vae-widget {
+    margin: 0 auto;
+    height: auto;
+    display:flex;
+}
+
+.vae-widget-leftbar { flex:1; height: auto; }
+.vae-widget-leftbar-pca-container { width:100%; height: 20vw; overflow-y: auto; }
+.vae-widget-pca { width: 100%; margin: 10px 0; }
+
+.vae-mix-container { height: auto; }
+
+.vae-widget-mix-box { float:right; display:flex; height: auto;}
+.vae-widget-mix-slider { -webkit-appearance: slider-vertical; width:20px; height: calc(20vw + 2px); }
+
+.vae-widget-leftbar-preset-grid {
+    display: grid;
+    height: 7vw;
+    grid-gap: 5px;
+    grid-template-columns: repeat(auto-fit, minmax(32px, 1fr));
+    overflow-y: scroll;
+    padding: 2px;
+}
+
+.vae-widget-preset {
+    background-color: gray;
+    aspect-ratio: 1;
+    max-width: 32px;
+    max-height: 32px;
+}
+
+.vae-widget-mix-preset-container {
+    width:10vw;
+    float:right;
+    height:auto;
+}
+
+.vae-widget-mix-preset {
+    display:block;
+    float:right;
+    width:10vw;
+    padding: 2px 0;
+}
+
+.vae-widget-mix-preset-container button {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: solid 1.6px white;
+    border-radius: 25%;
+    background-color: transparent;
+    box-shadow: 0 0 3px 0px #0007 ,
+    inset 0 0 7px 0px #0007;
+}
+
+.vae-widget-mix-preset-container button img {
+    width:20px;
+    height:20px;
+    margin: -2px;
+    padding: 0;
+    filter: invert(1);
+}
+
+.vae-widget-output-container button img {
+    width:20px;
+    height:20px;
+    margin: -5px -5px;
+    padding: 0;
+    filter: invert(1);
+
+}
+
+.vae-widget-output-container button {
+    position: absolute;
+    /* width: 20px;
+    height: 20px; */
+    aspect-ratio: 1;
+    margin: 1px;
+    border: solid 1.6px white;
+    border-radius: 25%;
+    background-color: transparent;
+    box-shadow: 0 0 3px 0px #0007 ,
+    inset 0 0 7px 0px #0007;
+}
+
+.vae-widget-output-container { width:fit-content; }
+
+.vae-widget-output {
+    margin: 2px;
+    width: calc(20vw + 2px);
+    height: calc(20vw + 2px);
+    background-color:gray;
+    image-rendering: pixelated;
+}

@@ -143,11 +143,9 @@ function colorRamp() {
 
 var i = 0;
 function update() {
-    console.time("update");
     if (i % 1000 == 0) randomize();
     i++;
     map = cellularAutomata(i);
     colorRamp()
     setTimeout(() => window.requestAnimationFrame(update), 60);
-    console.timeEnd("update");
 }
