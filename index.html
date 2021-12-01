@@ -42,15 +42,75 @@
                 </h1>
             </div>
         </div>
+        <div id="projects-showcase" style="display: grid; grid-gap: 20px;   grid-template: auto / auto auto; width:70%; margin: 0 auto; padding: 4em 0;">
+            <!-- <div class="project-card"><div class="project-text"><h2>test</h2><p>test test test test test test test test test test test test test test test test test</p><ul><li><img src="./assets/imgs/icons/up.png"></li><li><img src="./assets/imgs/icons/save.png"></li><li><img src="./assets/imgs/icons/dino2.png"></li></ul></div><img src="./assets/imgs/frc/2021.png"></div>
+            <div class="project-card"><div class="project-text"><h2>test</h2><p>test test test test test test test test test test test test test test test test test</p><ul><li><img src="./assets/imgs/icons/up.png"></li><li><img src="./assets/imgs/icons/save.png"></li><li><img src="./assets/imgs/icons/dino2.png"></li></ul></div><img src="./assets/imgs/frc/2021.png"></div>
+            <div class="project-card"><div class="project-text"><h2>test</h2><p>test test test test test test test test test test test test test test test test test</p><ul><li><img src="./assets/imgs/icons/up.png"></li><li><img src="./assets/imgs/icons/save.png"></li><li><img src="./assets/imgs/icons/dino2.png"></li></ul></div><img src="./assets/imgs/frc/2021.png"></div>
+            <div class="project-card"><div class="project-text"><h2>test</h2><p>test test test test test test test test test test test test test test test test test</p><ul><li><img src="./assets/imgs/icons/up.png"></li><li><img src="./assets/imgs/icons/save.png"></li><li><img src="./assets/imgs/icons/dino2.png"></li></ul></div><img src="./assets/imgs/frc/2021.png"></div>
+            <div class="project-card"><div class="project-text"><h2>test</h2><p>test test test test test test test test test test test test test test test test test</p><ul><li><img src="./assets/imgs/icons/up.png"></li><li><img src="./assets/imgs/icons/save.png"></li><li><img src="./assets/imgs/icons/dino2.png"></li></ul></div><img src="./assets/imgs/frc/2021.png"></div>
+            <div class="project-card"><div class="project-text"><h2>test</h2><p>test test test test test test test test test test test test test test test test test</p><ul><li><img src="./assets/imgs/icons/up.png"></li><li><img src="./assets/imgs/icons/save.png"></li><li><img src="./assets/imgs/icons/dino2.png"></li></ul></div><img src="./assets/imgs/frc/2021.png"></div>
+            <div class="project-card"><div class="project-text"><h2>test</h2><p>test test test test test test test test test test test test test test test test test</p><ul><li><img src="./assets/imgs/icons/up.png"></li><li><img src="./assets/imgs/icons/save.png"></li><li><img src="./assets/imgs/icons/dino2.png"></li></ul></div><img src="./assets/imgs/frc/2021.png"></div>
+            <div class="project-card"><div class="project-text"><h2>test</h2><p>test test test test test test test test test test test test test test test test test</p><ul><li><img src="./assets/imgs/icons/up.png"></li><li><img src="./assets/imgs/icons/save.png"></li><li><img src="./assets/imgs/icons/dino2.png"></li></ul></div><img src="./assets/imgs/frc/2021.png"></div>
+            <div class="project-card"><div class="project-text"><h2>test</h2><p>test test test test test test test test test test test test test test test test test</p><ul><li><img src="./assets/imgs/icons/up.png"></li><li><img src="./assets/imgs/icons/save.png"></li><li><img src="./assets/imgs/icons/dino2.png"></li></ul></div><img src="./assets/imgs/frc/2021.png"></div>
+            <div class="project-card"><div class="project-text"><h2>test</h2><p>test test test test test test test test test test test test test test test test test</p><ul><li><img src="./assets/imgs/icons/up.png"></li><li><img src="./assets/imgs/icons/save.png"></li><li><img src="./assets/imgs/icons/dino2.png"></li></ul></div><img src="./assets/imgs/frc/2021.png"></div> -->
+        </div>
+        <script>
+            function template(strings, ...keys) {
+            return (function(...values) {
+                    let dict = values[values.length - 1] || {};
+                    let result = [strings[0]];
+                    keys.forEach(function(key, i) {
+                    let value = Number.isInteger(key) ? values[key] : dict[key];
+                    result.push(value, strings[i + 1]);
+                    });
+                    return result.join('');
+                });
+            }
+
+            let projects = document.getElementById("projects-showcase");
+            let data = [
+                {
+                    title: "trsh-mvmt",
+                    description: "An open source first person movement system with a focus on momentum and physics inspired by Titanfall 2.",
+                    img: "./assets/imgs/projects/trsh-mvmt.png",
+                    img_style: "object-position: left 50%;",
+                },
+                {
+                    title: "KDS",
+                    description: "An web based driverstation for testing experimental FRC systems, such as visual SLAM, path planning, locomotion, and more.",
+                    img: "./assets/imgs/projects/kds.png",
+                },
+                {
+                    title: "o", 
+                    description: "Competition code for Team 3257's 2021 season. I created the control, driver assistence and autonomous systems that won the Central Valley Autonomous Award by Ford.",
+                    img: "./assets/imgs/frc/small_bot.PNG",
+                },
+                {
+                    title: "Tarsier v1",
+                    description: "A custom IR vision module made for visual SLAM and floor detection. Interfaces with KDS to provide real-time feedback.",
+                    img: "./assets/imgs/projects/tarsier.png",
+                    img_style: "object-fit: contain;",
+                },
+                {
+                    title: "FRC 2021 Robot Control", 
+                    description: "Competition code for Team 3257's 2021 season. I created the control, driver assistence and autonomous systems that won the Central Valley Autonomous Award by Ford.",
+                    img: "./assets/imgs/frc/small_bot.PNG",
+                },
+            ];
+            let cardTemplate = template`<div class="project-card"><div class="project-text"><h2>${0}</h2><p>${1}</p><ul>${2}</ul></div><img src="${3}" style="${4}"></div>`
+            let imgTemplate = template`<li><img src="${0}"></li>`
+            for (let i = 0; i < data.length; i++) {
+                cardHTML = cardTemplate(data[i].title, data[i].description, imgTemplate("./assets/imgs/icons/dino2.png"), data[i].img, data[i].img_style);
+                console.log(cardHTML)
+                projects.innerHTML += cardHTML;
+            }
+        </script>
         <div class="content" style="height: auto">
             <h4 style="display: none"><span id="bg-name"></span> <span id="bg-info"></span></h4>
-            <div class="vae-widget" style="">
+            <!--<div class="vae-widget" style="">
                 <div class="vae-widget-leftbar">
                     <div class="vae-widget-leftbar-pca-container">
                     </div>
-                    <!-- <div class="vae-widget-leftbar-preset-grid">
-                        <div class="vae-widget-preset"></div>
-                    </div> -->
                 </div>
                 
                 <div class="vae-widget-mix-container">
@@ -186,7 +246,8 @@
                         decodeCurrent();
                     }
                 </script>
-            </div>
+            </div>-->
+            
             <div class="article" style="">
                 <h1 class="article-header">header</h1>
                 <p class="article-text">

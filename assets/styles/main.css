@@ -57,12 +57,11 @@ body {
     background-size: 100% 100%; 
     object-fit: fill;
     height:auto;
-    width: 55%;
+    width: 65%;
     margin: 0 auto;
     background-color: #fff;
-    padding: 8em;
-    padding-top: 1em;
-    margin-top: 1em; 
+    padding: 4em;
+    padding-top: 4em;
     border-radius: 3px;
     box-shadow: 0 1px 2px rgba(0,0,0,0.07), 
                 0 2px 4px rgba(0,0,0,0.07), 
@@ -151,7 +150,49 @@ body {
     text-align: center;
 }
 
-
+.project-card {
+    background-color: #fff;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.07), 
+                0 2px 4px rgba(0,0,0,0.07), 
+                0 4px 8px rgba(0,0,0,0.07), 
+                0 8px 16px rgba(0,0,0,0.07);
+    position:relative;
+    border-radius: 5px;
+    overflow: hidden;
+}
+.project-text {
+    display: inline-block;
+    padding: 1em;
+    /* position:absolute; */
+    height:100%;
+    width:calc(50% - 2em);
+    margin:0;
+    /* padding: 2em 4em; */
+    /* background-color:blue; */
+}
+.project-text h2 { padding-left: 20px; margin-bottom:0; }
+.project-text p { padding: 0 20px; margin: 0; color: #333; width:auto; }
+.project-text ul { position:absolute; bottom: 0; padding-left:20px; }
+.project-text ul li{ display: inline-block; height:1.5em; width:1.5em; margin-right:5px; }
+.project-text ul li img { height: 100%; width: 100%; object-fit: contain;}
+.project-card .project-text h2 {
+    display:inline-block;
+}
+.project-card>img {
+    float: right;
+    height: 15em;   
+    width: 50%;
+    object-fit: cover;
+    /* position:absolute; */
+    left:0;
+    bottom:0;
+    margin:0 auto;
+    padding:0;
+    pointer-events: none;
+    user-select: none;
+    /* filter:invert(1); */
+}
 .row {
     display: flex;
     flex-wrap: wrap;
