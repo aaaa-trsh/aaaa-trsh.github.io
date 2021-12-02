@@ -68,39 +68,89 @@
             }
 
             let projects = document.getElementById("projects-showcase");
+            let projectsTools = {
+                "Unity": {
+                    "img": "https://cdn4.iconfinder.com/data/icons/logos-brands-5/24/unity-512.png", // unity logo
+                    "link": "https://www.unity.com/"
+                },
+                "Python": {
+                    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Python_icon_%28black_and_white%29.svg/1024px-Python_icon_%28black_and_white%29.svg.png", // python logo
+                    "link": "https://www.python.org/"
+                },
+                "Java": {
+                    "img": "./assets/imgs/icons/java.png", // java logo
+                    "link": "https://www.java.com/"
+                },
+                "JavaScript": {
+                    "img": "./assets/imgs/icons/js.png", // javascript logo
+                    "link": "https://www.javascript.com/"
+                },
+                "Tensorflow": {
+                    "img": "https://icons-for-free.com/iconfiles/png/512/tensorflow-1324440242699707768.png", // tensorflow logo
+                    "link": "https://www.tensorflow.org/"
+                },
+                "OpenCV": {
+                    "img": "./assets/imgs/icons/opencv.png", // opencv logo
+                    "link": "https://opencv.org/"
+                },
+            }
             let data = [
                 {
                     title: "trsh-mvmt",
                     description: "An open source first person movement system with a focus on momentum and physics inspired by Titanfall 2.",
                     img: "./assets/imgs/projects/trsh-mvmt.png",
                     img_style: "object-position: left 50%;",
+                    tools: ["Unity"],
+                    
                 },
                 {
                     title: "KDS",
-                    description: "An web based driverstation for testing experimental FRC systems, such as visual SLAM, path planning, locomotion, and more.",
+                    description: "An web based driverstation made with Flask for testing experimental FRC systems, such as visual SLAM, path planning, locomotion, and more.",
                     img: "./assets/imgs/projects/kds.png",
+                    tools: ["Python", "JavaScript"],
                 },
                 {
-                    title: "o", 
+                    title: "FRC 2021 Robot Control", 
                     description: "Competition code for Team 3257's 2021 season. I created the control, driver assistence and autonomous systems that won the Central Valley Autonomous Award by Ford.",
-                    img: "./assets/imgs/frc/small_bot.PNG",
+                    img: "./assets/imgs/projects/32572021.png",
+                    img_style: "filter: brightness(1.2)",
+                    tools: ["Java"],
+                },
+                {
+                    title: "AI Yearbook Blender",
+                    description: "A variational autoencoder trained on my highschool yearbook. Deployed to a client side tf.js widget for live face editing and mixing.",
+                    img: "./assets/imgs/projects/ai-yearbook.png",
+                    img_style: "object-position: right 50%; filter: hue-rotate(10deg) brightness(1.1);",
+                    tools: ["TensorFlow", "JavaScript"],
                 },
                 {
                     title: "Tarsier v1",
                     description: "A custom IR vision module made for visual SLAM and floor detection. Interfaces with KDS to provide real-time feedback.",
                     img: "./assets/imgs/projects/tarsier.png",
                     img_style: "object-fit: contain;",
+                    tools: ["OpenCV", "TensorFlow", "Python"],
                 },
                 {
-                    title: "FRC 2021 Robot Control", 
-                    description: "Competition code for Team 3257's 2021 season. I created the control, driver assistence and autonomous systems that won the Central Valley Autonomous Award by Ford.",
-                    img: "./assets/imgs/projects/32572021.png",
+                    title: "MozAIrt",
+                    description: "An adapted CharRNN trained to produce questionable classical music, trained on Mozart's greatest hits.",
+                    img: "./assets/imgs/projects/mozairt.png",
+                    img_style: "",
+                    tools: ["TensorFlow", "Python"],
                 },
             ];
             let cardTemplate = template`<div class="project-card"><div class="project-text"><h2>${0}</h2><p>${1}</p><ul>${2}</ul></div><img src="${3}" style="${4}"></div>`
-            let imgTemplate = template`<li><img src="${0}"></li>`
+            let imgTemplate = template`<li><a href="${1}"><img src="${0}"></a></li>`
             for (let i = 0; i < data.length; i++) {
-                cardHTML = cardTemplate(data[i].title, data[i].description, imgTemplate("./assets/imgs/icons/dino2.png"), data[i].img, data[i].img_style);
+                var t = "";
+                for (j of data[i].tools) {
+
+                    if (projectsTools[j] == undefined) {
+                        continue;
+                    }
+                    // console.log(projectsTools[j].img);
+                    t += imgTemplate(projectsTools[j].img, projectsTools[j].link);
+                }
+                cardHTML = cardTemplate(data[i].title, data[i].description, t, data[i].img, data[i].img_style);
                 console.log(cardHTML)
                 projects.innerHTML += cardHTML;
             }
