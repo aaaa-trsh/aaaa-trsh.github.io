@@ -150,6 +150,17 @@ body {
     text-align: center;
 }
 
+#projects-showcase {
+    display: grid; 
+    grid-gap: 20px;
+    /* grid-template: auto / auto auto; */
+    grid-template-columns: repeat( auto-fill, minmax(500px, 1fr) );
+
+    width: max(600px, 70%);
+    margin: 0 auto;
+    padding: 4em 0;
+}
+
 .project-card {
     background-color: #fff;
     position: relative;
@@ -157,41 +168,51 @@ body {
                 0 2px 4px rgba(0,0,0,0.07), 
                 0 4px 8px rgba(0,0,0,0.07), 
                 0 8px 16px rgba(0,0,0,0.07);
-    position:relative;
+    position: relative;
     border-radius: 5px;
     overflow: hidden;
+    height: max(15em, 15vh);
+
 }
 .project-text {
     display: inline-block;
     padding: 1em;
-    /* position:absolute; */
-    height:100%;
-    width:calc(50% - 2em);
-    margin:0;
-    /* padding: 2em 4em; */
-    /* background-color:blue; */
+    height: 100%;
+    width: calc(50% - 2em);
+    margin: 0;
 }
-.project-text h2 { padding-left: 20px; margin-bottom:0; }
-.project-text p { padding: 0 20px; margin: 0; color: #333; width:auto; }
-.project-text ul { position:absolute; bottom: 0; padding-left:20px; }
-.project-text ul li{ display: inline-block; height:1.5em; width:1.5em; margin-right:5px; }
-.project-text ul li img { height: 100%; width: 100%; object-fit: contain;}
-.project-card .project-text h2 {
-    display:inline-block;
-}
-.project-card>img {
+.project-text h2 { padding-left: 20px; margin-bottom:0; width: calc(100% - 1em - 20px); font-style: clamp(0px, 2vw, 1em); }
+.project-text p { padding: 0 20px; margin: 0; height: 8em; color: #333; width: auto; overflow: hidden; }
+.project-text ul { position: absolute; bottom: 0; padding-left: 20px; width: calc(50% - 1em - 40px); }
+.project-text ul li{ display: inline-block; height: 1.5em; width: 1.5em; margin-right: 8px; }
+.project-text ul li img { height: 100%; width: 100%; object-fit: contain; opacity: 0.2; transition: 0.2s; }
+.project-text ul li img:hover { opacity: .9; }
+
+.project-card .project-img-container {
     float: right;
-    height: 15em;   
+    height: 100%;   
     width: 50%;
+    overflow: hidden;
+}
+.project-img-container img {
+    height:100%;
+    width:100%;
     object-fit: cover;
-    /* position:absolute; */
     left:0;
     bottom:0;
     margin:0 auto;
     padding:0;
     pointer-events: none;
     user-select: none;
-    /* filter:invert(1); */
+}
+.project-link {
+    float: right;
+    width: fit-content !important;
+    padding-top: 5px;
+}
+.project-link a {
+    color: #333;
+    font-style: italic;
 }
 .row {
     display: flex;
@@ -213,7 +234,7 @@ body {
 }
 
 /* Responsive layout - makes a two column-layout instead of four columns */
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 900px) {
     .column {
         flex: 50%;
         max-width: 50%;
