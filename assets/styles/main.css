@@ -90,7 +90,7 @@ body {
     background-color: #000;
     background-clip: text;
     image-rendering: pixelated;
-    filter: invert(1) blur(12px);
+    filter: invert(0) blur(12px) brightness(0.7);
     overflow: hidden;
     z-index: 0;
 }
@@ -103,7 +103,7 @@ body {
     font-size: clamp(40px, 10.5vw, 200px);
     user-select: none;
     white-space: nowrap;
-    mix-blend-mode: difference;
+    /* mix-blend-mode: difference; */
 }
 
 .header-subtitle {
