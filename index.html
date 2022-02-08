@@ -85,6 +85,15 @@
                     "link": "https://opencv.org/"
                 },
             }
+            /*
+            TODO:
+            update tarsier image
+            add dynamic articles
+            write articles
+            add 6644 auto tools
+            add planet project
+            
+            */
             let data = [
                 {
                     title: "trsh-mvmt",
@@ -97,9 +106,15 @@
                 },
                 {
                     title: "KDS",
-                    description: "An web based driverstation made with Flask for testing experimental FRC systems, such as visual SLAM, path planning, locomotion, and more.",
+                    description: "A web based driverstation made with Flask for testing experimental FRC systems, such as visual SLAM, path planning, locomotion, and more.",
                     img: "./assets/imgs/projects/kds.png",
                     tools: ["Python", "JavaScript"],
+                },
+                {
+                    title: "Quokka",
+                    description: "A minmalistic custom implementation of the pure pursuit algorithm for following a trajectory.",
+                    img: "./assets/imgs/projects/quokka.png",
+                    tools: ["JavaScript"],
                 },
                 {
                     title: "FRC 2021 Code", 
@@ -118,11 +133,17 @@
                     link_url: "",
                 },
                 {
-                    title: "Tarsier v1",
+                    title: "Vision Module",
                     description: "A custom IR vision module made for visual SLAM and floor detection. Interfaces with KDS to provide real-time feedback.",
                     img: "./assets/imgs/projects/tarsier.png",
                     img_style: "object-fit: contain;",
                     tools: ["OpenCV", "Tensorflow", "Python"],
+                },
+                {
+                    title: "GLSL Planet",
+                    description: "A 3D stylized planet entirely based on GLSL fragment and vertex shaders for colorization, height maps, atmosphere, etc.",
+                    img: "./assets/imgs/projects/glsl-planet.png",
+                    tools: ["JavaScript", "Java"],
                 },
                 {
                     title: "MozAIrt",
@@ -132,6 +153,12 @@
                     tools: ["Tensorflow", "Python"],
                     link_text: "Read More",
                     link_url: "",
+                },
+                {
+                    title: "6644 Atomic Auto",
+                    description: "My first exploration into path generation with custom path generation and following in FRC. Includes a web visualizer for path creation and java commands.",
+                    img: "./assets/imgs/projects/quokka.png",
+                    tools: ["JavaScript", "Java"],
                 },
             ];
             let cardTemplate = template`<div class="project-card"><div class="project-text"><h2>${0}</h2><p>${1}</p><ul>${2}<li class="project-link"><a href="${6}">${5}</a></li></ul></div><div class="project-img-container"><img src="${3}" style="${4}"></div></div>`
@@ -151,154 +178,156 @@
         </script>
         <div class="content" style="height: auto">
             <h4 style="display: none"><span id="bg-name"></span></h4>
-            <div class="vae-widget" style="">
-                <div class="vae-widget-leftbar">
-                    <div class="vae-widget-leftbar-pca-container">
-                    </div>
-                </div>
-                
-                <div class="vae-widget-mix-container">
-                    <div class="vae-widget-mix-box">
-                        <input class="vae-widget-mix-slider" oninput="mix(parseFloat(this.value))" type="range" />
-                        <div class="vae-widget-mix-preset-container" style="position: relative;">
-                            <img draggable="false" class="vae-widget-mix-preset" src="https://via.placeholder.com/300/fff/d1dce3?text=1">
-                                <button style="left:1px;top:2.4px;" onclick="load(0)"><img src="./assets/imgs/icons/up.png"/></button>
-                                <button style="left:1px;top:24px;" onclick="save(0)"><img src="./assets/imgs/icons/save.png"/></button>
-                            </img>
-                            <img draggable="false" class="vae-widget-mix-preset" style="padding: 0;" src="https://via.placeholder.com/300/fff/d1dce3?text=2">
-                                <button style="left:1px;top:calc(10vw + 5px)" onclick="load(1)"><img src="./assets/imgs/icons/up.png"/></button>
-                                <button style="left:1px;top:calc(10vw + 27px)" onclick="save(1)"><img src="./assets/imgs/icons/save.png"/></button>
-                            </img>
+            <div class="vae-container">
+                <h1 style="margin:0">Face Blender Widget</h1>
+                <div class="vae-widget" style="">
+                    <div class="vae-widget-leftbar">
+                        <div class="vae-widget-leftbar-pca-container">
                         </div>
                     </div>
-                </div>
-                
-                <div class="vae-widget-output-container" style="position:relative;">
-                    <canvas id="vae-output-canvas" class="vae-widget-output" src="https://via.placeholder.com/300">
-                        
-                    </canvas>
-                    <button style="position:absolute; top:2px; left: 2px;" onclick="
-                        for (var i = 0; i < sliders.length; i++) {
-                            sliders[i].value = (Math.random()-.5) * std[i] * 1.4;
+                    
+                    <div class="vae-widget-mix-container">
+                        <div class="vae-widget-mix-box">
+                            <input class="vae-widget-mix-slider" oninput="mix(parseFloat(this.value))" type="range" />
+                            <div class="vae-widget-mix-preset-container" style="position: relative;">
+                                <img draggable="false" class="vae-widget-mix-preset" src="https://via.placeholder.com/300/fff/d1dce3?text=1">
+                                    <button style="left:1px;top:2.4px;" onclick="load(0)"><img src="./assets/imgs/icons/up.png"/></button>
+                                    <button style="left:1px;top:24px;" onclick="save(0)"><img src="./assets/imgs/icons/save.png"/></button>
+                                </img>
+                                <img draggable="false" class="vae-widget-mix-preset" style="padding: 0;" src="https://via.placeholder.com/300/fff/d1dce3?text=2">
+                                    <button style="left:1px;top:calc(10vw + 5px)" onclick="load(1)"><img src="./assets/imgs/icons/up.png"/></button>
+                                    <button style="left:1px;top:calc(10vw + 27px)" onclick="save(1)"><img src="./assets/imgs/icons/save.png"/></button>
+                                </img>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="vae-widget-output-container" style="position:relative;">
+                        <canvas id="vae-output-canvas" class="vae-widget-output" src="https://via.placeholder.com/300">
+                            
+                        </canvas>
+                        <button style="position:absolute; top:2px; left: 2px;" onclick="
+                            for (var i = 0; i < sliders.length; i++) {
+                                sliders[i].value = (Math.random()-.5) * std[i] * 1.4;
+                            }
+                            decodeCurrent()
+                        "><img src="./assets/imgs/icons/dice.png"/></button>
+                    </div>
+                    <script src="./js/tf.js"></script> 
+
+                    <script type="text/javascript">
+                        const size = 32;
+                        const scale = 1;
+                        const vaeCanvas = document.getElementById("vae-output-canvas");
+                        vaeCanvas.width = size * scale;
+                        vaeCanvas.height = size * scale;
+                        const vaeCTX = vaeCanvas.getContext('2d');
+                        var decoder;
+                        const sliderCount = 20;
+                        const range = 80;
+                        const mean = [-1.672, 0.057, -1.77, 1.74, 2.272, 2.68, -1.514, 1.582, 1.895, 1.776, -1.223, -3.493, -1.643, 0.426, 1.264, 2.176, -0.518, -2.646, 0.727, -2.826]
+                        const std = [3.072, 3.645, 1.893, 3.574, 3.428, 2.77, 2.29, 2.223, 2.766, 2.023, 2.094, 1.644, 3.381, 2.503, 3.565, 3.902, 4.477, 3.236, 2.659, 2.332]
+
+                        let sliders = [];
+                        let saved = [[new Array(sliderCount).fill(-1)], [new Array(sliderCount).fill(1)]];
+                        async function loadModel() {
+                            decoder = await tf.loadLayersModel('./models/faces/decoder/model.json');
+                            console.log("Model Loaded");
+
+                            let sliderContainer = document.getElementsByClassName("vae-widget-leftbar-pca-container")[0];
+                            for (var i = 0; i < sliderCount; i++) {
+                                var div = document.createElement('div');
+                                div.innerHTML = `<input id="pca${i+1}" class="vae-widget-pca" type="range" min="-3" max="3" step="0.001" oninput="decodeCurrent()" />`;
+                                let newSlider = sliderContainer.appendChild(div.children[0]);
+                                newSlider.value = (Math.random()-.5) * std[i] * 1.4;
+                            }
+                            
+                            sliders = [...document.getElementsByClassName("vae-widget-pca")]
+                            setTimeout(tf.tidy(()=>{
+                                decode(sliders.map(elem => {return elem != null ?  Math.random()-.5 : 0;}));
+                                setTimeout(() => {
+                                    save(0)
+                                    save(1)
+                                }, 10)
+                            }), 10);
                         }
-                        decodeCurrent()
-                    "><img src="./assets/imgs/icons/dice.png"/></button>
-                </div>
-                <script src="./js/tf.js"></script> 
+                        window.addEventListener('mousemove', (e) => { 
+                            mx = (-e.clientX + window.innerWidth/2)/window.innerWidth;
+                            my = (-e.clientY + window.innerHeight/2)/window.innerHeight; 
+                        });
 
-                <script type="text/javascript">
-                    const size = 32;
-                    const scale = 1;
-                    const vaeCanvas = document.getElementById("vae-output-canvas");
-                    vaeCanvas.width = size * scale;
-                    vaeCanvas.height = size * scale;
-                    const vaeCTX = vaeCanvas.getContext('2d');
-                    var decoder;
-                    const sliderCount = 20;
-                    const range = 80;
-                    const mean = [-1.672, 0.057, -1.77, 1.74, 2.272, 2.68, -1.514, 1.582, 1.895, 1.776, -1.223, -3.493, -1.643, 0.426, 1.264, 2.176, -0.518, -2.646, 0.727, -2.826]
-                    const std = [3.072, 3.645, 1.893, 3.574, 3.428, 2.77, 2.29, 2.223, 2.766, 2.023, 2.094, 1.644, 3.381, 2.503, 3.565, 3.902, 4.477, 3.236, 2.659, 2.332]
+                        loadModel();
 
-                    let sliders = [];
-                    let saved = [[new Array(sliderCount).fill(-1)], [new Array(sliderCount).fill(1)]];
-                    async function loadModel() {
-                        decoder = await tf.loadLayersModel('./models/faces/decoder/model.json');
-                        console.log("Model Loaded");
+                        function drawFromRGB_imdata(arr, px, py) {
+                            arr = arr[0]
 
-                        let sliderContainer = document.getElementsByClassName("vae-widget-leftbar-pca-container")[0];
-                        for (var i = 0; i < sliderCount; i++) {
-                            var div = document.createElement('div');
-                            div.innerHTML = `<input id="pca${i+1}" class="vae-widget-pca" type="range" min="-3" max="3" step="0.001" oninput="decodeCurrent()" />`;
-                            let newSlider = sliderContainer.appendChild(div.children[0]);
-                            newSlider.value = (Math.random()-.5) * std[i] * 1.4;
-                        }
-                        
-                        sliders = [...document.getElementsByClassName("vae-widget-pca")]
-                        setTimeout(tf.tidy(()=>{
-                            decode(sliders.map(elem => {return elem != null ?  Math.random()-.5 : 0;}));
-                            setTimeout(() => {
-                                save(0)
-                                save(1)
-                            }, 10)
-                        }), 10);
-                    }
-                    window.addEventListener('mousemove', (e) => { 
-                        mx = (-e.clientX + window.innerWidth/2)/window.innerWidth;
-                        my = (-e.clientY + window.innerHeight/2)/window.innerHeight; 
-                    });
-
-                    loadModel();
-
-                    function drawFromRGB_imdata(arr, px, py) {
-                        arr = arr[0]
-
-                        var imgData = vaeCTX.createImageData(size * scale, size * scale);
-                        for (var y = 0; y < size * scale; y+=scale)
-                        {
-                            for (var x = 0; x < size * scale; x+=scale)
+                            var imgData = vaeCTX.createImageData(size * scale, size * scale);
+                            for (var y = 0; y < size * scale; y+=scale)
                             {
-                                var pixX = Math.round(x/scale)
-                                var pixY = Math.round(y/scale)
-                                for (var oy = 0; oy < scale; oy++) {
-                                    for (var ox = 0; ox < scale; ox++) {
-                                        imgData.data[(((y+oy)*scale * size) + x + ox)*4+0] = (arr[pixY][pixX][0] + 1.9) * 65
-                                        imgData.data[(((y+oy)*scale * size) + x + ox)*4+1] = (arr[pixY][pixX][1] + 1.9) * 65
-                                        imgData.data[(((y+oy)*scale * size) + x + ox)*4+2] = (arr[pixY][pixX][2] + 1.9) * 65
-                                        imgData.data[(((y+oy)*scale * size) + x + ox)*4+3] = 255
+                                for (var x = 0; x < size * scale; x+=scale)
+                                {
+                                    var pixX = Math.round(x/scale)
+                                    var pixY = Math.round(y/scale)
+                                    for (var oy = 0; oy < scale; oy++) {
+                                        for (var ox = 0; ox < scale; ox++) {
+                                            imgData.data[(((y+oy)*scale * size) + x + ox)*4+0] = (arr[pixY][pixX][0] + 1.9) * 65
+                                            imgData.data[(((y+oy)*scale * size) + x + ox)*4+1] = (arr[pixY][pixX][1] + 1.9) * 65
+                                            imgData.data[(((y+oy)*scale * size) + x + ox)*4+2] = (arr[pixY][pixX][2] + 1.9) * 65
+                                            imgData.data[(((y+oy)*scale * size) + x + ox)*4+3] = 255
+                                        }
                                     }
                                 }
                             }
+
+                            vaeCTX.putImageData(imgData, 0, 0)                
                         }
 
-                        vaeCTX.putImageData(imgData, 0, 0)                
-                    }
-
-                    async function decode(dense, x, y) {
-                        if (decoder !== undefined) {
-                            var rgb = await decoder.predict(tf.tensor([dense])).array();
-                            drawFromRGB_imdata(rgb, x, y);
+                        async function decode(dense, x, y) {
+                            if (decoder !== undefined) {
+                                var rgb = await decoder.predict(tf.tensor([dense])).array();
+                                drawFromRGB_imdata(rgb, x, y);
+                            }
                         }
-                    }
-                    
-                    let lastDecodeTimestamp = 0;
-                    function decodeCurrent() {
-                        let pre = lastDecodeTimestamp
-                        lastDecodeTimestamp = new Date().getMilliseconds()
-                        if (new Date().getMilliseconds() - lastDecodeTimestamp > 100)
-                            return
+                        
+                        let lastDecodeTimestamp = 0;
+                        function decodeCurrent() {
+                            let pre = lastDecodeTimestamp
+                            lastDecodeTimestamp = new Date().getMilliseconds()
+                            if (new Date().getMilliseconds() - lastDecodeTimestamp > 100)
+                                return
 
-                        console.log(new Date().getMilliseconds() - pre)
-                        setTimeout(tf.tidy(()=>{
-                            decode(sliders.map(elem => parseFloat(elem.value)))
-                        }), 4)
-                    }
+                            console.log(new Date().getMilliseconds() - pre)
+                            setTimeout(tf.tidy(()=>{
+                                decode(sliders.map(elem => parseFloat(elem.value)))
+                            }), 4)
+                        }
 
-                    function save(index) {
-                        saved[index] = sliders.map(elem => {return elem != null? parseFloat(elem.value) : 0;});
-                        var dataURL = vaeCanvas.toDataURL();
-                        document.getElementsByClassName("vae-widget-mix-preset")[index].src = dataURL;
-                    }
+                        function save(index) {
+                            saved[index] = sliders.map(elem => {return elem != null? parseFloat(elem.value) : 0;});
+                            var dataURL = vaeCanvas.toDataURL();
+                            document.getElementsByClassName("vae-widget-mix-preset")[index].src = dataURL;
+                        }
 
-                    function load(index) {
-                        sliders.forEach((elem, i) => {
-                            elem.value = saved[index][i];
-                        });
-                        decodeCurrent();
-                    }
+                        function load(index) {
+                            sliders.forEach((elem, i) => {
+                                elem.value = saved[index][i];
+                            });
+                            decodeCurrent();
+                        }
 
 
-                    function mix(t) {
-                        t/=100
-                        sliders.forEach((elem, i) => {
-                            a = saved[0][i];
-                            b = saved[1][i];
-                            elem.value = a * t + b * (1 - t);
-                        });
-                        decodeCurrent();
-                    }
-                </script>
+                        function mix(t) {
+                            t/=100
+                            sliders.forEach((elem, i) => {
+                                a = saved[0][i];
+                                b = saved[1][i];
+                                elem.value = a * t + b * (1 - t);
+                            });
+                            decodeCurrent();
+                        }
+                    </script>
+                </div>
             </div>
-            
             <div class="article" style="">
                 <h1 class="article-header">header</h1>
                 <p class="article-text">

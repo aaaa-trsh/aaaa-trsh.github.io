@@ -145,7 +145,7 @@ window.onkeyup = function(e) {
 window.onkeydown = function(e) {
     keysDown[e.key] = true;
     if (KEY_DEBUG) {
-        console.log(e.key);
+        // console.log(e.key);
     }
 
     if(
@@ -331,7 +331,7 @@ function update() {
                 drawLine(robotPos, robotPos.add(Vector2.fromAngle(robotAngle + pi/2).mul(relativeLookahead)));
                 
                 var curvCenter = CircleCenter2PointRad(robotPos, look, Math.abs(relativeLookahead.x));
-                console.log(curvCenter);
+                // console.log(curvCenter);
                 drawCircle(
                     curvCenter.x,
                     curvCenter.y,
