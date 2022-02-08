@@ -90,7 +90,7 @@ body {
     background-color: #000;
     background-clip: text;
     image-rendering: pixelated;
-    filter: invert(0) blur(12px) brightness(0.7);
+    filter: invert(1) blur(20px) brightness(1);
     overflow: hidden;
     z-index: 0;
 }
@@ -115,6 +115,18 @@ body {
     vertical-align: baseline;
     color:rgb(138, 123, 123);
     width:100px;
+}
+
+#bg-info {
+    display: block;
+    position: absolute;
+    bottom: 0;
+    /* font-weight: bold; */
+    font-style: italic;
+    color: white;
+    opacity: .8;
+    margin: 0 6px;
+    user-select: none;
 }
 
 .canvas-header-container {

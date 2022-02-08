@@ -1,5 +1,5 @@
 window.addEventListener("load", () => {
-    t.mapFromSource(canvas.width/2, t.pixelsPerUnit, 629.5/12, 323.25/12, 0.036649659863945576, "./assets/2021.png", true);
+    t.mapFromSource(canvas.width/2, t.pixelsPerUnit, 629.5/12, 323.25/12, 0.036649659863945576, "./assets/imgs/frc/2021.png", true);
     update();
 });
 

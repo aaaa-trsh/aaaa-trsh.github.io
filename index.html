@@ -40,6 +40,7 @@
                         wiggle and drive
                     </span> -->
                 </h1>
+                <span id="bg-info"></span>
             </div>
         </div>
         <div id="projects-showcase">
@@ -149,8 +150,8 @@
             }
         </script>
         <div class="content" style="height: auto">
-            <h4 style="display: none"><span id="bg-name"></span> <span id="bg-info"></span></h4>
-            <!--<div class="vae-widget" style="">
+            <h4 style="display: none"><span id="bg-name"></span></h4>
+            <div class="vae-widget" style="">
                 <div class="vae-widget-leftbar">
                     <div class="vae-widget-leftbar-pca-container">
                     </div>
@@ -259,10 +260,17 @@
                         }
                     }
                     
+                    let lastDecodeTimestamp = 0;
                     function decodeCurrent() {
+                        let pre = lastDecodeTimestamp
+                        lastDecodeTimestamp = new Date().getMilliseconds()
+                        if (new Date().getMilliseconds() - lastDecodeTimestamp > 100)
+                            return
+
+                        console.log(new Date().getMilliseconds() - pre)
                         setTimeout(tf.tidy(()=>{
                             decode(sliders.map(elem => parseFloat(elem.value)))
-                        }), 10)
+                        }), 4)
                     }
 
                     function save(index) {
@@ -289,7 +297,7 @@
                         decodeCurrent();
                     }
                 </script>
-            </div>-->
+            </div>
             
             <div class="article" style="">
                 <h1 class="article-header">header</h1>
@@ -350,7 +358,7 @@
             </div> -->
             
         </div>
-        <!-- <script src="./js/backgrounds/bg-cellular-automata.js"></script> -->
+        <script src="./js/backgrounds/bg-cellular-automata.js"></script>
         <!-- <div id="terminal">
             <p>
                 <span class="yellow bold">keithb@pc</span>:<span class="blue">~</span>$ info <br/>

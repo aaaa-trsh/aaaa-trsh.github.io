@@ -3,13 +3,13 @@
 <head>
     <meta charset="utf-8" />
     <title>keith b's funhouse</title>
-    <link rel="stylesheet" href="./style.css?e=2">
-    <script src="./js/perlin.js"></script>
-    <script src="./js/tf.js"></script>
-    <script src="./js/plugins/three.min.js"></script>
-    <script src="./js/plugins/three-orbit.js"></script>
+    <link rel="stylesheet" href="../style.css?e=2">
+    <script src="../js/perlin.js"></script>
+    <script src="../js/tf.js"></script>
+    <script src="../js/plugins/three.min.js"></script>
+    <script src="../js/plugins/three-orbit.js"></script>
     <script src="https://rawgit.com/josdirksen/learning-threejs/master/libs/perlin.js"></script>
-    <script src="./js/utils/colorUtils.js"></script>
+    <script src="../js/utils/colorUtils.js"></script>
 
     <script src="https://d3js.org/d3.v4.min.js"></script> 
     <script src="https://d3js.org/d3-color.v1.min.js"></script>
@@ -39,7 +39,7 @@
                 var script = document.createElement('script');
                 document.body.append(script);
                 var bgScripts = ["planet"]//, "flow", "faces-baked", "cellular-automata", "cellular-automata2"];
-                script.src = "./js/backgrounds/bg-"+bgScripts[Math.floor(Math.random()*bgScripts.length)]+".js";
+                script.src = "../js/backgrounds/bg-"+bgScripts[Math.floor(Math.random()*bgScripts.length)]+".js";
                 var heroTitle = document.getElementById("hero-title");
                 function clamp(v, min, max) {return Math.max(min, Math.min(max, v)); }
                 noise.seed(Math.random());

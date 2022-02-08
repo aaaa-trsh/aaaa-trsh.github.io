@@ -1,5 +1,5 @@
 const startTime = performance.now();
-const pi = Math.PI;
+// const pi = Math.PI;
 function elapsedTime() {
     return (performance.now() - startTime)/1000;
 }

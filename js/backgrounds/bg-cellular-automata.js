@@ -9,7 +9,7 @@ const gctx = gcanvas.getContext('2d');
 const rule = [[2, 5, 6, 7, 8], [5, 6, 7, 8]];
 const COLOR_PALETTE = [
     // (value) => [hexToRgb(d3.interpolateInferno(value/255)), "FIRE"],
-    (value) => [hexToRgb(d3.interpolateMagma(value/255)), "RUBY"],
+    (value) => [hexToRgb(d3.interpolateMagma(value/255)), "AQUAMARINE"], // RUBY
     // (value) => [hexToRgb(d3.interpolateViridis(value/255)), "LIME"],
 ][Math.floor(Math.random() * 1)];
 
@@ -28,7 +28,7 @@ function init() {
 init();
 
 function resizeCanvas() {
-    var cellSize = 20;
+    var cellSize = 40;
     canvas.width = Math.ceil(canvas.clientWidth/cellSize);
     canvas.height = Math.ceil(canvas.clientHeight/cellSize);
     gcanvas.width = canvas.width;
