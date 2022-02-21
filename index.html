@@ -44,7 +44,7 @@
         </div>
         <div class="content" style="height: auto">
             <h4 style="display: none"><span id="bg-name"></span> <span id="bg-info"></span></h4>
-            <div class="vae-widget" style="">
+            <div class="vae-widget" >
                 <div class="vae-widget-leftbar">
                     <div class="vae-widget-leftbar-pca-container">
                     </div>
@@ -57,11 +57,11 @@
                     <div class="vae-widget-mix-box">
                         <input class="vae-widget-mix-slider" oninput="mix(parseFloat(this.value))" type="range" />
                         <div class="vae-widget-mix-preset-container" style="position: relative;">
-                            <img draggable="false" class="vae-widget-mix-preset" src="https://via.placeholder.com/300/fff/d1dce3?text=1">
+                            <img draggable="false" class="vae-widget-mix-preset" src="https://via.placeholder.com/300/2b2b2b/3b3b3b?text=1">
                                 <button style="left:1px;top:2.4px;" onclick="load(0)"><img src="./assets/imgs/icons/up.png"/></button>
                                 <button style="left:1px;top:24px;" onclick="save(0)"><img src="./assets/imgs/icons/save.png"/></button>
                             </img>
-                            <img draggable="false" class="vae-widget-mix-preset" style="padding: 0;" src="https://via.placeholder.com/300/fff/d1dce3?text=2">
+                            <img draggable="false" class="vae-widget-mix-preset" style="padding: 0;" src="https://via.placeholder.com/300/2b2b2b/3b3b3b?text=2">
                                 <button style="left:1px;top:calc(10vw + 5px)" onclick="load(1)"><img src="./assets/imgs/icons/up.png"/></button>
                                 <button style="left:1px;top:calc(10vw + 27px)" onclick="save(1)"><img src="./assets/imgs/icons/save.png"/></button>
                             </img>
@@ -112,10 +112,6 @@
                         sliders = [...document.getElementsByClassName("vae-widget-pca")]
                         setTimeout(tf.tidy(()=>{
                             decode(sliders.map(elem => {return elem != null ?  Math.random()-.5 : 0;}));
-                            setTimeout(() => {
-                                save(0)
-                                save(1)
-                            }, 10)
                         }), 10);
                     }
                     window.addEventListener('mousemove', (e) => { 
@@ -187,7 +183,7 @@
                     }
                 </script>
             </div>
-            <div class="article" style="">
+            <div class="article">
                 <h1 class="article-header">header</h1>
                 <p class="article-text">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Non curabitur gravida arcu ac. Consequat nisl vel pretium lectus quam id leo in vitae. In tellus integer feugiat scelerisque varius morbi enim. Nisl pretium fusce id velit ut tortor pretium viverra suspendisse. Phasellus faucibus scelerisque eleifend donec pretium vulputate sapien. Metus vulputate eu scelerisque felis imperdiet proin. Non enim praesent elementum facilisis leo vel fringilla. Lectus magna fringilla urna porttitor rhoncus dolor. Vestibulum mattis ullamcorper velit sed. Eu nisl nunc mi ipsum faucibus vitae aliquet. Tortor consequat id porta nibh venenatis cras sed. Proin sagittis nisl rhoncus mattis rhoncus urna neque viverra. Nullam eget felis eget nunc lobortis mattis aliquam faucibus.
@@ -247,6 +243,7 @@
             
         </div>
         <!-- <script src="./js/backgrounds/bg-cellular-automata.js"></script> -->
+        <script src="./js/backgrounds/bg-fluid.js"></script>
         <!-- <div id="terminal">
             <p>
                 <span class="yellow bold">keithb@pc</span>:<span class="blue">~</span>$ info <br/>

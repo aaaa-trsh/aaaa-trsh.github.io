@@ -85,12 +85,14 @@
     inset 0 0 7px 0px #0007;
 }
 
-.vae-widget-output-container { width:fit-content; }
+.vae-widget-output-container {  margin: 2px; width:fit-content; overflow: hidden; }
 
 .vae-widget-output {
-    margin: 2px;
+    margin: -2px;
     width: calc(20vw + 2px);
     height: calc(20vw + 2px);
     background-color:gray;
     image-rendering: pixelated;
+    /* filter: blur(.1vw); */
+    
 }

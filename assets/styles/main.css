@@ -90,8 +90,8 @@ body {
     height: 100%;
     background-color: #000;
     background-clip: text;
-    image-rendering: pixelated;
-    filter: invert(1) blur(12px);
+    /* image-rendering: pixelated; */
+    /* filter: invert() blur(0px); */
     overflow: hidden;
     z-index: 0;
 }
