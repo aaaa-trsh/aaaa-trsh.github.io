@@ -27,6 +27,11 @@ body {
 .navbar-title {
     margin: 0;
     padding-left: 20px;
+    user-select: none;
+}
+.navbar-title:hover {
+    animation: shake 0.6s;
+    animation-iteration-count: infinite;
 }
 
 .navbar-option {
@@ -93,6 +98,30 @@ body {
     filter: invert(1) blur(20px) brightness(1);
     overflow: hidden;
     z-index: 0;
+}
+
+#console {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    overflow: hidden;
+    z-index: 0;
+    color:rgb(70, 98, 129);
+    font-family: monospace;
+    /* font-weight: bold; */
+    user-select: none;
+}
+#console p {
+    width: 100%;
+    text-align:left;
+    position:absolute;
+    bottom:0;
+    margin:0;
+    /* font-size:20px; */
+    margin: 20px;
 }
 
 .header-title {
@@ -184,7 +213,6 @@ body {
     border-radius: 5px;
     overflow: hidden;
     height: max(15em, 15vh);
-
 }
 .project-text {
     display: inline-block;
@@ -232,31 +260,43 @@ body {
     padding: 0 4px;
 }
 
-/* Create four equal columns that sits next to each other */
-.column {
-    flex: 25%;
-    max-width: 25%;
-    padding: 0 4px;
-}
 
-.column img {
-    margin-top: 8px;
-    vertical-align: middle;
-    width: 100%;
-}
+@media screen and (max-aspect-ratio: 800/5) {
+    
+    .project-card {
+        height: max(20em, 15vh);
+    }
+    #projects-showcase {
+        grid-template-columns: repeat( auto-fill, minmax(300px, 1fr) );
+    }
+    .project-text {
+        padding: 1em;
+        /* height:52%; */
+        height:fit-content;
+        overflow: hidden;
+        width: calc(100% - 2em);
+        padding-bottom: 0;
+        margin: 0;
+    }
+    .project-text p { height:4.9em; }
+    .project-text ul { position: relative;width: calc(100% - 1em - 20px); }
 
-/* Responsive layout - makes a two column-layout instead of four columns */
-@media screen and (max-width: 900px) {
-    .column {
-        flex: 50%;
-        max-width: 50%;
+    .project-card .project-img-container { 
+        height: 40%;
+        width: 100%;
     }
 }
 
-/* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
-@media screen and (max-width: 600px) {
-    .column {
-        flex: 100%;
-        max-width: 100%;
-    }
-}
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+  }

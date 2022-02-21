@@ -66,7 +66,7 @@ function cellularAutomata(i) {
                 map[y][x] = 0;
             }
 
-            if (Math.random() > 0.9996) map[y][x] = 1; 
+            if (Math.random() > 0.999) map[y][x] = 1; 
             //if (Math.random() > Math.hypot(Math.abs((x/map[0].length) - 0.5), Math.abs((y/map.length) - 0.5)) * 30) map[y][x] = 1; 
             
             if (map[y][x] == 1) {

@@ -29,7 +29,12 @@
         </div>
 
         <div class="canvas-container" style="overflow: hidden">
-            <canvas id="canvas"></canvas>
+            <!-- <canvas id="canvas"></canvas> -->
+            <div id="console">
+                <p>
+                    
+                </p>
+            </div>
             <!-- <img id="canvas"/> -->
             <div class="canvas-header-container">
                 <h1 class="header-title">
@@ -101,31 +106,36 @@
                     img: "./assets/imgs/projects/trsh-mvmt.png",
                     img_style: "object-position: left 50%;",
                     tools: ["Unity"],
+                    github: "https://github.com/aaaa-trsh/trsh-mvmt",
                     link_text: "Try it out!",
-                    link_url: "",
+                    link_url: "https://aaa-trsh.itch.io/trsh-mvmt",
                 },
                 {
                     title: "KDS",
-                    description: "A web based driverstation made with Flask for testing experimental FRC systems, such as visual SLAM, path planning, locomotion, and more.",
+                    description: "A custom driverstation made with Flask for experimental systems like visual SLAM, path planning, locomotion, and more.",
                     img: "./assets/imgs/projects/kds.png",
+                    github: "https://github.com/aaaa-trsh/KDS",
                     tools: ["Python", "JavaScript"],
                 },
                 {
                     title: "Quokka",
-                    description: "A minmalistic custom implementation of the pure pursuit algorithm for following a trajectory.",
+                    description: "A minmalistic webtool that implements the pure pursuit algorithm for trajectory following.",
                     img: "./assets/imgs/projects/quokka.png",
                     tools: ["JavaScript"],
+                    link_text: "Demo",
+                    link_url: "https://aaaa-trsh.github.io/apps/quokka.html",
                 },
                 {
                     title: "FRC 2021 Code", 
-                    description: "Competition code for Team 3257's 2021 season. I created the control, driver assistence and autonomous systems that won the Central Valley Autonomous Award by Ford.",
+                    description: "Competition code for Team 3257's 2021 season. I created autonomous control systems that won the Autonomous Award.",
                     img: "./assets/imgs/projects/32572021.png",
                     img_style: "filter: brightness(1.2)",
                     tools: ["Java"],
+                    github: "https://github.com/TeamVortechs/3257-2021-COMMAND-BASED"
                 },
                 {
                     title: "Face Blender",
-                    description: "A variational autoencoder trained on my highschool yearbook. Deployed to a client side tf.js widget for live face editing and mixing.",
+                    description: "A variational autoencoder trained on my highschool yearbook. Deployed to a client side tf.js widget for live face fiddling.",
                     img: "./assets/imgs/projects/ai-yearbook.PNG",
                     img_style: "object-position: right 50%; filter: hue-rotate(10deg) brightness(1.1);",
                     tools: ["Tensorflow", "JavaScript"],
@@ -134,29 +144,32 @@
                 },
                 {
                     title: "Vision Module",
-                    description: "A custom IR vision module made for visual SLAM and floor detection. Interfaces with KDS to provide real-time feedback.",
+                    description: "A custom vision module made for mapping and CV. Interfaces with KDS to provide a real-time feed.",
                     img: "./assets/imgs/projects/tarsier.png",
                     img_style: "object-fit: contain;",
                     tools: ["OpenCV", "Tensorflow", "Python"],
                 },
                 {
                     title: "GLSL Planet",
-                    description: "A 3D stylized planet entirely based on GLSL fragment and vertex shaders for colorization, height maps, atmosphere, etc.",
+                    description: "A 3D stylized planet made with GLSL shaders for colorization, height maps, atmosphere, etc.",
                     img: "./assets/imgs/projects/glsl-planet.png",
                     tools: ["JavaScript", "Java"],
+                    link_text: "Check it out!",
+                    link_url: "https://aaaa-trsh.github.io/apps/planet.html",
                 },
                 {
                     title: "MozAIrt",
-                    description: "An adapted CharRNN trained to produce questionable classical music, trained on Mozart's greatest hits.",
+                    description: "A CharRNN trained to produce questionable classical music, trained on Mozart's greatest hits.",
                     img: "./assets/imgs/projects/mozairt.png",
-                    img_style: "transform: scale(4, 1); object-position: 50% bottom; filter: brightness(1.3) contrast(4);",
+                    img_style: "transform: scale(4, 1); object-position: 50% bottom; filter: brightness(2) contrast(3);",
                     tools: ["Tensorflow", "Python"],
                     link_text: "Read More",
                     link_url: "",
+                    github: "https://github.com/aaaa-trsh/MusicGenerator"
                 },
                 {
                     title: "6644 Atomic Auto",
-                    description: "My first exploration into path generation with custom path generation and following in FRC. Includes a web visualizer for path creation and java commands.",
+                    description: "My first robotics webtool for path generation, following, and command generation.",
                     img: "./assets/imgs/projects/quokka.png",
                     tools: ["JavaScript", "Java"],
                 },
@@ -165,10 +178,11 @@
             let imgTemplate = template`<li><a href="${1}" title="${2}""><img src="${0}"></a></li>`
             for (let i = 0; i < data.length; i++) {
                 var t = "";
-                t += `<li style="margin:0"><a href="" title="${"Github Repo"}""><img src="${"./assets/imgs/icons/github.png"}"></a></li>`//imgTemplate("./assets/imgs/icons/github.png", "");
-                t += `<li style="width:2px; margin:0 8px; background-color:#000; opacity:0.1; border-radius: 1px;"></li>`
+                if ("github" in data[i]) {
+                    t += `<li style="margin:0;"><a href="${data[i].github}" title="${"Github Repo"}""><img src="${"./assets/imgs/icons/github.png"}" style="opacity:.8"></a></li>`//imgTemplate("./assets/imgs/icons/github.png", "");
+                    t += `<li style="width:2px; margin:0 8px; background-color:#000; opacity:0.1; border-radius: 1px;"></li>`
+                }
                 for (j of data[i].tools) {
-                    // console.log(projectsTools[j].img);
                     t += imgTemplate(projectsTools[j].img, projectsTools[j].link, j);
                 }
                 cardHTML = cardTemplate(data[i].title, data[i].description, t, data[i].img, data[i].img_style, data[i]?.link_text, data[i]?.link_url);
@@ -387,7 +401,7 @@
             </div> -->
             
         </div>
-        <script src="./js/backgrounds/bg-cellular-automata.js"></script>
+        <script src="./js/backgrounds/bg-hacking.js"></script>
         <!-- <div id="terminal">
             <p>
                 <span class="yellow bold">keithb@pc</span>:<span class="blue">~</span>$ info <br/>
