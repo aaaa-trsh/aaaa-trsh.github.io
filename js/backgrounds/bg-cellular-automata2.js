@@ -8,7 +8,7 @@ const gcanvas = document.createElement("canvas");
 const gctx = gcanvas.getContext('2d');
 
 ctx.webkitImageSmoothingEnabled = false;
-var cellSize = 10;
+var cellSize = 20;
 var map = null
 var row = null
 const rule = Array.from([...(30).toString(2).padStart(8, '0')].reverse(), e => parseInt(e)) // 45 is also cool

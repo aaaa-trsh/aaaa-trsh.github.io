@@ -43,6 +43,10 @@ body {
     padding: 5px 10px 0 10px;
     transition: padding 0.2s;
 }
+.navbar-option a { 
+    text-decoration: inherit;
+    color: inherit;
+}
 .navbar-option:hover { padding: 0px 10px 0 10px; }
 @media (max-width: 650px) {
     .navbar { flex-direction: column; }
@@ -129,7 +133,7 @@ body {
     bottom: 0; 
     color: #fff;
     margin:0;
-    font-size: clamp(40px, 10.5vw, 200px);
+    font-size: clamp(40px, 10.5vw, 150px);
     user-select: none;
     white-space: nowrap;
     /* mix-blend-mode: difference; */

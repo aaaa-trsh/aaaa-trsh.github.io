@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>keith b's funhouse</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">        
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;300;400;600;700&display=swap" rel="stylesheet">
+        <script src="https://d3js.org/d3.v4.min.js"></script> 
+        <script src="https://d3js.org/d3-interpolate.v1.min.js"></script> 
+        <script src="./js/perlin.js"></script>
+        <script src="./js/projects.js"></script>
+        <link rel="stylesheet" href="./assets/styles/main.css">
+        <link rel="stylesheet" href="./assets/styles/widgets.css">
+    </head>
+
+    <body id="body">
+        <div class="navbar-wrap">
+            <div class="navbar">
+                <h1 class="navbar-title">
+                    keith bartlett
+                    <img class="navbar-icon" src="./assets/imgs/icons/dino.png"/>
+                </h1> 
+                <h1 class="navbar-option" style="flex: 3"></h1>
+                <h3 class="navbar-option"><a href="./index.html">projects</a></h3>
+                <h3 class="navbar-option"><a href="#">contact</a></h3>
+                <h3 class="navbar-option"><a href="#">resume</a></h3>
+            </div>
+        </div>
+
+        <div class="canvas-container" style="overflow: hidden">
+            <img id="canvas" style="filter:invert(0) brightness(0.4) blur(5px); object-fit: cover;"src="assets/imgs/projects/trsh-mvmt.png"/>
+            <div class="canvas-header-container">
+                <h1 class="header-title">
+                    projects
+                </h1>
+                <span id="bg-info" display="None"></span>
+            </div>
+        </div>
+        <div class="content" style="height: auto; margin-top:4em">
+            
+            <div class="article">
+                
+            </div>
+        </div>
+        <script>
+            searchParams = new URLSearchParams(window.location.search);
+            projectData = projectsData.find(x => x.title === searchParams.get("proj").toString());
+            document.querySelector('.header-title').textContent = projectData.title.toLowerCase();
+            
+            for (scriptSrc of projectData.article_scripts) {
+                elem = document.createElement('script');
+                elem.setAttribute('src', scriptSrc);
+                document.body.appendChild(elem);
+            }
+
+            document.querySelector('.article').innerHTML = projectArticles[projectData.article];
+        </script>
+    </body>
+</html>

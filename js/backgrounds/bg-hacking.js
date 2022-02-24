@@ -63,6 +63,32 @@ lines = [
         "<br/>&emsp;&emsp; Fetching projects... (238/300)",
         "<br/>&emsp;&emsp; Fetching projects... (299/300)<br/>",
     ],
+    [ 
+        "<br/>&emsp;&emsp; Initializing Pilot Combat Systems... ","OK<br/>",
+        "<br/>&emsp;&emsp; Analyzing Topography... ","OK<br/>",
+        "<br/>&emsp;&emsp; Jumpkit Status... ","NEW USER DETECTED<br/>",
+        "<br/>&emsp;&emsp; Recalibrating microgyros... ",
+        "<br/>&emsp;&emsp; Jumpkit Status... ","OFFLINE<br/>",
+        "<br/>&emsp;&emsp; Checking user mass distribution... ",
+        "<br/>&emsp;&emsp; Jumpkit Status... ","OK<br/>",
+        "<br/>&emsp;&emsp; Ocular Systems Test... ","OK<br/>",
+        "<br/>&emsp;&emsp; SYSTEMS CHECK... ", "","All systems operational<br/>",
+        "<br/>&emsp;&emsp; Protocol 1: Link to Pilot...", "","<br/>&emsp;&emsp; Link established<br/>",
+        "<br/>&emsp;&emsp; Protocol 2: Uphold the Mission...", "", "<br/>&emsp;&emsp; Rendevous with Major Anderson<br/>",
+        "<br/>&emsp;&emsp; Protocol 3: Protect the Pilot...","<br/>",
+        "<br/>&emsp;&emsp; [lost communication]",
+        "<br/>",
+    ],
+    [ 
+        "<br/>&emsp; BROADCASTING 5G WAVES","","","<br/>",
+        "<br/>&emsp; Sending 1G...(1/5)","",
+        "<br/>&emsp; Sending 2G...(2/5)","",
+        "<br/>&emsp; Sending 3G...(3/5)","",
+        "<br/>&emsp; Sending 4G...(4/5)","",
+        "<br/>&emsp; Sending 5G...(5/5)","",
+        "<br/>&emsp; 5G Broadcast complete!","","<br/>",
+        
+    ],
     [
     "<",
     "==========",
@@ -84,13 +110,16 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 async function hack(line) {
-
     c.firstElementChild.innerHTML += "<br/>";
     for (var i = 0; i < line.length; i++) {
         await sleep(i * Math.floor(Math.random()*20));
         c.firstElementChild.innerHTML += line[i];
-        c.firstElementChild.innerHTML = c.firstElementChild.innerHTML.substr(c.firstElementChild.innerHTML.length-3000);
-    }
+        // c.firstElementChild.innerHTML = c.firstElementChild.innerHTML.slice(c.firstElementChild.innerHTML.length-3000);
+        lineBreaks = c.firstElementChild.innerHTML.split("<br/>");
+        last30 = lineBreaks.slice(Math.max(lineBreaks.length - 30, 0))
+        c.firstElementChild.innerHTML = last30.join("<br/>");
+    }   
 }
+c.firstElementChild.innerHTML = "<br/>".repeat(30);
 hack(lines[0])
 window.setInterval(()=>hack(lines[Math.floor(Math.random()*lines.length)]), 1000)
