@@ -1,4 +1,4 @@
-document.getElementById("bg-name").innerHTML = "cellular_automata2";
+// document.getElementById("bg-name").innerHTML = "cellular_automata2";
 document.getElementById("bg-info").innerHTML = "(not quite) rule 30 feeding a game of life";
 
 const canvas = document.getElementById("canvas");
@@ -22,7 +22,7 @@ function init() {
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
     // update();
-    setInterval(update, 1000 / 40);
+    setInterval(update, 1000 / 20);
 };
 init();
 

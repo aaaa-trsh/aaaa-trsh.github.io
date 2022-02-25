@@ -48,7 +48,7 @@ let projectsData = [
         img: "./assets/imgs/projects/ai-yearbook.PNG",
         img_style: "object-position: right 50%; filter: hue-rotate(10deg) brightness(1.1);",
         tools: ["Tensorflow", "JavaScript"],
-        link_text: "Read More",
+        link_text: "Check it out!",
         link_url: "./article.html?proj=Face%20Blender",
         article: 0,
         article_scripts: [
@@ -60,7 +60,7 @@ let projectsData = [
         title: "Vision Module",
         description: "A custom vision module made for mapping and CV. Interfaces with KDS to provide a real-time feed.",
         img: "./assets/imgs/projects/tarsier.png",
-        img_style: "object-fit: contain;",
+        img_style: "object-position: 50% 25%; filter: hue-rotate(10deg) brightness(1.2);",
         tools: ["OpenCV", "Tensorflow", "Python"],
     },
     {
@@ -79,6 +79,7 @@ let projectsData = [
         tools: ["Tensorflow", "Python"],
         link_text: "Read More",
         link_url: "",
+        img_style: "transform: scale(4, 1); object-fit:none; object-position: 32% bottom; filter:background-color:#000; filter: brightness(2);",
         github: "https://github.com/aaaa-trsh/MusicGenerator"
     },
     {

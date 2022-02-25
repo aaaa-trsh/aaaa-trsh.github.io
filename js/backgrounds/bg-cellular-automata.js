@@ -1,5 +1,5 @@
 const infoText = document.getElementById("bg-info");
-document.getElementById("bg-name").innerHTML = "cellular_automata";
+// document.getElementById("bg-name").innerHTML = "cellular_automata";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext('2d');
@@ -13,7 +13,7 @@ const COLOR_PALETTE = [
     // (value) => [hexToRgb(d3.interpolateViridis(value/255)), "LIME"],
 ][Math.floor(Math.random() * 1)];
 
-infoText.innerHTML = `a decaying variant on 'iceballs' (B25678/S5678), pallet '${COLOR_PALETTE(0)[1]}'`;
+infoText.innerHTML = `cellular automata B25678/S5678 '${COLOR_PALETTE(0)[1]}'`;
 
 var map = Array.from(Array(2), () => new Array(4));
 
@@ -28,7 +28,7 @@ function init() {
 init();
 
 function resizeCanvas() {
-    var cellSize = 40;
+    var cellSize = 20;
     canvas.width = Math.ceil(canvas.clientWidth/cellSize);
     canvas.height = Math.ceil(canvas.clientHeight/cellSize);
     gcanvas.width = canvas.width;
@@ -147,5 +147,6 @@ function update() {
     i++;
     map = cellularAutomata(i);
     colorRamp()
-    setTimeout(() => window.requestAnimationFrame(update), 60);
+    // setTimeout(() => window.requestAnimationFrame(update), 60);
 }
+setInterval(update, 1000 / 20);
