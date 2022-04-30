@@ -3,13 +3,15 @@ const infoText = document.getElementById("bg-info");
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext('2d');
+const rect = canvas.getBoundingClientRect();
+
 const gcanvas = document.createElement("canvas");
 const gctx = gcanvas.getContext('2d');
 
 const rule = [[2, 5, 6, 7, 8], [5, 6, 7, 8]];
 const COLOR_PALETTE = [
     // (value) => [hexToRgb(d3.interpolateInferno(value/255)), "FIRE"],
-    (value) => [hexToRgb(d3.interpolateMagma(value/255)), "AQUAMARINE"], // RUBY
+    (value) => [hexToRgb(d3.interpolateMagma(value/255)), "INK SLATE"], // RUBY
     // (value) => [hexToRgb(d3.interpolateViridis(value/255)), "LIME"],
 ][Math.floor(Math.random() * 1)];
 
@@ -17,13 +19,24 @@ infoText.innerHTML = `cellular automata B25678/S5678 '${COLOR_PALETTE(0)[1]}'`;
 
 var map = Array.from(Array(2), () => new Array(4));
 
+let mx, my = 0
+let mouseover = false;
 function init() {
     window.addEventListener('resize', resizeCanvas);
+    canvas.addEventListener('mouseover', ()=>mouseover = true);
+    canvas.addEventListener('mouseout', ()=>mouseover = false);
     resizeCanvas();
-    randomize();
+    // randomize();
     update();
     ctx.fillStyle = "#0a0a0a"
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    canvas.addEventListener('mousemove', function(evt) {
+        mx = (evt.pageX - rect.left)/20;
+        my = (evt.pageY - rect.top)/20;
+        // gctx.fillStyle = `rgb(${255}, ${0}, ${255})`
+        // gctx.fillRect(x, y, 1, 1);
+    }, false);
 };
 init();
 
@@ -41,10 +54,10 @@ function getScore(x, y) {
 }
 
 function cellularAutomata(i) {
-    gctx.globalAlpha = 0.05;
-    gctx.fillStyle = "#0a0a0a"
-    gctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
-    gctx.globalAlpha = 1.0;
+    ctx.globalAlpha = 0.07;
+    ctx.fillStyle = "#0a0a0a"
+    ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+    ctx.globalAlpha = 1.0;
 
     for (var y = 0; y < map.length; y++)
     {
@@ -65,14 +78,26 @@ function cellularAutomata(i) {
             else if (!rule[1].includes(score)) {
                 map[y][x] = 0;
             }
+            if (mouseover) {
+                var r = Math.random() * 6 + 1;
+                if (Math.round(Math.pow(Math.abs(y - my), 2) + Math.pow(Math.abs(x - mx), 2)) < r) {
+                    let v = (1-Math.round(Math.pow(Math.abs(y - my), 2) + Math.pow(Math.abs(x - mx), 2)) / r);
+                    map[y][x] = 1;
+                    // gctx.fillStyle = `rgb(${200}, ${200}, ${200})`;
+                    // gctx.fillStyle = `rgb(${map[y][x]*256}, ${map[y][x]*256}, ${map[y][x]*256})`;
 
-            if (Math.random() > 0.999) map[y][x] = 1; 
+                    ctx.fillRect(x, y, 1, 1);
+                    continue;
+                }
+            }
+
+            // if (Math.random() > 0.999) map[y][x] = 1; 
             //if (Math.random() > Math.hypot(Math.abs((x/map[0].length) - 0.5), Math.abs((y/map.length) - 0.5)) * 30) map[y][x] = 1; 
             
             if (map[y][x] == 1) {
                 value = map[y][x] * 256;
-                gctx.fillStyle = `rgb(${value}, ${value}, ${value})`
-                gctx.fillRect(x, y, 1, 1);
+                ctx.fillStyle = `rgb(${value}, ${value}, ${value})`
+                ctx.fillRect(x, y, 1, 1);
             }
         }
     }
@@ -112,41 +137,50 @@ function hexToRgb(hex) {
 function colorRamp() {
     var imageData = gctx.getImageData(0, 0, canvas.width, canvas.height);
     var pixels = imageData.data;
-    var numPixels = pixels.length;
-    for (var i = 0; i < numPixels; i++) {
-        if (i * 4 > numPixels - 1) {
-            break;
-        }
-        if (pixels[i*4+0] != 255) {
-            if (pixels[i*4+0] > 3) {
-                var value = pixels[i*4+0];
-                var color = COLOR_PALETTE(value);
+    // var numPixels = pixels.length;
+    // for (var i = 0; i < numPixels; i++) {
+    //     if (i * 4 > numPixels - 1) {
+    //         break;
+    //     }
+    //     if (pixels[i*4+0] != 255) {
+    //         if (pixels[i*4+0] > 3) {
+    //             var value = pixels[i*4+0];
+    //             var color = COLOR_PALETTE(value);
                 
-                if (color[1] == "RUBY") {
-                    color[0].r *= 1.4;
-                    color[0].g /= 1.2;
-                    color[0].b /= 1.3;
-                }
+    //             if (color[1] == "RUBY") {
+    //                 color[0].r *= 1.4;
+    //                 color[0].g /= 1.2;
+    //                 color[0].b /= 1.3;
+    //             }
 
-                pixels[i*4+0] = (((value/100 + 0.1) * color[0].r/255) / 2) * 255 
-                pixels[i*4+1] = (((value/100 + 0.1) * color[0].g/255) / 2) * 255 
-                pixels[i*4+2] = (((value/100 + 0.1) * color[0].b/255) / 2) * 255 
-            } else {
-                pixels[i*4+0] = 0
-                pixels[i*4+1] = 0
-                pixels[i*4+2] = 0
-            }
-        }
-    }
+    //             pixels[i*4+0] = (((value/100 + 0.1) * color[0].r/255) / 2) * 255 
+    //             pixels[i*4+1] = (((value/100 + 0.1) * color[0].g/255) / 2) * 255 
+    //             pixels[i*4+2] = (((value/100 + 0.1) * color[0].b/255) / 2) * 255 
+    //         } else {
+    //             pixels[i*4+0] = 0
+    //             pixels[i*4+1] = 0
+    //             pixels[i*4+2] = 0
+    //         }
+    //     }
+    // }
     ctx.putImageData(imageData, 0, 0);
 }
 
 var i = 0;
 function update() {
-    if (i % 1000 == 0) randomize();
+    // if (i % 1000 == 0) randomize();
     i++;
     map = cellularAutomata(i);
-    colorRamp()
+    if (!mouseover) {
+        // map = cellularAutomata(i);
+        ctx.globalAlpha = 0.13;
+        ctx.fillStyle = "#fff"
+        ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+        ctx.globalAlpha = 1.0;
+    }
+
+    // colorRamp()
     // setTimeout(() => window.requestAnimationFrame(update), 60);
 }
+
 setInterval(update, 1000 / 20);

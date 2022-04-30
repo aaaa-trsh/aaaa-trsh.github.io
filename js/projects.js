@@ -83,10 +83,10 @@ let projectsData = [
         github: "https://github.com/aaaa-trsh/MusicGenerator"
     },
     {
-        title: "6644 Atomic Auto",
-        description: "My first robotics webtool for path generation, following, and command generation.",
+        title: "ARCHIVE",
+        description: "An archive of my early khan academy projects from 2014 (back when I was 9 years old!).",
         img: "./assets/imgs/projects/quokka.png",
-        tools: ["JavaScript", "Java"],
+        tools: ["Unity"],
     },
 ];
 

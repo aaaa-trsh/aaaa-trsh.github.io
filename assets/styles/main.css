@@ -133,6 +133,7 @@ body {
     margin: 0 auto;
     font-size: clamp(40px, 10.5vw, 150px);
     /* line-height: 2em;*/
+    pointer-events: none;
     margin-top: .6em; 
     user-select: none;
     white-space: nowrap;
@@ -142,6 +143,7 @@ body {
 }
 
 #bg-info {
+    pointer-events: none;
     display: block;
     width: max(600px, 70%);
     font-weight: 400;
