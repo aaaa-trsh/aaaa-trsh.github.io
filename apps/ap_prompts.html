@@ -65,7 +65,7 @@
                 <label for="apush">AP Lang/Comp Argument</label>
                 <button onClick="window.location.href=window.location.href.split('?')[0]+'?style='+(document.getElementById('ps-apush').checked?'apush':'apl')">get new prompt</button>
             </div>
-            <h2>Prompt: <span id="prompt"></span></h2>
+            <h2>Prompt: <br/><span id="prompt"></span></h2>
             <label id="warning" style="display: none; float: right">*prompt might be old and may not reflect modern test</label>
         </div>
         <script>
@@ -330,7 +330,7 @@ in the United States during the period 1945–1985.<br><br>
             if (style == 'apl') {
                 document.getElementById('ps-apl').checked = true;
                 promptElement.innerHTML += prompts.apl[Math.floor(Math.random() * prompts.apl.length)];
-                promptElement.parentElement.innerHTML += "(APL style) ";
+                promptElement.parentElement.innerHTML += "<br/><br/>(APL style) ";
             } else {
                 let p = prompts.apush[Math.floor(Math.random() * prompts.apush.length)];
                 document.getElementById('ps-apush').checked = true;
@@ -344,7 +344,7 @@ in the United States during the period 1945–1985.<br><br>
                     document.getElementById('warning').textContent = '*prompt might be old and may not reflect modern test';
                 }
                 promptElement.innerHTML += p;
-                promptElement.parentElement.innerHTML += "(APUSH style) ";
+                promptElement.parentElement.innerHTML += "<br/><br/>(APUSH style) ";
             }
         </script>
     </body>
