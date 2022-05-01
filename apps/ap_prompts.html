@@ -66,7 +66,7 @@
                 <button onClick="window.location.href=window.location.href.split('?')[0]+'?style='+(document.getElementById('ps-apush').checked?'apush':'apl')">get new prompt</button>
             </div>
             <h2>Prompt: <span id="prompt"></span></h2>
-            <label id="old-warning" style="display: none; float: right">*prompt might be old and may not reflect modern test</label>
+            <label id="warning" style="display: none; float: right">*prompt might be old and may not reflect modern test</label>
         </div>
         <script>
             var style = window.location.href
@@ -176,6 +176,46 @@ your school board explaining what you mean by creativity and arguing for or agai
 creativity`
                 ],
                 apush: [
+                    "tpEvaluate the extent of the change in societies that resulted from transatlantic contacts from 1450 to 1600",
+                    "tpCompare and contrast the influences of religion in the colonialism of the British to that of the Spanish in North America between 1492 and 1700.",
+                    "tpCompare and contrast the political systems of American Indians to those of Europeans prior to 1492.",
+                    "tpCompare and contrast the economic systems of American Indians to those of Europeans prior to 1492.",
+                    "tpEvaluate the extent of change in the labor systems of the British North American colonies between 1600 and 1750.",
+                    "tpEvaluate the extent to which British mercantilist policies affected the economic development of the New England colonies between 1660 and 1754.",
+                    "tpEvaluate the extent to which the chattel slave system affected the economic development of the Chesapeake colonies between 1660 and 1754.",
+                    "tpEvaluate the extent to which imperial rivalry affected the economic development of the Southernmost Atlantic Coast colonies of the Carolinas and Georgia between 1660 and 1754.",
+                    "tpEvaluate the extent to which revolutionary ideals changed American society in the period 1776 to 1800.",
+                    "tpAnalyze the ways in which the Seven Years' War (1754-1763) fostered change in the relationship between England and the North American colonies from 1754 to 1774",
+                    "tpAnalyze the ways in which immigration and migration fostered change in American society from 1754 to 1800.",
+                    "tpEvaluate the extent of change in the status of African Americans and women in society caused by the Revolutionary War in the period 1775 to 1800.",
+                    "tpEvaluate the extent of change in the practices of political democracy supported by political parties in the period from 1801 to 1840.",
+                    "tpCompare and contrast the effects of the Market Revolution on the economic development of the Northern and Southern regions of the United States between 1800 and 1848.",
+                    "tpCompare and contrast the challenges faced by African Americans and women in their respective struggles for political and social equality between 1800 and 1848. In the development of your argument, explain the reasons for the similarities and differences.",
+                    "tpCompare and contrast the effectiveness of opponents and proponents of Western Expansion in their efforts to shape national policy on expansion between 1800 and 1848. In the development of your argument, explain the reasons for the similarities and differences.",
+                    "tpEvaluate the extent to which the Civil War altered the lives of Americans in the North and the South between 1861 and 1865.",
+                    "tpCompare and contrast the effects of western settlement on the United States economy in the years immediately before the end of the Civil War (1840-1865) and the era immediately after the Civil War (1865-1880).",
+                    "tpEvaluate the extent to which Reconstruction fostered changes for African Americans in the South from 1865 to 1877.",
+                    "tpEvaluate the extent to which the Civil War and Reconstruction expanded the power of the federal government in the period from 1860 to 1890.",
+                    "tpEvaluate the extent to which the settlement of the American West changed the lives of peoples in the region between 1865 and 1900.",
+                    "tpEvaluate the extent to which social reform movements between 1865 and 1900 changed American society.",
+                    "tpEvaluate the extent to which urbanization changed politics in the United States between 1865 and 1900.",
+                    "tpEvaluate the extent of difference between the effects of industrialization on the United States in the decades before the Civil War (1820-1860) to the effects in the decades after the Civil War (1865-1900).",
+                    "tpEvaluate the extent of continuity in the experiences of women in the United States from 1890 to 1940.",
+                    "tpCompare and contrast the priorities and goals of United States foreign policy in the years immediately before United States involvement in the First World War (1904-1917) to the priorities and goals of United States foreign policy in the years immediately after United States involvement in the First World War (1918-1930).",
+                    "tpEvaluate the extent of difference in the effects of federal policies on African Americans in the Progressive Era (1890-1920) to the effects of federal policies on African Americans in the New Deal Era (1933-1941).",
+                    "tpEvaluate the extent of difference in the effects of federal policies on women in the Progressive Era (1890-1920) to the effects of federal policies on women in the New Deal Era (1933-1941).",
+                    "tpEvaluate the extent of difference in United States foreign policy in the period 1945 to 1963 from foreign policy in the period 1964 to 1980.",
+                    "tpEvaluate the extent of change in United States society resulting from the Vietnam War from 1962 to 1975.",
+                    "tpEvaluate the extent of change in United States society resulting from international and internal migrations from 1945 to 1980.",
+                    "tpEvaluate the extent of change in United States society resulting from the environmental movement from 1945 to 1980.",
+                    "tpEvaluate the extent to which demographic shifts changed politics in the United States from 1980 to 2000.",
+                    "tpEvaluate the extent to which demographic shifts changed culture in the United States from 1980 to 2000.",
+                    "tpEvaluate the extent to which the end of the Cold War changed U.S. foreign policy from 1980 to 2010.",
+                    "tpEvaluate the extent to which technological innovations have changed the American economy since 1980.",
+                    "tpEvaluate the extent of change in U.S. society resulting from the activities of political parties from 1824 to 1840",
+                    "tpEvaluate the extent to which the ideology of \"republican motherhood\" fostered change in definitions of citizenship in the United States between 1789 and 1820.",
+                    "tpEvaluate the extent to which the Declaration of Sentiments fostered changes in the definitions of citizenship in the United States between 1820 and 1877.",
+                    "tpEvaluate the extent to which the Progressive Era suffrage movement fostered changes in the definitions of citizenship in the United States between 1890 and 1940.",
                     "Evaluate the extent to which the Progressive movement fostered political change in the United States from 1890 to 1920",
                     "Evaluate the extent to which ideas of self-government influenced American colonial reaction to British imperial authority in the period from 1754 to 1776.",
                     "Evaluate the extent to which debates over slavery in the period from 1830 to 1860 led the United States into the Civil War.",
@@ -294,8 +334,15 @@ in the United States during the period 1945–1985.<br><br>
             } else {
                 let p = prompts.apush[Math.floor(Math.random() * prompts.apush.length)];
                 document.getElementById('ps-apush').checked = true;
-                if (!p.startsWith('Evalu'))
-                    document.getElementById('old-warning').style.display = 'block';
+                if (p.startsWith("tp")) {
+                    document.getElementById('warning').style.display = 'block';
+                    document.getElementById('warning').textContent = '*prompt is not from CollegeBoard and may not reflect the test';
+                    p = p.substring(2)
+                }
+                else if (!p.startsWith('Evalu')) {
+                    document.getElementById('warning').style.display = 'block';
+                    document.getElementById('warning').textContent = '*prompt might be old and may not reflect modern test';
+                }
                 promptElement.innerHTML += p;
                 promptElement.parentElement.innerHTML += "(APUSH style) ";
             }
