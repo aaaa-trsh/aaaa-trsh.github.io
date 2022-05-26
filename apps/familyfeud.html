@@ -9,7 +9,6 @@
     <style>
         body {
             background-image: url("../assets/imgs/ffbg.jpg");
-            background-repeat: no-repeat;
             background-size: cover;
             color: #fff;
             font-size: 30px;
@@ -234,6 +233,8 @@
         let grouped = res.map(x => x[1].map(y => [y[1], y[0]])); // rQuantities.map((x, i) => x.map((y, j) => [y, uResponses[i][j]]));
         grouped = grouped.map(x => x.sort((a, b) => b[0] - a[0]))
         let responseElements = [...document.querySelectorAll(".response-space")];
+        let goofs = 0;
+
         nextQuestion();
         let answered = new Array(responseElements.length).fill(false);
 
@@ -283,6 +284,7 @@
             turn = (turn - 2) % 2;
         }
         function nextQuestion() {
+            goofs=0;
             turn = (turn + 1) % 2;
             checkTurn();
             qid += 1;
@@ -296,7 +298,6 @@
             });
         }
         let answerElement = document.getElementById('answerInput');
-        let goofs = 0;
         answerElement.addEventListener("keyup", function(event) {
             if (event.key === "Enter") {
                 let minDist = 1000000;
