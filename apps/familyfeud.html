@@ -228,7 +228,7 @@
         </div>
     </div>
     <div id="end" style="display:none;position: absolute; top:0px; left: 0px; width: 100%; height: 100%; background-color: #000a; z-index: 9999">
-        <h1 id="endTitle" class="shake" style="margin:0 auto; width: fit-content; margin-top: 20%;">RED wins!</h1>
+        <h1 id="endTitle" class="shake" style="font-size:4em;margin:0 auto; width: fit-content; margin-top: 20%;">RED wins!</h1>
     </div>
     <script type="text/javascript">
         //         let raw = `Timestamp,Test 1,Ae,
@@ -382,7 +382,7 @@
 
         function end() {
             document.getElementById("end").style.display = "block";
-            document.getElementById("endTitle").innerHTML = scores[0] > scores[1] ? "<span style='color:#00f'>BLUE</span> wins!" : "<span style='color:#f00'>RED</span> wins!";
+            document.getElementById("endTitle").innerHTML = scores[0] > scores[1] ? "<span style='color:#9292df;text-shadow: 0px 0px 10px #487cfa;'>BLUE</span> wins!" : "<span style='color:#fa3f3f;text-shadow: 0px 0px 10px #fa4848;'>RED</span> wins!";
         }
         let answerElement = document.getElementById('answerInput');
         answerElement.addEventListener("keyup", function(event) {
