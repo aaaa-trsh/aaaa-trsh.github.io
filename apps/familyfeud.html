@@ -303,8 +303,8 @@
         let responseElements = [...document.querySelectorAll(".response-space")];
         let goofs = 0;
 
-        nextQuestion();
         let answered = new Array(responseElements.length).fill(false);
+        nextQuestion();
 
         function flip(x, i) {
 
