@@ -341,8 +341,10 @@
             scoreCounters.forEach((x, i) => {
                 if (i != turn)
                     scoreCounters[i].classList.remove("scoreCounterSelected");
-                else
+                else {
+                    scoreCounters[turn].innerHTML = scores[turn];
                     scoreCounters[i].classList.add("scoreCounterSelected");
+                }
             })
         }
         checkTurn();
