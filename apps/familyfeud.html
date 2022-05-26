@@ -49,7 +49,7 @@
             width: 100%;
             height: 100%;
         }
-
+        
         .response-cover-dim {
             filter: brightness(0.5);
         }
@@ -81,9 +81,9 @@
             border: 3px ridge gray;
             display: inline-block;
             color: #ffffff91;
-
             background: radial-gradient(farthest-corner at 50% 50%, rgb(65, 72, 206) 50%, rgb(41, 58, 188) 60%, rgb(8, 34, 108) 90%);
         }
+        
         #scoreCounter2 {
             width: 3em;
             margin: 0 auto;
@@ -97,35 +97,38 @@
             display: inline-block;
             background: radial-gradient(farthest-corner at 50% 50%, rgb(206, 65, 65) 50%, rgb(188, 41, 41) 60%, rgb(108, 8, 8) 90%);
         }
+        
         .scoreCounterSelected {
-            border: 3px ridge white !important; 
-            color:white !important;
+            border: 3px ridge white !important;
+            color: white !important;
         }
+        
         #inputContainer {
             width: 50%;
             margin: 0 auto;
-
         }
+        
         #answerInput {
             font-family: serif;
             width: calc(100% - 10px);
             padding: 4px 4px;
             border: none;
         }
-
+        
         .scoreContainer {
             width: 50%;
             margin: 0 auto;
             text-align: center;
         }
-
+        
         .wrong {
             animation: wrong .5s ease-in-out;
         }
+        
         .shake {
             animation: wrong .5s ease-in-out infinite;
         }
-
+        
         .fadeIn {
             animation: fadeIn .5s ease-in-out;
         }
@@ -141,6 +144,7 @@
                 transform: scaleY(1);
             }
         }
+        
         @keyframes fadeIn {
             0% {
                 filter: brightness(0);
@@ -151,20 +155,42 @@
                 transform: translate(0px, 0px);
             }
         }
-
+        
         @keyframes wrong {
-  0% { transform: translate(1px, 1px) rotate(0deg); }
-  10% { transform: translate(-1px, -2px) rotate(-1deg); }
-  20% { transform: translate(-3px, 0px) rotate(1deg); }
-  30% { transform: translate(3px, 2px) rotate(0deg); }
-  40% { transform: translate(1px, -1px) rotate(1deg); }
-  50% { transform: translate(-1px, 2px) rotate(-1deg); }
-  60% { transform: translate(-3px, 1px) rotate(0deg); }
-  70% { transform: translate(3px, 1px) rotate(-1deg); }
-  80% { transform: translate(-1px, -1px) rotate(1deg); }
-  90% { transform: translate(1px, 2px) rotate(0deg); }
-  100% { transform: translate(1px, -2px) rotate(-1deg); }
-}
+            0% {
+                transform: translate(1px, 1px) rotate(0deg);
+            }
+            10% {
+                transform: translate(-1px, -2px) rotate(-1deg);
+            }
+            20% {
+                transform: translate(-3px, 0px) rotate(1deg);
+            }
+            30% {
+                transform: translate(3px, 2px) rotate(0deg);
+            }
+            40% {
+                transform: translate(1px, -1px) rotate(1deg);
+            }
+            50% {
+                transform: translate(-1px, 2px) rotate(-1deg);
+            }
+            60% {
+                transform: translate(-3px, 1px) rotate(0deg);
+            }
+            70% {
+                transform: translate(3px, 1px) rotate(-1deg);
+            }
+            80% {
+                transform: translate(-1px, -1px) rotate(1deg);
+            }
+            90% {
+                transform: translate(1px, 2px) rotate(0deg);
+            }
+            100% {
+                transform: translate(1px, -2px) rotate(-1deg);
+            }
+        }
     </style>
 </head>
 
@@ -198,44 +224,45 @@
                 <td class="response-space" l="7" onclick="flip(this, 7)"></td>
             </tr>
         </table>
-        <div id="inputContainer"><input id="answerInput"></input></div>
+        <div id="inputContainer"><input id="answerInput"></input>
+        </div>
     </div>
     <div id="end" style="display:none;position: absolute; top:0px; left: 0px; width: 100%; height: 100%; background-color: #000a; z-index: 9999">
         <h1 id="endTitle" class="shake" style="margin:0 auto; width: fit-content; margin-top: 20%;">RED wins!</h1>
     </div>
     <script type="text/javascript">
-//         let raw = `Timestamp,Test 1,Ae,
-// 5/25/2022 9:57:35,test,Aw,
-// 5/25/2022 9:57:35,test,Aw,
-// 5/25/2022 9:57:35,testa,Ae,
-// 5/25/2022 9:57:35,testb,Ae,
-// 5/25/2022 9:57:35,testb,Ae,
-// 5/25/2022 9:57:35,testc,Ae,
-// 5/25/2022 9:57:35,testc,Ae,
-// 5/25/2022 9:57:35,test1,Ae,
-// 5/25/2022 9:57:35,test2,Ae,
-// 5/25/2022 9:57:35,test3,Ae,
-// 5/25/2022 9:57:35,test4,Ae,
-// 5/25/2022 9:57:35,test5,Ae,
-// 5/25/2022 9:57:35,test5,Ae,
-// 5/25/2022 9:57:35,test5,abc,
-// 5/25/2022 9:57:35,test5,abc,
-// 5/25/2022 9:57:35,test6,abc,
-// 5/25/2022 9:57:35,test7,abc,
-// 5/25/2022 9:57:35,test8,abc,
-// 5/25/2022 9:57:35,test9,1,
-// 5/25/2022 9:57:35,test10,2,
-// 5/25/2022 9:57:35,testc,3`
+        //         let raw = `Timestamp,Test 1,Ae,
+        // 5/25/2022 9:57:35,test,Aw,
+        // 5/25/2022 9:57:35,test,Aw,
+        // 5/25/2022 9:57:35,testa,Ae,
+        // 5/25/2022 9:57:35,testb,Ae,
+        // 5/25/2022 9:57:35,testb,Ae,
+        // 5/25/2022 9:57:35,testc,Ae,
+        // 5/25/2022 9:57:35,testc,Ae,
+        // 5/25/2022 9:57:35,test1,Ae,
+        // 5/25/2022 9:57:35,test2,Ae,
+        // 5/25/2022 9:57:35,test3,Ae,
+        // 5/25/2022 9:57:35,test4,Ae,
+        // 5/25/2022 9:57:35,test5,Ae,
+        // 5/25/2022 9:57:35,test5,Ae,
+        // 5/25/2022 9:57:35,test5,abc,
+        // 5/25/2022 9:57:35,test5,abc,
+        // 5/25/2022 9:57:35,test6,abc,
+        // 5/25/2022 9:57:35,test7,abc,
+        // 5/25/2022 9:57:35,test8,abc,
+        // 5/25/2022 9:57:35,test9,1,
+        // 5/25/2022 9:57:35,test10,2,
+        // 5/25/2022 9:57:35,testc,3`
         let data = `1. Name a House You Never Want to Be In \n\nHaunted House (27)\nJail (11)\nDoghouse (8)\nDrug House (7)\nSmall House (7)\nGlass House (6)\nCat House (5)\nOuthouse (5)\n\n2. Name Something Associated with Vampires \n\nTwilight (33)\nBlood (29)\nGarlic (9)\nBat (7)\nCape (7)\nDracula (5)\nFangs (4)\nHalloween (4)\n\n3. Name Something in a Bakery a Baker Might Call His Wife \n\nHoney (32)\nHis Oven (9)\nSweet (9)\nCupcake (8)\nMuffin (7)\nSugar (5)\nDonut (5)\nDoughy (4)\n\n4. Name Something In A Person’s Closet That Only Comes Out On Special Occasions \n\nSuit (35)\nDress (26)\nJewelry (10)\nDress Shoes (6)\nShotgun (4)\n\n5. If You Could Go to the Land of OZ, What Would You Ask the Wizard For? \n\nMoney (37)\nHealth (17)\nA Brain (7)\nHot Bod (5)\nPeace on Earth (4)\nLove (4)\nHappiness (4)\nTo Fly (4)\n\n6. Name Something You Might See a Commercial For During a Baseball Game\n\nCar (28)\nBaseball Equipment (26)\nBaseball Tickets (25)\nRestaurants (9)\nMedication (6)\nBeer (4)\n\n7. Tell Me A Word That Rhymes with “Election” \n\nSelection (32)\nErection (23)\nPerfection (6)\nDetection (6)\nProtection (5)\nRejection (4)\nCollection (4)\nSection (4)\n\n8. When You Enter a Bathroom, What Color Do You Really Hope NOT to See in the Toilet Bowl? \n\nBrown (61)\nYellow (11)\nRed (10)\nGreen (10)\nBlack (2)\nPink (1)\n\n9. If Your Dog Ran Away, Name Something You’d Be Surprised He Took With Him\n\nThe Cat (23)\nLeash (17)\nFood (16)\nHis Bone (9)\nClothes (6)\nBed (6)\nFavorite Toy (4)\nMoney (4)\n\n10. What’s Something You Keep in Your Car, Just in Case? \n\nMoney (19)\nFood (18)\nFirst Aid Kit (18)\nSpare Tire (15)\nMap (7)\nJumper Cables (7)\nSpare Clothes (5)\nGas Can (2)\nFlare (2)\n\n11. Name An Occasion For Which You Might Wear Your Lucky Underwear\n\nHot Date (30)\nJob Interview (16)\nCasino (11)\nSporting Event (9)\nWedding (7)\nAnniversary (5)\nValentine’s Day (4)\nExam (4)\n\n12. Name Something You Find in a Breakfast Buffet \n\nEggs (25)\nBacon (24)\nSausage (19)\nPotatoes (12)\nJuice (7)\nCoffee (6)\nMelon (2)\nCereal (2)\n\n13. If There Was A Store That Only Sold Husbands, Most People Would Try to Buy One With What? \n\nJob (24)\nPersonality (15)\nWarranty (14)\nHeart (12)\nBank Account (10)\nBod (9)\nHead of Hair (3)\nBrain (2)\n\n14. Name a Professional Sport Where the Players Make a Lot of Money\n\nFootball (29)\nBaseball (27)\nBasketball (24)\nSoccer (7)\nTennis (7)\nDarts (2)\n\n15. Name Something You’d Do if the Person Sitting Next to You on an Airplane Had B.O. \n\nChange Seats (39)\nCover Nose (24)\nTurn Head (6)\nEndure (6)\nSpray Perfume (6)\n“You Reek, Yo!” (3)\nSleep (3)\nHang In the Bathroom (3)\n\n16. Name Marvel’s Avengers\n\nCaptain America (22)\nIron Man (22)\nBlack Panther (20)\nThe Hulk (15)\nThor (15)\nBlack Widow (9)\nSpiderman (3)\nHawkeye (3)\n\n17. In Horror Movies, Name a Place Teenagers Go Where There’s Always a Killer On the Loose\n\nCabin (49)\nGraveyard (12)\nMovie Theater (6)\nBasement (6)\nCloset (5)\nBathroom (4)\nBedroom (4)\nA Party (4)\n\n18. Name a State That Has a Lot of Sports Teams\n\nNew York (33)\nCalifornia (30)\nFlorida (18)\nTexas (13)\nPennsylvania (3)\nIllinois (2)\n\n19. Name Something Snowmen Might Have Nightmares About \n\nSun (62)\nFire Throwers (14)\nBlow Dryers (3)\nRain (3)\nSnowplow (3)\nDrought (2)\nSnowballs (2)\nPeeing Dogs (2)\n\n20. Name a Common Candy Bar Component \n\nChocolate (36)\nPeanuts (22)\nCaramel (15)\nAlmonds (12)\nNougat (10)\nCoconut (6)\n\n21. Name a Place Where if Her Husband Took Her There For Her Anniversary, a Wife Would Be Mad\n\nTacky Restaurant (43)\nStrip Joint (19)\nSporting Event (12)\nBar (6)\nBowling Alley (4)\nHis Parent’s House (4)\nThe Movies (2)\nCar Show (2)\n\n22. Name a Type of Insurance \n\nCar (28)\nHealth (22)\nLife (15)\nHome (10)\nRenter’s (8)\nFlood (6)\nTravel (4)\nBlackjack (2)\n\n23. Name Something a Woman with a Crush on Santa Might Leave Out For Him Instead of Cookies \n\nCandy (23)\nLingerie (14)\nHer Phone Number (13)\nHerself (12)\nSexy Pictures (12)\nBooze (6)\nMistletoe (6)\nLove Letter (4)\n\n24. Name Something You Would Buy After Getting Engaged \n\nDress (44)\nRing (31)\nChampagne (11)\nDinner (6)\n\n25. Name Something That Might Be Full of Holes\n\nSwiss Cheese (40)\nClothes (16)\nAlibi (14)\nNet (9)\nColander (8)\nGolf Course (2)\nScreen (2)\nRoad (2)\n\n26. Other Than Letters, Name Something People Get in the Mail\n\nJunk Mail (24)\nMagazines (22)\nBills (17)\nPackages (14)\nPostcards (5)\nChecks (4)\n\n27. Name Something a Naughty Kid Does to Santa\n\nPulls His Beard (40)\nHit (21)\nGo to the Bathroom on His Lap (10)\nNo Cookies (9)\nBad Milk (5)\nCuss Out (4)\nFarts on Him (2)\nStays Up (2)\n\n28. Name a Country With a Large Population \n\nChina (45)\nIndia (28)\nUnited States (20)\nBrazil (5)\nMexico (2)\nIndonesia (2)\n\n29. Name Something a Squirrel Might Get in a Fight With if it Tried to Take His Nuts \n\nBird (30)\nAnother Squirrel (23)\nChipmunk (12)\nCat (10)\nRaccoon (8)\nDog (5)\nRabbit (4)\nHuman (3)\n\n30. Name a Type of Building Where It Always Seems to Be Cold \n\nDoctor Office (44)\nWork (19)\nClassroom (14)\nDMV (4)\nHotel Room (4)\nIgloo (2)\n\n31. Name Something People Do to Their Armpits\n\nShave Them (63)\nPut Deodorant On Them (10)\nMake Noise (9)\nScratch Them (6)\nSniff Them (6)\nWash Them (6)\n\n32. Name Something That Might Make You Suspect Your New House is Haunted\n\nNoises (50)\nMoving Objects (18)\nFlickering Lights (12)\nDoors Move (7)\nGhosts (6)\nWeird Odors (2)\n\n33. Name Something That Grows Faster Than You Want it To\n\nHair (48)\nLawn (14)\nKids (13)\nBelly (13)\nNails (6)\nDebt (4)\n\n34. Name Something That Might Be Brewing\n\nCoffee (37)\nBeer (28)\nTea (17)\nTrouble (8)\nA Storm (5)\nA Plot (3)\n\n35. Name an Occupation That Begins With the Letter “J”\n\nJanitor (62)\nJudge (19)\nJeweler (5)\nJockey (4)\nJournalist (4)\nJuggler (3)\n\n36. Name Something You’ve Seen Your Neighbor Doing Outside While Wearing a Bathrobe\n\nGetting Newspaper (57)\nWatering Grass (17)\nTaking Out the Trash (16)\nWashing the Car (3)\nKissing Spouse (2)\nGardening (2)\n\n37. Name Something That Starts With the Word “Chow”\n\nChow Mein (57)\nChowder (12)\nChowhound (8)\nChow Chow (8)\nChow Down (6)\nChowtime (6)\n\n38. Name Something That Has to Be Licked \n\nLollipop (33)\nIce Cream (32)\nStamp (11)\nPopsicle (10)\nEnvelope (9)\nYour Lips (2)\n\n39. When You Call in Sick to Work or School, Name Something You Do to Make it Believable\n\nCough (68)\nHoarse (18)\nFake Puke (3)\nMoan (3)\nFake Note (2)\nSneeze (2)\n\n40. Name an Activity That Requires Using Your Lips\n\nKissing (56)\nTalking (23)\nWhistling (7)\nSingling (4)\nPlaying Flute (4)\nLicking Your Lips (2)\n\n41. Name an Animal a Snake Can Swallow Whole\n\nMouse (73)\nAlligator (9)\nRabbit (5)\nDog (3)\nPig (3)\nCat (2)\n\n42. Name a Word You Can Use Instead of “Woman”\n\nLady (36)\nGirl (24)\nFemale (17)\nChick (7)\nBroad (6)\nGal (5)\n\n43. Name Something You See Outside That Would Make You Want to Stay Inside\n\nTornado (71)\nAnimal (13)\nZombies (3)\nApocalypse (2)\nFire (2)\nBad Celebrities (2)\n\n44. Name Something Specific About Mickey Mouse That Other Mice Might Make Fun Of \n\nGigantic Ears (36)\nClothes (29)\nVoice (19)\nHis Huge Feet (3)\nBFFs With a Duck (3)\nBig Nose (3)\n\n45. Fill In The Blank: “Raging ____”? \n\nBull (74)\nWaters (7)\nFire (3)\nHormones (3)\nRiver (3)\nRapids (3)\n\n46. Name Something That Shakes, Rattles, and Rolls\n\nAn Old Car (31)\nToy (29)\nA Rattlesnake (15)\nMusic (8)\nBooty (4)\nDice (4)\n\n47. Name an Animal Starting With the Letter “C” That You’d NEVER Want to Eat\n\nCat (64)\nCamel (8)\nCougar (8)\nCow (4)\nCheetah (3)\nCoyote (3)`;
         let res = [];
         let questionElement = document.getElementById("question");
         let sData = data.split("\n\n")
-        for (let i = 0; i < sData.length; i+=2) {
+        for (let i = 0; i < sData.length; i += 2) {
             // console.log(sData[i])
             if (sData[i].includes("Buffet")) {
                 console.log(i)
             }
-            res.push([sData[i], sData[i+1].split("\n").map(x=>[x.split(" ").slice(0, -1).join(" "), parseInt(x.split(" ")[x.split(" ").length-1].slice(1, -1))])]);
+            res.push([sData[i], sData[i + 1].split("\n").map(x => [x.split(" ").slice(0, -1).join(" "), parseInt(x.split(" ")[x.split(" ").length - 1].slice(1, -1))])]);
         }
         Object.defineProperties(Array.prototype, {
             count: {
@@ -246,7 +273,7 @@
         });
         let cqorder = 0;
         let qOrder = [44, 15, 16, 17, 18, 19, 21, 24, 31, 32, 34, 36, 38, 40, 41, 43, 46, 11, 9, 7, 27, 33, 23, 25, 13, 28]
-        // shuffle
+            // shuffle
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -259,13 +286,18 @@
         let scores = [0, 0];
 
         let turn = 0;
-        function setTurn(t) { turn = t; checkTurn(); goofs = 0;}
+
+        function setTurn(t) {
+            turn = t;
+            checkTurn();
+            goofs = 0;
+        }
         // let rows = raw.split("\n").map(x => x.split(","));
         // let data = rows[0].map((col, i) => rows.map(row => row[i])).splice(1);
-        let questions = res.map(x => x[0])// data.map(x => x[0]);
-        // let responses = data.map(x => x.slice(1));
-        // let uResponses = responses.map(x => [...new Set(x)]);
-        // let rQuantities = uResponses.map((x, i) => x.map(y => responses[i].count(y)));
+        let questions = res.map(x => x[0]) // data.map(x => x[0]);
+            // let responses = data.map(x => x.slice(1));
+            // let uResponses = responses.map(x => [...new Set(x)]);
+            // let rQuantities = uResponses.map((x, i) => x.map(y => responses[i].count(y)));
         let grouped = res.map(x => x[1].map(y => [y[1], y[0]])); // rQuantities.map((x, i) => x.map((y, j) => [y, uResponses[i][j]]));
         grouped = grouped.map(x => x.sort((a, b) => b[0] - a[0]))
         let responseElements = [...document.querySelectorAll(".response-space")];
@@ -275,8 +307,9 @@
         let answered = new Array(responseElements.length).fill(false);
 
         function flip(x, i) {
-            
+
         }
+
         function reveal(x) {
             x.classList.add("flip");
             setTimeout(() => x.firstChild.style.display = "none", 250);
@@ -284,7 +317,7 @@
         }
         const levenshteinDistance = (str1 = '', str2 = '') => {
             const track = Array(str2.length + 1).fill(null).map(() =>
-            Array(str1.length + 1).fill(null));
+                Array(str1.length + 1).fill(null));
             for (let i = 0; i <= str1.length; i += 1) {
                 track[0][i] = i;
             }
@@ -303,7 +336,8 @@
             }
             return track[str2.length][str1.length];
         };
-        function checkTurn(){
+
+        function checkTurn() {
             scoreCounters.forEach((x, i) => {
                 if (i != turn)
                     scoreCounters[i].classList.remove("scoreCounterSelected");
@@ -312,17 +346,22 @@
             })
         }
         checkTurn();
+
         function revealAll() {
             responseElements.forEach(x => reveal(x));
         }
+
         function nextQuestion() {
-            goofs=0;
+            answered = new Array(responseElements.length).fill(false);
+            goofs = 0;
             turn = (turn + 1) % 2;
             checkTurn();
             cqorder += 1;
             qid = qOrder[cqorder % qOrder.length]
             questionElement.innerHTML = questions[qid];
-            if (qid >= questions.length) { qid = 0; }
+            if (qid >= questions.length) {
+                qid = 0;
+            }
             responseElements.forEach((x, i) => {
                 if (i >= grouped[qid].length)
                     x.innerHTML = `<span class="response-cover response-cover-dim"></span><span class='response-tab'>---</span><span class="response-freq">0</span >`;
@@ -338,6 +377,7 @@
                 }, i * 30);
             });
         }
+
         function end() {
             document.getElementById("end").style.display = "block";
             document.getElementById("endTitle").innerHTML = scores[0] > scores[1] ? "<span style='color:#00f'>BLUE</span> wins!" : "<span style='color:#f00'>RED</span> wins!";
@@ -361,14 +401,14 @@
                     reveal(responseElements[minDistIdx])
                     scores[turn] += grouped[qid][minDistIdx][0];
                     scoreCounters[turn].innerHTML = scores[turn];
-                    for(let g = 0; g < goofs; g++) {
+                    for (let g = 0; g < goofs; g++) {
                         scoreCounters[turn].innerHTML += "*";
                     }
                     answered[minDistIdx] = true;
                 } else {
                     goofs += 1;
                     scoreCounters[turn].innerHTML = scores[turn];
-                    for(let g = 0; g < goofs; g++) {
+                    for (let g = 0; g < goofs; g++) {
                         scoreCounters[turn].innerHTML += "*";
                     }
                     if (goofs >= 3) {
