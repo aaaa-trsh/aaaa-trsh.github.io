@@ -1,77 +1,10 @@
 ﻿<!DOCTYPE html>
 <html>
     <head>
-        <meta charset="utf-8" />
-        <title>keith b's funhouse</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">        
-        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;300;400;600;700&display=swap" rel="stylesheet">
-        <script src="https://d3js.org/d3.v4.min.js"></script> 
-        <script src="https://d3js.org/d3-interpolate.v1.min.js"></script> 
-        <script src="./js/perlin.js"></script>
-        <script src="./js/projects.js"></script>
-        <link rel="stylesheet" href="./assets/styles/main.css">
-        <link rel="stylesheet" href="./assets/styles/widgets.css">
+        
     </head>
 
-    <body id="body">
-        <div class="navbar-wrap">
-            <div class="navbar">
-                <h1 class="navbar-title">
-                    keith bartlett
-                    <img class="navbar-icon" src="./assets/imgs/icons/dino.png"/>
-                </h1> 
-                <h1 class="navbar-option" style="flex: 3"></h1>
-                <h3 class="navbar-option"><a href="./index.html">projects</a></h3>
-                <h3 class="navbar-option"><a href="#">contact</a></h3>
-                <h3 class="navbar-option"><a href="#">resume</a></h3>
-            </div>
-        </div>
-
-        <div class="canvas-container" style="overflow: hidden">
-            <canvas id="canvas"></canvas>
-            <div class="canvas-header-container">
-                <h1 class="header-title">
-                    projects
-                </h1>
-                <h3 id="bg-info"></h3>
-            </div>
-        </div>
-        <div id="projects-showcase">
-        </div>
-        <script>
-            function template(strings, ...keys) {
-            return (function(...values) {
-                    let dict = values[values.length - 1] || {};
-                    let result = [strings[0]];
-                    keys.forEach(function(key, i) {
-                    let value = Number.isInteger(key) ? values[key] : dict[key];
-                    result.push(value, strings[i + 1]);
-                    });
-                    return result.join('');
-                });
-            }
-
-            let projects = document.getElementById("projects-showcase");
-            
-            let cardTemplate = template`<div class="project-card"><div class="project-text"><h2>${0}</h2><p>${1}</p><ul>${2}<li class="project-link"><a href="${6}">${5}</a></li></ul></div><div class="project-img-container"><img src="${3}" style="${4}"></div></div>`
-            let imgTemplate = template`<li><a href="${1}" title="${2}""><img src="${0}"></a></li>`
-            for (let i = 0; i < projectsData.length; i++) {
-                var t = "";
-                if ("github" in projectsData[i]) {
-                    t += `<li style="margin:0;"><a href="${projectsData[i].github}" title="${"Github Repo"}""><img src="${"./assets/imgs/icons/github.png"}" style="opacity:.8"></a></li>`//imgTemplate("./assets/imgs/icons/github.png", "");
-                    t += `<li style="width:2px; margin:0 8px; background-color:#000; opacity:0.1; border-radius: 1px;"></li>`
-                }
-                for (j of projectsData[i].tools) {
-                    t += imgTemplate(projectsTools[j].img, projectsTools[j].link, j);
-                }
-                cardHTML = cardTemplate(projectsData[i].title, projectsData[i].description, t, projectsData[i].img, projectsData[i].img_style, projectsData[i]?.link_text, projectsData[i]?.link_url);
-                console.log(cardHTML)
-                projects.innerHTML += cardHTML;
-            }
-        </script>
-        <!-- <script src="./js/backgrounds/bg-hacking.js"></script> -->
-        <script src="./js/backgrounds/bg-cellular-automata.js"></script>
+    <body id="body" style="background-image: url(./assets/imgs/qRIp5b.png);"></body>
+        <img src="./assets/imgs/tM18j.gif">
     </body>
 </html>
