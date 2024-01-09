@@ -408,13 +408,13 @@ vec2 rsi(vec3 r0, vec3 rd, vec3 s0, float sr) {
     }
 }
 
-float length(vec3 p) {
+float distance_euler(vec3 p) {
     vec3 power = p * p;
     return sqrt(power.x + power.y + power.z);
 }
 
 float densityAtPoint(vec3 p) {
-    float heightAboveSurface = length(vec3(0, 0, 0)-p) - planetRad;
+    float heightAboveSurface = distance_euler(vec3(0, 0, 0)-p) - planetRad;
     float clampedHeight = heightAboveSurface / (atmosphereRad - planetRad); 
     return exp(-clampedHeight * densityFalloff) * (1.-clampedHeight);
 }
