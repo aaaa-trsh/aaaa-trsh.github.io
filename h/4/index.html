@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/dino.css">
+    <link rel="stylesheet" href="/styles/dino.css">
+</head>
+<body>
+    <div class="container mid crt-content"> 
+        <div class="columns" style="display:flex; gap: 30px;">
+            <div class="container panel vgasys" style="width: fit-content; height: fit-content; border-right: 4px double var(--dark);">
+                <h2 class="column nav-link"><a href="" route="">home</a></h2>
+                <h2 class="column nav-link"><a href="" route="gallery">gallery</a></h2>
+                <h2 class="column nav-link"><a href="" route="projects">projects</a></h2>
+                <h2 class="column nav-link disabled"><a href="" route="files">files</a></h2>
+                <h2 class="column nav-link disabled"><a href="" route="archive">archive</a></h2>
+
+                <pre class="purple" style="margin-top: 2.5rem; padding: .5rem 0; font-family: 'sixteen'; letter-spacing: 3px; line-height: 1; margin-bottom: 0;">+---[RSA 3072]----+
+ |      ..o=.o.=B+=|
+ |     ...+.= E+ ==|
+ |    ...+ + *. =+.|
+ |   .. o * o ..o..|
+ |  .  . .S=   . . |
+ |   .   .o.       |
+ |    o o..        |
+ |     = o .       |
+ |    . . .        |
+ +----[SHA256]-----+</pre>
+            </div>
+            <div id="app" style="position: relative; width: 50%;">
+                <img class="app-underlay hideOnWeb" src="resources/images/res4.png"></img>
+                <div class="hideOnWeb" style="height: 12px"></div>
+                <div class="divider hideOnWeb" style="margin-bottom: 300px;"></div>
+                <div class="hideOnWeb" style="height: 300px;">javascript is a mistake !</div>
+                <img class="accent" style="position: absolute; top: 500px; right: 0; width: 200px; transform: translate(30%, 30%) rotate(-30deg) scale(1.4); filter: var(--dark-filter)" src="resources/flower2.png"></img>
+                <img class="accent" style="position: absolute; top: 550px; right: -90px; filter: var(--dark-filter); transform: rotate(45deg) scale(.9)"src="resources/scribble.gif"></img>
+            </div>
+            
+            <!-- <img class="br-corner noselect" style="width: 200px; transform: translate(30%, 30%) rotate(-30deg);" src="resources/flower.png"></img> -->
+        </div>
+    </div>
+    <div id="dino-container" style="filter: invert(1) var(--dark-filter); z-index: -2">
+        <div id="dino">
+            <div id="dino-stuff">
+            </div>
+        </div>
+        <div id="dino-shadow"></div>
+    </div>
+
+    <div class="fg">
+    </div>
+
+    <script src="/js/dino.js"></script>
+    <script src="/js/app.js" type="module"></script>
+    <script src="/machine.src/script.js" type="module"></script>
+</body>
+</html>

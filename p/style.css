@@ -1,0 +1,27 @@
+body {
+    background-color: black;
+    color: white;
+}
+
+h1 {
+    width: 100%;
+    color: blue;
+    background-color: white;
+}
+
+.filter-option > p {
+    margin: 0;
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+    width: fit-content;
+}
+
+.filter-option > p:active {
+    color: red;
+}
+
+.filter-selector {
+    padding: auto;
+    margin: 0;
+}

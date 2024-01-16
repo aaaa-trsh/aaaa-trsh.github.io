@@ -1,0 +1,264 @@
+@font-face {
+    font-family: "Roboto Flex";
+    src: url("/assets/fonts/RobotoFlex.woff2");
+}
+@font-face {
+    font-family: "Libre Barcode 39";
+    src: url("/assets/fonts/LibreBarcode39.ttf");
+}
+
+:root {
+    --main: #e70822;
+    --dark: #040404;
+    --spacing: 100px;
+    --font-size: max(2vw, 4vh);
+}
+
+html, body {
+    height:100%;
+    overflow: hidden;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+    background-color: var(--dark);
+    color: var(--dark);
+    
+    position: relative;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.background {
+    background-image: url("/assets/imgs/noise.png");
+    background-size: cover;
+
+    filter:invert(1) sepia(60%) saturate(10) brightness(.3) contrast(2) hue-rotate(230deg);
+    
+    z-index: -3;
+
+    animation: bg-anim 2s steps(5) infinite;
+}
+
+.main-wrapper {
+    background: var(--main);
+
+    padding: var(--spacing);
+    padding-bottom: 0;
+    margin: auto;
+
+    height: inherit;
+    width: 50vw;
+
+    position: relative;
+}
+
+.main-container {
+    position: relative;
+    padding: calc(var(--spacing) / 2);
+    
+    height: calc(100% - (var(--spacing) * 2));
+
+    border: 1px solid var(--dark);
+    box-sizing: border-box;
+}
+
+.main-nav-option {
+    width: fit-content;
+    overflow: hidden;
+    user-select: none;
+    transform: scale(1, .9);
+}
+
+.main-nav-option > h1 {
+    color: var(--dark);
+
+    font-family: Roboto Flex;
+    font-size: var(--font-size);
+    font-style: normal;
+    font-variation-settings: "wght" 160, "wdth" 150, "xtra" 600, "ytic" 500;
+    line-height: 1;
+    
+    margin: 0;
+}
+
+.main-nav-option:hover > h1 {
+    color: var(--main);
+    cursor: pointer;
+
+    font-variation-settings: "wght" 200, "wdth" 0, "xtra" 0, "ytic" 500;
+    letter-spacing: 20px;
+}
+
+.main-nav-option:hover {
+    padding-left: 30px;
+    background-color: var(--dark);
+}
+
+.main-nav-option > .sub-nav {
+    display: none;
+
+    background-color: var(--main);
+    border: .5px solid rgb(from var(--dark) r g b / 30%);
+}
+
+.main-nav-option:has(> .sub-nav) > h1 {
+    cursor: default !important;
+}
+
+.main-nav-option:hover > .sub-nav { display: block; }
+
+.sub-nav-option {
+    font-size: calc(var(--font-size) / 2);
+
+    color: var(--dark) !important;
+    height: 1.3em;
+    font-family: Roboto Flex;
+    transform: scale(1, 1.3);
+    font-variation-settings: "wght" 60, "wdth" 0, "xtra" 0, "ytic" 500;
+    text-align: right;
+    cursor: pointer;
+    display: block;
+}
+
+.sub-nav-option > a {
+    width: 100%;
+    display: block;
+}
+
+.sub-nav-option:hover {
+    border: .5px solid rgb(from var(--dark) r g b / 50%);
+    border-right: none;
+    border-left: none;
+    box-sizing: border-box;
+    padding: 0;
+    transform: scale(1, 1.9);
+    height: 28px;
+}
+
+.main-container main {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background-color: var(--main);
+    z-index: 2;
+}
+
+.main-barcode {
+    font-family: "Libre Barcode 39";
+    font-size: var(--font-size);
+
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1em; /* 10.417% */
+    position: absolute;
+    bottom: 50px;
+    right: 50px;
+
+    transform: scaleY(-1);
+    pointer-events: none;
+}
+
+.overlay {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    image-rendering: pixelated;
+    pointer-events: none;
+}
+
+.grain-overlay {
+    background: url("/assets/imgs/grain.png") repeat;
+    background-size: 200px 200px;
+    filter: contrast(100);
+
+    mix-blend-mode: multiply;
+    opacity: .3;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    image-rendering: pixelated;
+    pointer-events: none;
+    animation: grain-shift 1s steps(3) infinite;
+}
+
+/* .grain-anim {
+    background: url("/assets/imgs/grain.png") repeat;
+    mix-blend-mode: overlay;
+
+    opacity: 1;
+    z-index: 3;
+    position: absolute;
+    image-rendering: pixelated;
+    pointer-events: none;
+    animation: grain-anim .5s steps(8) infinite;
+} */
+
+.grain {
+    background: radial-gradient(
+            250% 150% at 35% 15%, 
+            rgba(255, 255, 255, 0.77) 25%,
+            rgba(255, 255, 255, 0.16) 100%
+        ), url("/assets/imgs/grain.png"), repeat;
+
+    mix-blend-mode: multiply;
+    z-index: 4;
+}
+
+@keyframes grain-anim {
+    0% {
+        background-position: 10vh 100vh;
+    }
+    30% {
+        background-position: 30px 30vh;
+    }
+    60% {
+        background-position: 100vh 60vh;
+    }
+    100% {
+        background-position: 10vh 100vh;
+    }
+}
+
+@keyframes bg-anim {
+    0% {
+        background-position: 0 0;
+    }
+    20% {
+        background-position: -20vw 0;
+    }
+    40% {
+        background-position: 40vw 0;
+    }
+    60% {
+        background-position: -60vw 0;
+    }
+    80% {
+        background-position: 80vw 0;
+    }
+    100% {
+        background-position: -100vw 0;
+    }
+}
+
+.accent-image {
+    pointer-events: none;
+    position: absolute;
+    right: -40px;
+    bottom: 120px;
+    transform: skew(-1deg) scaleY(1.05);
+    height: min(900px, 100vh, 70vh);
+    image-rendering: pixelated;
+    aspect-ratio: 7 / 6;
+    background-image: url("/assets/imgs/gun!.png");
+    background-size: contain;
+}

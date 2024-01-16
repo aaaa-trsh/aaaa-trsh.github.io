@@ -1,0 +1,44 @@
+
+#dino-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+#dino {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60px;
+    height: 40px;
+    /* outline: 1px solid red; */
+    background-image: url(../imgs/dino/dino_run.gif);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position-y: bottom;
+    user-select: none;
+    pointer-events: none;
+    filter: invert(1);
+}
+
+#dino:hover {
+    cursor: pointer;
+}
+
+#dino-stuff {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+#dino-shadow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 80%;
+    width: 40px;
+    height: 10px;
+    background-color: rgba(0, 0, 0);
+    filter: invert(1);
+}

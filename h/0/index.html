@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>~/</title>
+    <link rel="stylesheet" href="./style.css?e=2">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@200;300;400;500;700&display=swap" rel="stylesheet">
+</head>
+    <body id="body">
+        <iframe id="bg" src="../../p/planet/"></iframe>
+        <div id="midbit">
+            <!-- <ul id="navbar">
+                <li onclick="clickMidButton(this)" id="projects"><h2>projects</h2></li> 
+                <li onclick="clickMidButton(this)" id="about"><h2>about</h2></li> 
+                <li onclick="clickMidButton(this)" id="about"><h2>random</h2></li> 
+                <li onclick="clickMidButton(this)" id="contact"><h2>contact</h2></li>
+            </ul> -->
+
+            <h1 id="hero-title">vvvvvvvvvvvvvvvvvvv<br/></h1>
+            <h4><span id="bg-name">$</span> </span><span id="bg-info">/~/</span></h4>
+        </div>
+
+        <script>
+            var midButtonElements = null;
+            var heroTitle = document.getElementById("hero-title");
+            function clamp(v, min, max) {return Math.max(min, Math.min(max, v)); }
+            var mx = 0;
+            var my = 0;
+            var time = 0;
+
+            document.addEventListener('mousemove', e => {
+                mx = (-e.clientX + window.innerWidth/2)/20;
+                my = (-e.clientY + window.innerHeight/2)/20;
+            });
+
+            const shadowLayers = [
+                {ratio: .5, color: "#FDE725", blur: 0},
+                {ratio: 1, color: "#EE4266", blur: 0},
+                {ratio: 0, color: "#fff", blur: 40}
+            ];
+
+            function animateTextShadow() {
+                var textShadow = [];
+                for (var layer of shadowLayers) {
+                    var x = mx*layer.ratio;
+                    var y = my*layer.ratio;
+                    x += Math.random()*10;
+                    y += Math.random()*10;
+                    textShadow.push(`${x}px ${y}px ${layer.blur}px ${layer.color}`);
+                }
+                time += .01;
+                heroTitle.style.textShadow = textShadow.join(", ");
+                requestAnimationFrame(animateTextShadow);
+            }
+            requestAnimationFrame(animateTextShadow);
+            
+            function clickMidButton(clickedElement) {
+                if (midButtonElements != null) {
+                    for (var element of midButtonElements) {
+                        if (element == clickedElement) {
+                            element.classList.add("section-title");
+                            document.getElementById("midbit").appendChild(element); 
+                        }
+                        else { element.style.opacity = "0"; }
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>

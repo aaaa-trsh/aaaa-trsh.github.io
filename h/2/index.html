@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/styles/normalize.css">
+    <link rel="stylesheet" href="/assets/styles/dino.css">
+    <link rel="stylesheet" href="./empty.css">
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"
+        integrity="sha512-zhHQR0/H5SEBL3Wn6yYSaTTZej12z0hVZKOv3TwCUXT1z5qeqGcXJLLrbERYRScEDDpYIJhPC1fk31gqR783iQ=="
+        crossorigin="anonymous"
+        defer
+    >
+    </script>
+</head>
+<body>
+    <style>
+    </style>
+    <div class="container mid crt-content"> 
+        <div class="columns" style="display:flex;">
+            <div style="width:400px;">
+                <p class="column nav-link"><a href="" route="">home</a></p>
+                <p class="column nav-link"><a href="" route="gallery">gallery</a></p>
+                <p class="column nav-link"><a href="" route="projects">projects</a></p>
+                <p class="column nav-link disabled"><a href="" route="files">files</a></p>
+                <p class="column nav-link disabled"><a href="" route="archive">archive</a></p>
+                <!-- <pre style="font-family:monospace;">+---[RSA 3072]----+
+|      ..o=.o.=B+=|
+|     ...+.= E+ ==|
+|    ...+ + *. =+.|
+|   .. o * o ..o..|
+|  .  . .S=   . . |
+|   .   .o.       |
+|    o o..        |
+|     = o .       |
+|    . . .        |
++----[SHA256]-----+</pre> -->
+            </div>
+            <div id="app" style="position: relative; width: 50%;">
+                <p>zzzz</p>
+
+                <!-- <img class="app-underlay hideOnWeb" src="resources/images/res4.png"></img> -->
+                <div class="hideOnWeb" style="height: 12px"></div>
+                <div class="divider hideOnWeb"></div>
+            </div>
+            
+            <!-- <img class="br-corner noselect" style="width: 200px; transform: translate(30%, 30%) rotate(-30deg);" src="resources/flower.png"></img> -->
+        </div>
+    </div>
+    <div id="dino-container" style="filter: invert(1) var(--dark-filter); z-index: 2; mix-blend-mode: difference;">
+        <div id="dino">
+            <div id="dino-stuff">
+            </div>
+        </div>
+        <div id="dino-shadow"></div>
+    </div>
+    <canvas id="canvas" width="640" height="640" style="image-rendering: pixelated;"></canvas>
+
+    <script src="/assets/scripts/dino.js"></script>
+</body>
+</html>

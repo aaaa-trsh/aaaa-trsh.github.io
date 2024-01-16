@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>horrible family feud</title>
+    <script src="./data.js"></script>
+    <link href="./style.css" rel="stylesheet"></link>
+</head>
+
+<body>
+    <div id="frame" style="position: relative;">
+        <h3 id="question" style="margin:0 auto; width: fit-content"></h3>
+    </div>
+    <div id="frame" style="position: relative; margin: 10px auto">
+        <button style="position: absolute; bottom: 10px; left: 10px" onclick="revealAll()">Reveal</button>
+        <button style="position: absolute; top: 10px; right: 10px" onclick="nextQuestion()">Next</button>
+        <button style="position: absolute; top: 10px; left: 10px" onclick="end()">End Game</button>
+        <div class="scoreContainer">
+            <h3 class="score" id="scoreCounter1" onclick="setTurn(0);">0</h3>
+            <h3 class="score" id="scoreCounter2" onclick="setTurn(1);">0</h3>
+        </div>
+        <table>
+            <tr>
+                <td class="response-space" l="0" onclick="flip(this, 0)"></td>
+                <td class="response-space" l="1" onclick="flip(this, 1)"></td>
+            </tr>
+            <tr>
+                <td class="response-space" l="2" onclick="flip(this, 2)"></td>
+                <td class="response-space" l="3" onclick="flip(this, 3)"></td>
+            </tr>
+            <tr>
+                <td class="response-space" l="4" onclick="flip(this, 4)"></td>
+                <td class="response-space" l="5" onclick="flip(this, 5)"></td>
+            </tr>
+            <tr>
+                <td class="response-space" l="6" onclick="flip(this, 6)"></td>
+                <td class="response-space" l="7" onclick="flip(this, 7)"></td>
+            </tr>
+        </table>
+        <div id="inputContainer"><input id="answerInput"></input>
+        </div>
+    </div>
+    <p style="font-size: 20pt; right:30px; position: absolute; bottom: 10px;">i made this in like 1 day so its super scuffed - keith bartlett</p>
+    <div id="end" style="display:none;position: absolute; top:0px; left: 0px; width: 100%; height: 100%; background-color: #000a; z-index: 9999">
+        <h1 id="endTitle" class="shake" style="font-size:4em;margin:0 auto; width: fit-content; margin-top: 20%;">RED wins!</h1>
+    </div>
+    <script type="text/javascript">
+        // let res = [];
+        let questionElement = document.getElementById("question");
+        // let sData = data.split("\n\n")
+        // for (let i = 0; i < sData.length; i += 2) {
+        //     res.push([sData[i], sData[i + 1].split("\n").map(x => [x.split(" ").slice(0, -1).join(" "), parseInt(x.split(" ")[x.split(" ").length - 1].slice(1, -1))])]);
+        // }
+        Object.defineProperties(Array.prototype, {
+            count: {
+                value: function(value) {
+                    return this.filter(x => x == value).length;
+                }
+            }
+        });
+        // let cqorder = 0;
+        // let qOrder = [44, 15, 16, 17, 18, 19, 21, 24, 31, 32, 34, 36, 38, 40, 41, 43, 46, 11, 9, 7, 27, 33, 23, 25, 13, 28]
+
+        let qid = Math.floor(Math.random() * questions.length);
+        let scoreCounters = [document.getElementById("scoreCounter1"), document.getElementById("scoreCounter2")];
+        let scores = [0, 0];
+
+        let turn = 0;
+
+        function setTurn(t) {
+            scoreCounters[turn].innerHTML = scores[turn];
+            turn = t;
+            checkTurn();
+            goofs = 0;
+        }
+        let responseElements = [...document.querySelectorAll(".response-space")];
+        let goofs = 0;
+
+        let answered = new Array(responseElements.length).fill(false);
+        nextQuestion();
+
+        function flip(x, i) {
+
+        }
+
+        function reveal(x, delay = 0) {
+            setTimeout(() => {
+                x.classList.add("flip");
+                setTimeout(() => x.firstChild.style.display = "none", 250);
+                setTimeout(() => x.classList.remove("flip"), 500);
+            }, delay);
+        }
+        const levenshteinDistance = (str1 = '', str2 = '') => {
+            const track = Array(str2.length + 1).fill(null).map(() =>
+                Array(str1.length + 1).fill(null));
+            for (let i = 0; i <= str1.length; i += 1) {
+                track[0][i] = i;
+            }
+            for (let j = 0; j <= str2.length; j += 1) {
+                track[j][0] = j;
+            }
+            for (let j = 1; j <= str2.length; j += 1) {
+                for (let i = 1; i <= str1.length; i += 1) {
+                    const indicator = str1[i - 1] === str2[j - 1] ? 0 : 1;
+                    track[j][i] = Math.min(
+                        track[j][i - 1] + 1, // deletion
+                        track[j - 1][i] + 1, // insertion
+                        track[j - 1][i - 1] + indicator, // substitution
+                    );
+                }
+            }
+            return track[str2.length][str1.length];
+        };
+
+        function checkTurn() {
+            scoreCounters.forEach((x, i) => {
+                if (i != turn)
+                    scoreCounters[i].classList.remove("scoreCounterSelected");
+                else {
+                    scoreCounters[turn].innerHTML = scores[turn];
+                    scoreCounters[i].classList.add("scoreCounterSelected");
+                }
+            })
+        }
+        checkTurn();
+
+        function revealAll() {
+            answered = new Array(responseElements.length).fill(true);
+            responseElements.forEach((x, i) => reveal(x, i * 50));
+        }
+
+        function nextQuestion() {
+            answered = new Array(responseElements.length).fill(false);
+            scoreCounters[turn].innerHTML = scores[turn];
+            goofs = 0;
+            turn = (turn + 1) % 2;
+            checkTurn();
+            qid = Math.floor(Math.random() * questions.length);
+            questionElement.innerHTML = questions[qid];
+            responseElements.forEach((x, i) => {
+                if (i >= grouped[qid].length)
+                    x.innerHTML = `<span class="response-cover response-cover-dim"></span><span class='response-tab'>---</span><span class="response-freq">0</span >`;
+                else
+                    x.innerHTML = `<span class="response-cover"></span><span class='response-tab'>` + grouped[qid][i][1].toUpperCase() + `<span class="response-freq">${grouped[qid][i][0]}</span > `;
+            });
+            responseElements.forEach((x, i) => {
+                setTimeout(() => {
+                    x.classList.add("fadeIn");
+                    setTimeout(() => {
+                        x.classList.remove("fadeIn");
+                    }, 600);
+                }, i * 30);
+            });
+        }
+
+        function end() {
+            document.getElementById("end").style.display = "block";
+            document.getElementById("endTitle").innerHTML = scores[0] > scores[1] ? "<span style='color:#9292df;text-shadow: 0px 0px 10px #487cfa;'>BLUE</span> wins!" : "<span style='color:#fa3f3f;text-shadow: 0px 0px 10px #fa4848;'>RED</span> wins!";
+        }
+        let answerElement = document.getElementById('answerInput');
+        answerElement.addEventListener("keyup", function(event) {
+            if (event.key === "Enter") {
+                let minDist = 1000000;
+                let minDistIdx = -1;
+                for (var o = 0; o < grouped[qid].length; o++) {
+                    let dist = levenshteinDistance(grouped[qid][o][1].toUpperCase(), answerElement.value.toUpperCase());
+                    console.log(dist, grouped[qid][o][1].toUpperCase())
+                    if (minDist >= dist) {
+                        minDist = dist;
+                        minDistIdx = o;
+                    }
+                }
+                answerElement.value = "";
+                if (minDist <= 2 && minDistIdx < responseElements.length && answered[minDistIdx] == false) {
+                    // console.log(minDist, minDistIdx, grouped[qid][minDistIdx][1])
+                    reveal(responseElements[minDistIdx])
+                    scores[turn] += grouped[qid][minDistIdx][0];
+                    scoreCounters[turn].innerHTML = scores[turn];
+                    for (let g = 0; g < goofs; g++) {
+                        scoreCounters[turn].innerHTML += "*";
+                    }
+                    answered[minDistIdx] = true;
+                } else {
+                    goofs += 1;
+                    scoreCounters[turn].innerHTML = scores[turn];
+                    for (let g = 0; g < goofs; g++) {
+                        scoreCounters[turn].innerHTML += "*";
+                    }
+                    if (goofs >= 3) {
+                        scoreCounters[turn].innerHTML = scores[turn];
+                        goofs = 0;
+                        turn = (turn + 1) % scoreCounters.length;
+                        checkTurn();
+                    }
+                    responseElements.forEach(x => {
+                        setTimeout(() => {
+                            x.classList.add("wrong");
+                        }, Math.random() * 300);
+                    });
+                    setTimeout(() => {
+                        responseElements.forEach(x => {
+                            x.classList.remove("wrong");
+                        });
+                    }, 500);
+                }
+
+            }
+        });
+    </script>
+</body>
+
+</html>
