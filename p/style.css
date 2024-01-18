@@ -9,6 +9,17 @@ h1 {
     background-color: white;
 }
 
+h2 > p {
+    margin-bottom: 0;
+    margin-top: 10px;
+    padding: 0;
+    display: inline;
+    float: right;
+    font-size: initial;
+    vertical-align: text-bottom;
+    font-weight: initial;
+}
+
 .filter-option > p {
     margin: 0;
     color: blue;
@@ -24,4 +35,8 @@ h1 {
 .filter-selector {
     padding: auto;
     margin: 0;
+}
+
+img {
+    border: 3px inset white;
 }
