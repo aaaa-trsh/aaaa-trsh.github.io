@@ -2,12 +2,12 @@
 import ProjectsList from './metadata.js';
 
 const tags = {
-    "misc": "Miscellaneous",
-    "classproject": "Class Projects",
-    "old": "Achived Projects",
     "game": "Games",
     "fullgame": "Full Games",
-    "gamejam": "Games from Game Jams",
+    "gamejam": "Jam Games",
+    "classproject": "Class Projects",
+    "misc": "Miscellaneous",
+    "old": "Achived Projects",
 };
 
 const uri = new URL(window.location.href);
@@ -70,24 +70,27 @@ const renderProjectGroup = Object.keys(projectGroups).map(tag => {
                 title = `<a href="${project.links.link}">${title}</a>`;
             }
             const listedLinks = Object.keys(project.links).filter(ltext => ltext != 'link');
-            links = Object.keys(listedLinks).map((ltext) => `<p>${ltext}<a href="${listedLinks[ltext]}">${listedLinks[ltext]}</a></p>`);
+            links = listedLinks.map((ltext) => `<p>${ltext}:&emsp;<a href="${project.links[ltext]}">${project.links[ltext]}</a></p>`);
         }
         return /* html */`
         <tr>
-            <td style="height: 200px; vertical-align: top; width: 600px;">
-                <h2>${title}&emsp;<p><i>${dateStr}</i></p></h2>
+            <td class="project-info">
+                <h2>${title}</h2>
+                <p style="margin-top: 0"><small>${dateStr} - ${project.tags.map(t => tags[t]).join(", ")}</small><p>
                 <p>${project.desc}</p>
                 
                 ${links.join("\n")}
             </td>
             <td>
-                ${project.img ? '<img src="'+project.img+'" style="height: 200px;" alt="project image">' : ''}
+                ${project.img ? '<img class="project-img" src="'+project.img+'" alt="project image">' : ''}
             </td>
         </tr>`;
     };
     
     const groupHTML = /* html */`
     <div>
+        <hr>
+        <h2>${tags[tag]}</h2>
         <hr>
         <table>
             ${projects.map(project => projectHTML(project)).join("\n")}

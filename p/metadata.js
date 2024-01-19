@@ -1,16 +1,5 @@
 export default [
-{
-    "title": "AP Writing Prompter",
-    "desc": "I made this to help practice writing for apush and ap lang. Its ok",
-    "date": new Date("Sat Apr 30 12:18:20 2022"), // First commit
-    "links": {
-        "link": "/p/apeng",
-    },
-    "tags": [
-        "misc",
-        "classproject"
-    ]
-},
+
 {
     "title": "Batteries Sold Separately",
     "desc": "An arena-shooter styled jam game about a robot in the apocalypse - made for LUDUM DARE 39 'Running out of power' with my brother, dad, and his friend.",
@@ -32,6 +21,18 @@ export default [
     },
     "tags": [
         "misc",
+    ]
+},
+{
+    "title": "AP Writing Prompter",
+    "desc": "I made this to help practice writing for apush and ap lang. Its ok",
+    "date": new Date("Sat Apr 30 12:18:20 2022"), // First commit
+    "links": {
+        "link": "/p/apeng",
+    },
+    "tags": [
+        "classproject",
+        "misc"
     ]
 },
 {

@@ -12,6 +12,10 @@ html, body {
     font-family: 'Oswald', sans-serif;
     font-weight: 500;
 }
+a {
+    color: inherit;
+    text-decoration: none;
+}
 
 #bgVideo {
     position: fixed;
@@ -45,7 +49,7 @@ html, body {
     padding: 1em 2em;
     width: 40%;
     background-image: linear-gradient(to left, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2) 20% 80%, rgba(0, 0, 0, 0.6));
-    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 #midbit h1 {

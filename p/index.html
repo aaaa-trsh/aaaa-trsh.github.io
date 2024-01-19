@@ -5,28 +5,42 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <h1>projects - category</h1>
-    <p style="margin: 0">filters:</p>
-    <ul class="filter-selector">
-        <li class="filter-option">
-            games
-            <ul class="filter-selector">
-                <li class="filter-option"><p>full games</p></li>
-                <li class="filter-option"><p>jam games</p></li>
-            </ul>
-        </li>
-        <li class="filter-option">
-            robots
-            <ul class="filter-selector">
-                <li class="filter-option"><p>FIRST robotics competition</p></li>
-                <li class="filter-option"><p>combat robotics</p></li>
-            </ul>
-        </li>
-        <li class="filter-option"><p>class projects</p></li>
-        <li class="filter-option"><p>machine learning</p></li>
-        <li class="filter-option"><p>misc</p></li>
-    </ul>
-    <div id="project-list-container"></div>
+    <div class="bg"></div>
+    <div class="content-container">
+        <div class="content">
+            <h1 style="margin-top: 0;">projects</h1>
+            <div class="filters-container">
+                <div class="filter-selector">
+                    <p style="margin: 0;">categories:</p>
+                    <ul class="filter-selector">
+                        <li class="filter-option"><a href="./">all projects</a></li>
+                
+                        <li class="filter-option">
+                            <a href="./?f=game">games</a>
+                            <ul class="filter-selector">
+                                <li class="filter-option"><a href="./?f=fullgame">full games</a></li>
+                                <li class="filter-option"><a href="./?f=gamejam">jam games</a></li>
+                            </ul>
+                        </li>
+                        <li class="filter-option">
+                            robots
+                            <ul class="filter-selector">
+                                <li class="filter-option"><a href="./?f=frc">FIRST robotics competition</a></li>
+                                <li class="filter-option"><a href="./?f=cr">combat robotics</a></li>
+                            </ul>
+                        </li>
+                        <li class="filter-option"><a href="./?f=classproject">class projects</a></li>
+                        <li class="filter-option"><a href="./?f=ml">machine learning</a></li>
+                        <li class="filter-option"><a href="./?f=misc">misc</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <img class="side-img" src="/assets/imgs/frc/frc2020_offseason_bot.PNG"/>
+                </div>
+            </div>
+            <div id="project-list-container"></div>
+        </div>
+    </div>
     <script type="module" src="./projects.js"></script>
 </body>
 </html>

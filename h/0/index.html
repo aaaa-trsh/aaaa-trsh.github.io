@@ -9,17 +9,16 @@
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@200;300;400;500;700&display=swap" rel="stylesheet">
 </head>
     <body id="body">
-        <iframe id="bg" src="../../p/planet/"></iframe>
         <div id="midbit">
             <ul id="navbar">
-                <li onclick="clickMidButton(this)" id="projects"><h2>projects</h2></li> 
-                <li onclick="clickMidButton(this)" id="about"><h2>about</h2></li> 
-                <li onclick="clickMidButton(this)" id="about"><h2>random</h2></li> 
-                <li onclick="clickMidButton(this)" id="contact"><h2>contact</h2></li>
+                <li id="projects"><h2><a href="/p/">projects</a></h2></li> 
+                <li id="about"><h2><a href="/404.html">about</a></h2></li> 
+                <li id="about"><h2><a href="/404.html">random</a></h2></li> 
+                <li id="contact"><h2><a href="/404.html">contact</a></h2></li>
             </ul>
 
-            <h1 id="hero-title">vvvvvvvvvvvvvvvvvvv<br/></h1>
-            <h4><span id="bg-name">$</span> </span><span id="bg-info">/~/</span></h4>
+            <h1 id="hero-title">vvvvvvvvvvvv<br/></h1>
+            <h4><span id="bg-name">&</span> </span><span id="bg-info">/~/</span></h4>
         </div>
 
         <script>
@@ -55,18 +54,6 @@
                 requestAnimationFrame(animateTextShadow);
             }
             requestAnimationFrame(animateTextShadow);
-            
-            function clickMidButton(clickedElement) {
-                if (midButtonElements != null) {
-                    for (var element of midButtonElements) {
-                        if (element == clickedElement) {
-                            element.classList.add("section-title");
-                            document.getElementById("midbit").appendChild(element); 
-                        }
-                        else { element.style.opacity = "0"; }
-                    }
-                }
-            }
         </script>
     </body>
 </html>

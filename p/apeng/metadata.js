@@ -6,7 +6,7 @@ export default {
         "link": "/p/apeng",
     },
     "tags": [
-        "misc",
         "classproject"
+        "misc",
     ]
 }

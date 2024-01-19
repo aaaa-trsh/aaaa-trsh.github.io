@@ -1,6 +1,57 @@
 body {
-    background-color: black;
     color: white;
+    background-color: #111;
+    margin: 0;
+    padding: 0;
+}
+
+.bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+
+    background: url("/assets/imgs/cobble_stone.png");
+    background-attachment: fixed;
+    image-rendering: pixelated;
+    background-size: 100px 100px;
+
+    filter: contrast(.8) brightness(.3) hue-rotate(300deg);
+}
+
+.content-container {
+    background-color: black;
+    margin: 0 auto;
+    width: 1200px;
+    max-width: calc(100%);
+}
+
+.content {
+    padding: 20px 30px;
+}
+
+.project-info {
+    height: 200px;
+    vertical-align: top;
+}
+
+.project-info > h2 {
+    margin-bottom: 0;
+}
+
+.project-img {
+    height: 200px;
+    float: right;
+}
+
+a {
+    color: blue;
+}
+
+a:active {
+    color: red;
 }
 
 h1 {
@@ -35,8 +86,24 @@ h2 > p {
 .filter-selector {
     padding: auto;
     margin: 0;
+    flex: 1;
+}
+
+.filters-container {
+    display: flex;
+    margin-bottom: 20px;
+    height: 200px;
 }
 
 img {
     border: 3px inset white;
+}
+
+.side-img {
+    height: 100%;
+    filter: invert(1);
+    border: none;
+    user-select: none;
+    pointer-events: none;
+    transform: scaleX(-1);
 }
